@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+/* Thème et variables CSS */
+@theme {
+  /* Couleurs principales */
+  --color-background: hsl(var(--background, 0, 0%, 100%));
+  --color-foreground: hsl(var(--foreground, 0, 0%, 10%));
+  --color-blue: #3b82f6;
+
+  /* Input colors */
+  --color-input: hsl(var(--input, 0, 0%, 100%));
+  --color-input-placeholder: #94a3b8;
+  --color-input-border: #cbd5e1;
+
+  /* Button colors */
+  --color-button-secondary-bg: #dbeafe;
+  --color-button-tertiary-border: #cbd5e1;
+
+  /* Badge colors */
+  --color-badge-warning-bg: #f97316;
+  --color-badge-secondary-bg: #dbeafe;
+  --color-badge-danger-bg: #ef4444;
+  --color-badge-success-bg: #10b981;
+  --color-badge-tertiary-bg: #cbd5e1;
+
+  /* Common colors */
+  --color-neutral-high: #475569;
+  --color-neutral-low: #cbd5e1;
+  --color-neutral-lowest: #ffffff;
+
+  --color-brand-lowest: #eff6ff;
+  --color-brand-lower: #dbeafe;
+  --color-brand-medium: #3b82f6;
+
+  /* Autres couleurs */
+  --color-card: hsl(var(--card, 0, 0%, 100%));
+  --color-card-foreground: hsl(var(--card-foreground, 0, 0%, 10%));
+  --color-popover: hsl(var(--popover, 0, 0%, 100%));
+  --color-popover-foreground: hsl(var(--popover-foreground, 0, 0%, 10%));
+  --color-primary: hsl(var(--primary, 217, 91%, 60%));
+  --color-primary-foreground: hsl(var(--primary-foreground, 0, 0%, 100%));
+  --color-secondary: hsl(var(--secondary, 0, 0%, 50%));
+  --color-secondary-foreground: hsl(var(--secondary-foreground, 0, 0%, 100%));
+  --color-muted: hsl(var(--muted, 0, 0%, 90%));
+  --color-muted-foreground: hsl(var(--muted-foreground, 0, 0%, 20%));
+  --color-accent: hsl(var(--accent, 0, 0%, 50%));
+  --color-accent-foreground: hsl(var(--accent-foreground, 0, 0%, 100%));
+  --color-destructive: hsl(var(--destructive, 0, 0%, 50%));
+  --color-destructive-foreground: hsl(
+    var(--destructive-foreground, 0, 0%, 100%)
+  );
+  --color-border: hsl(var(--border, 0, 0%, 80%));
+  --color-ring: hsl(var(--ring, 0, 0%, 50%));
+  --color-chart-1: hsl(var(--chart-1, 0, 0%, 70%));
+  --color-chart-2: hsl(var(--chart-2, 0, 0%, 60%));
+  --color-chart-3: hsl(var(--chart-3, 0, 0%, 50%));
+  --color-chart-4: hsl(var(--chart-4, 0, 0%, 40%));
+  --color-chart-5: hsl(var(--chart-5, 0, 0%, 30%));
+}
+
+/* Couleurs pour le mode sombre */
+@media (prefers-color-scheme: dark) {
+  @theme {
+    --color-background: #1a202c;
+    --color-foreground: #e2e8f0;
+  }
+}
+
+/* Utilitaires personnalisés */
+@utility container {
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Base et compatibilité avec les versions précédentes */
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    color: var(--color-foreground);
+    background-color: var(--color-background);
+    font-family: "inter";
+  }
+}
