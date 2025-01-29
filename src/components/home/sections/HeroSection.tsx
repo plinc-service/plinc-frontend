@@ -9,7 +9,7 @@ const HeroSection = () => {
           <Image
             src={"/women.webp"}
             alt="women with her phone"
-            className="w-[50%] h-full"
+            className="h-full"
             width={407}
             height={590}
             priority
