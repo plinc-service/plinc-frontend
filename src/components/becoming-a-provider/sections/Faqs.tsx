@@ -1,4 +1,4 @@
-import HomeFAQAccordion from "@/components/ui/HomeFaqAccordion";
+import ProviderFAQAccordion from "@/components/ui/ProviderFaqAccordion";
 import Title from "@/components/ui/Title";
 
 const Faqs = () => {
@@ -11,7 +11,7 @@ const Faqs = () => {
           varius enim in eros elementum tristique.
         </p>
         <div className="mt-10">
-          <HomeFAQAccordion />
+          <ProviderFAQAccordion />
         </div>
       </div>
     </section>

@@ -1,6 +1,6 @@
 "use client";
 import Title from "@/components/ui/Title";
-import { howIstWorkHomeSlideData } from "@/constants/HowItsWorkSlide";
+import { howIstWorkProviderSlideData } from "@/constants/HowItsWorkSlide";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -12,7 +12,7 @@ const HowItWorks = () => {
         <Title>Comment ça marche ?</Title>
         <div className="flex items-center justify-center gap-20 mt-16">
           <div>
-            {howIstWorkHomeSlideData.map((slide, index) => (
+            {howIstWorkProviderSlideData.map((slide, index) => (
               <div
                 key={index}
                 className="flex items-start gap-4 max-w-[570px] w-full cursor-pointer"
@@ -60,8 +60,8 @@ const HowItWorks = () => {
             />
             <div className="absolute top-[50%] -translate-y-[50%] -translate-x-[50%] left-[50%] w-[90%] h-[96%] overflow-hidden rounded-[35px]">
               <Image
-                src={howIstWorkHomeSlideData[selectedSlide].image}
-                alt={howIstWorkHomeSlideData[selectedSlide].title}
+                src={howIstWorkProviderSlideData[selectedSlide].image}
+                alt={howIstWorkProviderSlideData[selectedSlide].title}
                 fill
                 className="select-none object-contain"
               />
