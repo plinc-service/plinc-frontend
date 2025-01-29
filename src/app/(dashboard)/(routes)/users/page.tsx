@@ -1,25 +1,20 @@
-import { UsersTable } from "@/components/users/UsersTable";
-import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import {
-  Search,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { Input } from "@/components/ui/Input";
+import { UsersTable } from "@/components/users/UsersTable";
 import { UsersData } from "@/constants/UsersData";
+import { ChevronDown, ChevronLeft, ChevronRight, Search } from "lucide-react";
 
 export default function UsersPage() {
   return (
-    <div className="flex-1 overflow-auto p-4">
+    <div className="p-4">
       <div className="flex h-14 items-center justify-between px-6 ">
         <div className="flex items-center gap-2">
           <h1 className="text-xl font-semibold">Utilisateurs</h1>
         </div>
         <Input
-              placeholder="Rechercher"
-              className="pl-9 w-[610px] h-9 bg-white border border-neutral-low outline-none"
-            />
+          placeholder="Rechercher"
+          className="pl-9 w-[610px] h-9 bg-white border border-neutral-low outline-none"
+        />
         <div className="flex items-center gap-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground pointer-events-none" />
