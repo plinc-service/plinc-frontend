@@ -9,7 +9,7 @@ interface PageProps {
   }>;
 }
 
-export default function Page({ params }: PageProps) {
+const Page = ({ params }: PageProps) => {
   const { userId } = use(params);
 
   return (
@@ -29,4 +29,6 @@ export default function Page({ params }: PageProps) {
       <UserPlincs />
     </div>
   );
-}
+};
+
+export default Page;
