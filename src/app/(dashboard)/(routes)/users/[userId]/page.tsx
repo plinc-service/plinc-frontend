@@ -1,5 +1,4 @@
-"use client";
-
+import { use } from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import UserProfile from "./components/UserProfile";
@@ -7,15 +6,18 @@ import UserServices from "./components/UserServices";
 import UserRevenue from "./components/UserRevenue";
 import UserTransactions from "./components/UserTransactions";
 
-interface UserDetailsProps {
-  params: {
+interface PageProps {
+  params: Promise<{
     userId: string;
-  };
+  }>;
 }
 
-const UserDetailsPage: React.FC<UserDetailsProps> = () => {
+export default function Page({ params }: PageProps) {
+  const { userId } = use(params);
+
+  // Call API to fetch user data
   const user = {
-    id: "#3324553",
+    id: `#${userId}`,
     username: "John DOE",
     email: "johndoe@gmail.com",
     company: "PlinC",
@@ -71,4 +73,4 @@ const UserDetailsPage: React.FC<UserDetailsProps> = () => {
   );
 };
 
-export default UserDetailsPage;
+
