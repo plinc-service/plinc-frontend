@@ -35,7 +35,7 @@ export const sidebarItems = [
   {
     title: "Portefeuille",
     icon: Briefcase,
-    href: "/portfolio",
+    href: "/wallet",
   },
   {
     title: "Transactions",

@@ -56,6 +56,9 @@
   --color-chart-3: hsl(var(--chart-3, 0, 0%, 50%));
   --color-chart-4: hsl(var(--chart-4, 0, 0%, 40%));
   --color-chart-5: hsl(var(--chart-5, 0, 0%, 30%));
+
+  /* Font Size */
+  --text-xxs: 0.625rem;
 }
 
 /* Couleurs pour le mode sombre */
