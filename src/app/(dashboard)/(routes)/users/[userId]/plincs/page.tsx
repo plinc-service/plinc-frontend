@@ -2,6 +2,7 @@ import { use } from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import UserPlincs from "../components/UserPlincs";
+import UserHeader from "../components/UserHeader";
 
 interface PageProps {
   params: Promise<{
@@ -12,8 +13,18 @@ interface PageProps {
 const Page = ({ params }: PageProps) => {
   const { userId } = use(params);
 
+  // call API
+  const user = {
+    username: "John DOE",
+    email: "johndoe@gmail.com",
+    stats: {
+      acheter: 5,
+      vendeurs: 2,
+    },
+  };
+
   return (
-    <div className="space-y-8 mt-6 mx-5">
+    <div className="space-y-6 px-2 mx-5 mt-4">
       <div className="flex items-center gap-2 text-sm">
         <Link href="/users" className="text-neutral-high text-base">
           Utilisateurs
@@ -26,7 +37,10 @@ const Page = ({ params }: PageProps) => {
         <span className="text-blue text-base">User PlinC</span>
       </div>
 
-      <UserPlincs />
+      <div className="bg-white rounded-2xl">
+        <UserHeader user={user} />
+        <UserPlincs />
+      </div>
     </div>
   );
 };

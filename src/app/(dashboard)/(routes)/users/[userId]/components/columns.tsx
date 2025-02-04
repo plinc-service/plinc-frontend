@@ -73,15 +73,15 @@ export const columns: ColumnDef<Plinc>[] = [
       const getStatusStyle = (status: string) => {
         switch (status) {
           case "En attente":
-            return "bg-[#FFF7ED] text-badge-warning-bg";
+            return "bg-badge-warning-bg text-white font-medium";
           case "Accepter":
-            return "bg-brand-lower text-blue";
+            return "bg-badge-secondary-bg text-blue font-medium";
           case "Annuler":
-            return "bg-red-50 text-badge-danger-bg";
+            return "bg-badge-danger-bg text-white font-medium";
           case "Confirmé":
-            return "bg-emerald-50 text-badge-success-bg";
+            return "bg-badge-success-bg text-white font-medium";
           case "Terminer":
-            return "bg-slate-100 text-neutral-high";
+            return "bg-badge-tertiary-bg text-[#475569] font-medium";
           default:
             return "bg-slate-100 text-neutral-high";
         }

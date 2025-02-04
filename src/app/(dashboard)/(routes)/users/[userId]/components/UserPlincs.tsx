@@ -102,12 +102,45 @@ const mockData: Plinc[] = [
     date: "02-10-2024",
     status: "Terminer",
     amount: "60€",
+  },
+  {
+    id: "00010",
+    provider: {
+      name: "William RODRIGUEZ",
+      image: "/avatar.svg",
+    },
+    serviceTitle: "Révision du budget",
+    date: "02-10-2024",
+    status: "Terminer",
+    amount: "60€",
+  },
+  {
+    id: "00011",
+    provider: {
+      name: "William RODRIGUEZ",
+      image: "/avatar.svg",
+    },
+    serviceTitle: "Révision du budget",
+    date: "02-10-2024",
+    status: "Terminer",
+    amount: "60€",
+  },
+  {
+    id: "00012",
+    provider: {
+      name: "William RODRIGUEZ",
+      image: "/avatar.svg",
+    },
+    serviceTitle: "Révision du budget",
+    date: "02-10-2024",
+    status: "Terminer",
+    amount: "60€",
   }
 ];
 
 const UserPlincs = () => {
   return (
-    <div className="rounded-2xl p-5">
+    <div className="rounded-2xl p-2">
       <div className="flex items-center justify-between mb-4">
         <div className="flex gap-4">
           <button className="px-4 py-2 text-sm text-blue border-b-2 border-blue">
