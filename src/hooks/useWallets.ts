@@ -1,7 +1,4 @@
-"use client";
-
-import { Wallet } from "@/interfaces/userCardInterface";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { fetchWallets } from "../services/WalletService";
 
 export interface Pagination {
@@ -9,30 +6,25 @@ export interface Pagination {
   next?: string | null;
 }
 
-export const useWallets = () => {
-  const [wallets, setWallets] = useState<Wallet[]>([]);
-  const [pagination, setPagination] = useState<Pagination>({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export const useWallets = (page = 1) => {
+  const {
+    data,
+    isLoading,
+    error,
+    refetch
+  } = useQuery({
+    queryKey: ["wallets", page],
+    queryFn: () => fetchWallets(page)
+  });
 
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const data = await fetchWallets();
-      setWallets(data.data);
-      setPagination({ previous: data.previous, next: data.next });
-      setError(null);
-    } catch (err) {
-      console.error("Erreur lors de la récupération des données :", err);
-      setError("Une erreur est survenue lors du chargement des données.");
-    } finally {
-      setLoading(false);
-    }
+  return {
+    wallets: data?.data ?? [],
+    pagination: {
+      previous: data?.previous,
+      next: data?.next
+    },
+    loading: isLoading,
+    error: error ? "Une erreur est survenue lors du chargement des données." : null,
+    refetch
   };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  return { wallets, pagination, loading, error, fetchData };
 };

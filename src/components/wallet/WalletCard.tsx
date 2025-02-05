@@ -46,7 +46,7 @@ export const WalletCard = React.forwardRef<HTMLDivElement, WalletCardProps>(
                 />
               </span>
               <span className="text-xl text-blue font-semibold">
-                {wallet.user.revenue_total?.toFixed(2) || " "}
+                {wallet.user.revenue_total?.toFixed(2) || "00"}
               </span>
             </p>
           </div>
