@@ -70,26 +70,53 @@ export const columns: ColumnDef<Plinc>[] = [
     header: "Statut",
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
-      const getStatusStyle = (status: string) => {
+      const getStatusStyle = (status: string): { bg: string; dot: string; text: string } => {
         switch (status) {
           case "En attente":
-            return "bg-badge-warning-bg text-white font-medium";
+            return {
+              bg: "bg-badge-warning-bg",
+              dot: "bg-orange-300",
+              text: "text-white"
+            };
           case "Accepter":
-            return "bg-badge-secondary-bg text-blue font-medium";
+            return {
+              bg: "bg-badge-secondary-bg",
+              dot: "bg-blue-300",
+              text: "text-blue"
+            };
           case "Annuler":
-            return "bg-badge-danger-bg text-white font-medium";
+            return {
+              bg: "bg-badge-danger-bg",
+              dot: "bg-red-300",
+              text: "text-white"
+            };
           case "Confirmé":
-            return "bg-badge-success-bg text-white font-medium";
+            return {
+              bg: "bg-badge-success-bg",
+              dot: "bg-green-300",
+              text: "text-white"
+            };
           case "Terminer":
-            return "bg-badge-tertiary-bg text-[#475569] font-medium";
+            return {
+              bg: "bg-badge-tertiary-bg",
+              dot: "bg-slate-400",
+              text: "text-[#475569]"
+            };
           default:
-            return "bg-slate-100 text-neutral-high";
+            return {
+              bg: "bg-slate-100",
+              dot: "bg-slate-400",
+              text: "text-neutral-high"
+            };
         }
       };
 
+      const style = getStatusStyle(status);
+
       return (
         <div className="min-w-[100px]">
-          <span className={`px-3 py-1 rounded-full text-sm ${getStatusStyle(status)}`}>
+          <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${style.bg} ${style.text}`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
             {status}
           </span>
         </div>

@@ -4,11 +4,11 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { DataTable } from "@/components/users/data-table";
 import { Search, AlignCenter, ChevronDown } from "lucide-react";
+import { columns, type Plinc } from "./columns";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { columns } from "./columns";
 
-const mockDataVendus = [
+const mockDataVendus: Plinc[] = [
   {
     id: "00001",
     provider: {
@@ -39,7 +39,7 @@ const mockDataVendus = [
     },
     serviceTitle: "Tutorat en anglais",
     date: "20-09-2024",
-    status: "Terminé",
+    status: "Terminer",
     amount: "90€",
   },
 ];

@@ -142,13 +142,13 @@ const UserPlincs = () => {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-8">
           <button
-            className="px-4 py-2 text-base text-blue border-b-2 border-blue font-medium relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue"
+            className="px-4 py-2 text-base text-blue border-b-2 border-blue font-medium relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue cursor-pointer"
           >
             Achetés
           </button>
           <button
             onClick={() => router.push('plincs/vendus')}
-            className="px-4 py-2 text-base text-neutral-medium font-medium hover:text-neutral-high transition-colors"
+            className="px-4 py-2 text-base text-neutral-medium font-medium hover:text-neutral-high transition-colors cursor-pointer"
           >
             Vendus
           </button>
