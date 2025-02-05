@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
-import { Bell, ChevronDown } from "lucide-react";
+import { Bell, ChevronDown, Search, AlignCenter } from "lucide-react";
 import UsersTable from "@/components/users/UsersTable";
+import { Input } from "@/components/ui/Input";
 
 const UsersPage: React.FC = () => {
   return (
@@ -36,6 +37,27 @@ const UsersPage: React.FC = () => {
         </div>
       </div>
       <div>
+        <div className="flex items-center justify-between mt-5 mb-3 mx-5">
+          <div className="relative flex-1 max-w-[610px]">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-input-placeholder" />
+            <Input placeholder="Rechercher" className="pl-9 h-10" />
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1 max-w-[95px]">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-high" />
+              <Input placeholder="Label" className="pl-9 h-10" />
+            </div>
+            <Button
+              variant="outline"
+              className="h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full"
+            >
+              <AlignCenter className="h-4 w-4" />
+              <span>Trier par</span>
+              <ChevronDown className="h-4 w-4 text-neutral-high" />
+            </Button>
+          </div>
+        </div>
+
         <div className="p-5">
           <UsersTable />
         </div>

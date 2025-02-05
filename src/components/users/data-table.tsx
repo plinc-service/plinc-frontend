@@ -20,13 +20,9 @@ import {
 } from "@/components/ui/Table";
 
 import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
 import {
-  Search,
-  ChevronDown,
   ChevronRight,
   ChevronLeft,
-  AlignCenter,
 } from "lucide-react";
 
 interface DataTableProps<TData extends object, TValue> {
@@ -63,27 +59,6 @@ export function DataTable<TData extends object, TValue>({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="relative flex-1 max-w-[610px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-input-placeholder" />
-          <Input placeholder="Rechercher" className="pl-9 h-10" />
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="relative flex-1 max-w-[95px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-high" />
-            <Input placeholder="Label" className="pl-9 h-10" />
-          </div>
-          <Button
-            variant="outline"
-            className="h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full"
-          >
-            <AlignCenter className="h-4 w-4" />
-            <span>Trier par</span>
-            <ChevronDown className="h-4 w-4 text-neutral-high" />
-          </Button>
-        </div>
-      </div>
-
       <div>
         <div className="rounded-md ">
           <Table>
@@ -117,7 +92,7 @@ export function DataTable<TData extends object, TValue>({
                     className="hover:bg-brand-lowest cursor-pointer border-neutral-200"
                     onClick={() => {
                       const item = row.original;
-                      if ('id' in item) {
+                      if ("id" in item) {
                         const id = (item.id as string).replace("#", "");
                         router.push(`/users/${id}`);
                       }
