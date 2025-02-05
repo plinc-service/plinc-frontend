@@ -1,8 +1,8 @@
 import { use } from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import UserPlincs from "../components/UserPlincs";
-import UserHeader from "../components/UserHeader";
+import UserHeader from "../../components/UserHeader";
+import UserPlincsVendus from "../../components/UserPlincsVendus";
 
 interface PageProps {
   params: Promise<{
@@ -10,10 +10,10 @@ interface PageProps {
   }>;
 }
 
-const Page = ({ params }: PageProps) => {
+export default function Page({ params }: PageProps) {
   const { userId } = use(params);
 
-  // call API
+  // Dans une vraie application, ces données viendraient d'une API
   const user = {
     username: "John DOE",
     email: "johndoe@gmail.com",
@@ -24,7 +24,7 @@ const Page = ({ params }: PageProps) => {
   };
 
   return (
-    <div className="space-y-6 px-2 mx-5 mt-4">
+    <div className="space-y-6 p-5">
       <div className="flex items-center gap-2 text-sm">
         <Link href="/users" className="text-neutral-high text-base">
           Utilisateurs
@@ -37,12 +37,10 @@ const Page = ({ params }: PageProps) => {
         <span className="text-blue text-base">User PlinC</span>
       </div>
 
-      <div className="bg-white rounded-2xl">
+      <div className="bg-white rounded-2xl p-5">
         <UserHeader user={user} />
-        <UserPlincs />
+        <UserPlincsVendus />
       </div>
     </div>
   );
-};
-
-export default Page;
+}

@@ -31,6 +31,7 @@ export const sidebarItems = [
     title: "PlinC",
     icon: Link2,
     href: "/plinc",
+    active: true,
   },
   {
     title: "Portefeuille",

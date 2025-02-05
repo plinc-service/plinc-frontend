@@ -10,7 +10,11 @@ export type Plinc = {
     name: string;
     image: string;
   };
-  serviceTitle: string;
+  client: {
+    name: string;
+    image: string;
+  };
+  category: string;
   date: string;
   status: "En attente" | "Accepter" | "Annuler" | "Confirmé" | "Terminer";
   amount: string;
@@ -48,11 +52,32 @@ export const columns: ColumnDef<Plinc>[] = [
     },
   },
   {
-    accessorKey: "serviceTitle",
-    header: "Titre du service",
+    accessorKey: "client",
+    header: "Client",
+    cell: ({ row }) => {
+      const client = row.getValue("client") as { name: string; image: string };
+      return (
+        <div className="flex items-center gap-3 min-w-[150px]">
+          <div className="h-8 w-8 rounded-full bg-neutral-100 flex items-center justify-center overflow-hidden">
+            <Image
+              width={32}
+              height={32}
+              src={client.image}
+              alt={client.name}
+              className="rounded-full"
+            />
+          </div>
+          <span className="font-medium text-sm text-neutral-high">{client.name}</span>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "category",
+    header: "Catégorie",
     cell: ({ row }) => (
-      <div className="min-w-[200px]">
-        <span className="text-neutral-high">{row.getValue("serviceTitle")}</span>
+      <div className="min-w-[100px]">
+        <span className="text-neutral-high">{row.getValue("category")}</span>
       </div>
     ),
   },

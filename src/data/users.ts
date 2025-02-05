@@ -2,6 +2,13 @@ import { User } from "@/components/users/columns"
 
 export const users: User[] = [
   {
+    id: "#00000",
+    username: "Sarah WILSON",
+    email: "sarahwilson@gmail.com",
+    address: "Lyon",
+    createdAt: "2024-02-05",
+  },
+  {
     id: "#00001",
     username: "John DOE",
     email: "johndoe@gmail.com",
