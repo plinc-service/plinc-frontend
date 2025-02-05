@@ -1,8 +1,18 @@
 "use client";
 
+import TopBar from "@/components/layout/TopBar";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 import { WalletCard } from "@/components/wallet/WalletCard";
 import WalletSkeleton from "@/components/wallet/WalletSkeleton";
 import { useWallets } from "@/hooks/useWallets";
+import {
+  AlignCenter,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Search,
+} from "lucide-react";
 import { useState } from "react";
 
 export default function WalletPage() {
@@ -65,18 +75,57 @@ export default function WalletPage() {
   };
 
   return (
-    <div className="px-5 pt-5 pb-[30px]">
-      <ul className="grid grid-cols-4 gap-4">
-        {wallets.map((wallet) => (
-          <WalletCard key={wallet.id} wallet={wallet} />
-        ))}
-      </ul>
-      {/* Pagination */}
-      <div style={{ marginBottom: "20px" }}>
-        {pagination.previous && (
-          <button onClick={handlePrevious}>Précédent</button>
-        )}
-        {pagination.next && <button onClick={handleNext}>Suivant</button>}
+    <div className="px-5 pt-5 pb-[30px] flex flex-col h-full w-full">
+      <TopBar pageName="Portefeuille" />
+      <div className="flex items-center justify-between">
+        <div className="relative flex-1 max-w-[610px]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-input-placeholder" />
+          <Input placeholder="Rechercher" className="pl-9 h-10" />
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="relative flex-1 max-w-[95px]">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-high" />
+            <Input placeholder="Label" className="pl-9 h-10" />
+          </div>
+          <Button
+            variant="outline"
+            className="h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full"
+          >
+            <AlignCenter className="h-4 w-4" />
+            <span>Trier par</span>
+            <ChevronDown className="h-4 w-4 text-neutral-high" />
+          </Button>
+        </div>
+      </div>
+      <div className="flex flex-col justify-between mt-2 flex-1">
+        <ul className="grid grid-cols-4 gap-4">
+          {wallets.map((wallet) => (
+            <WalletCard key={wallet.id} wallet={wallet} />
+          ))}
+        </ul>
+        {/* Pagination */}
+        <div className="w-full flex item-center justify-between mt-5">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handlePrevious}
+            disabled={!pagination.previous}
+            className="h-8 text-sm text-neutral-high"
+          >
+            <ChevronLeft className="ml-1 h-4 w-4 text-neutral-high" />
+            Précédent
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleNext}
+            disabled={!pagination.next}
+            className="h-8 text-sm text-neutral-high"
+          >
+            Suivant
+            <ChevronRight className="ml-1 h-4 w-4 text-neutral-high" />
+          </Button>
+        </div>
       </div>
     </div>
   );
