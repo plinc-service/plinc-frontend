@@ -1,5 +1,5 @@
 import { User, UserResponse } from "@/interfaces/userInterface";
-import { Transaction, TransactionResponse } from "@/interfaces/transactionInterface";
+import { Transaction } from "@/interfaces/transactionInterface";
 import { SortField, SortOrder } from "@/app/(dashboard)/(routes)/users/page";
 import Axios from "@/utils/config-axios";
 
