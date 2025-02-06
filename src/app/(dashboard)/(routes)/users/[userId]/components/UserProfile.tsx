@@ -5,21 +5,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 
+import { User } from "@/interfaces/userInterface";
+
 interface UserProfileProps {
-  user: {
-    id: string;
-    username: string;
-    email: string;
-    profession: string;
-    phone: string;
-    siret_num: string;
-    iban_num: string;
-    number_plinc_buyer: number;
-    number_plinc_seller: number;
-    image_url: string;
-    address_client: string;
-    address_prestataire: string;
-  };
+  user: User;
 }
 
 const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
@@ -51,9 +40,11 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
             />
           </div>
 
-          <div className="mt-3 text-center">
-            <h2 className="text-lg font-medium text-blue">{user.username}</h2>
+          <div className="mt-3 text-center space-y-2">
+            <h2 className="text-lg font-medium text-blue">{user.first_name} {user.last_name}</h2>
+            <p className="text-sm text-neutral-high">{user.username}</p>
             <p className="text-xs text-neutral-high">{user.email}</p>
+            <p className="text-sm text-blue font-semibold">PlinC</p>
 
           </div>
 
