@@ -5,10 +5,22 @@ import { DataTable } from "./data-table";
 import { useUsers } from "@/hooks/useUsers";
 import { useState } from "react";
 import UserSkeleton from "./UserSkeleton";
+import { SortField, SortOrder } from "@/app/(dashboard)/(routes)/users/page";
 
-const UsersTable = () => {
+interface UsersTableProps {
+  searchQuery: string;
+  sortField: SortField;
+  sortOrder: SortOrder;
+}
+
+const UsersTable: React.FC<UsersTableProps> = ({ searchQuery, sortField, sortOrder }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const { users, loading, error, pagination } = useUsers(currentPage);
+  const { users, loading, error, pagination } = useUsers({
+    page: currentPage,
+    searchQuery,
+    sortField,
+    sortOrder
+  });
 
   if (loading) {
     return (

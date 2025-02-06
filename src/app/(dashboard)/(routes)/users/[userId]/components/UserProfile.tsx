@@ -10,17 +10,15 @@ interface UserProfileProps {
     id: string;
     username: string;
     email: string;
-    company: string;
     profession: string;
     phone: string;
-    city: string;
-    address: string;
-    siret: string;
-    iban: string;
-    stats: {
-      acheter: number;
-      vendeurs: number;
-    };
+    siret_num: string;
+    iban_num: string;
+    number_plinc_buyer: number;
+    number_plinc_seller: number;
+    image_url: string;
+    address_client: string;
+    address_prestataire: string;
   };
 }
 
@@ -45,7 +43,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
         <div className="flex flex-col items-center pr-4 w-[250px] relative">
           <div className="h-16 w-16 rounded-full bg-neutral-100 flex items-center justify-center overflow-hidden">
             <Image
-              src="/avatar.svg"
+              src={user.image_url || "/avatar.svg"}
               alt={user.username}
               width={64}
               height={64}
@@ -56,14 +54,12 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
           <div className="mt-3 text-center">
             <h2 className="text-lg font-medium text-blue">{user.username}</h2>
             <p className="text-xs text-neutral-high">{user.email}</p>
-            <p className="text-xs text-blue font-semibold my-2">
-              {user.company}
-            </p>
+
           </div>
 
           <div className="mt-4 w-full flex justify-around text-neutral-high">
             <div className="flex flex-col items-center relative px-6">
-              <span className="text-2xl font-bold">{user.stats.acheter}</span>
+              <span className="text-2xl font-bold">{user.number_plinc_buyer}</span>
               <span className="text-xs">Acheter</span>
               <Separator
                 orientation="vertical"
@@ -71,7 +67,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
               />
             </div>
             <div className="flex flex-col items-center">
-              <span className="text-2xl font-bold">{user.stats.vendeurs}</span>
+              <span className="text-2xl font-bold">{user.number_plinc_seller}</span>
               <span className="text-xs">Vendeurs</span>
             </div>
           </div>
@@ -106,14 +102,14 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
           <div className="grid grid-cols-2 my-5">
             <div className="space-y-1">
               <h3 className="text-xs font-medium text-neutral-high">
-                Ville
+                Adresse client
               </h3>
-              <p className="text-sm font-medium text-blue">{user.city}</p>
+              <p className="text-sm font-medium text-blue">{user.address_client || 'Non renseigné'}</p>
             </div>
 
             <div className="space-y-1">
-              <h3 className="text-xs font-medium text-neutral-high">Adresse</h3>
-              <p className="text-sm font-medium text-blue">{user.address}</p>
+              <h3 className="text-xs font-medium text-neutral-high">Adresse prestataire</h3>
+              <p className="text-sm font-medium text-blue">{user.address_prestataire || 'Non renseigné'}</p>
             </div>
           </div>
 
@@ -123,12 +119,12 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
               <h3 className="text-xs font-medium text-neutral-high">
                 SIRET
               </h3>
-              <p className="text-sm font-medium text-blue">{user.siret}</p>
+              <p className="text-sm font-medium text-blue">{user.siret_num || 'Non renseigné'}</p>
             </div>
 
             <div className="space-y-1 my-5">
               <h3 className="text-xs font-medium text-neutral-high">IBAN</h3>
-              <p className="text-sm font-medium text-blue">{user.iban}</p>
+              <p className="text-sm font-medium text-blue">{user.iban_num || 'Non renseigné'}</p>
             </div>
           </div>
         </div>

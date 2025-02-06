@@ -1,3 +1,10 @@
+export interface Service {
+  id: number;
+  title: string;
+  description: string;
+  enabled: boolean;
+}
+
 export interface User {
   id: string;
   username: string;
@@ -11,6 +18,13 @@ export interface User {
   address_prestataire?: string;
   date_joined: string;
   is_active: boolean;
+  services: Service[];
+  siret_num?: string;
+  iban_num?: string;
+  number_plinc_buyer: number;
+  number_plinc_seller: number;
+  revenue_waiting: number;
+  revenue_total: number;
 }
 
 export interface UserResponse {
