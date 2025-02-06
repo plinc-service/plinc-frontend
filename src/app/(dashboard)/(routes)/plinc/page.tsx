@@ -54,7 +54,6 @@ const mockData: Plinc[] = [
     status: "Annuler",
     amount: "80€",
   },
-  // ... autres données mockées
 ];
 
 const filters = [
@@ -110,18 +109,22 @@ export default function PlinCPage() {
     // Tri
     if (sortConfig.key) {
       result.sort((a, b) => {
-        let aValue: any = a[sortConfig.key as keyof Plinc];
-        let bValue: any = b[sortConfig.key as keyof Plinc];
+        type PersonInfo = { name: string; image: string };
+        
+        let aValue = a[sortConfig.key as keyof Plinc];
+        let bValue = b[sortConfig.key as keyof Plinc];
 
-        if (sortConfig.key === "provider") {
-          aValue = (aValue as any).name;
-          bValue = (bValue as any).name;
-        } else if (sortConfig.key === "client") {
-          aValue = (aValue as any).name;
-          bValue = (bValue as any).name;
-        } else if (sortConfig.key === "amount") {
-          aValue = parseFloat((aValue as string).replace("€", ""));
-          bValue = parseFloat((bValue as string).replace("€", ""));
+        // Comparaison pour les montants
+        if (sortConfig.key === "amount") {
+          const aAmount = parseFloat((aValue as string).replace("€", ""));
+          const bAmount = parseFloat((bValue as string).replace("€", ""));
+          return sortConfig.direction === "asc" ? aAmount - bAmount : bAmount - aAmount;
+        }
+
+        // Comparaison pour provider/client
+        if (sortConfig.key === "provider" || sortConfig.key === "client") {
+          aValue = (aValue as PersonInfo).name;
+          bValue = (bValue as PersonInfo).name;
         }
 
         if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
@@ -131,7 +134,7 @@ export default function PlinCPage() {
     }
 
     return result;
-  }, [mockData, activeFilter, searchQuery, sortConfig]);
+  }, [activeFilter, searchQuery, sortConfig]); 
 
   return (
     <div className="flex-1 space-y-4 p-8 pt-6">
@@ -149,8 +152,8 @@ export default function PlinCPage() {
                 className={cn(
                   "px-4 py-2 text-sm font-medium rounded-full border",
                   activeFilter === filter.value
-                    ? "text-blue border-neutral-lower bg-blue text-white"
-                    : "text-neutral-medium hover:text-neutral-high border-lower transition-colors"
+                    ? "text-blue border-neutral-lowest bg-white"
+                    : "text-neutral-medium hover:text-neutral-high border-transparent transition-colors"
                 )}
               >
                 {filter.label}
