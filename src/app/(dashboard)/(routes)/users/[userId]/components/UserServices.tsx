@@ -1,60 +1,63 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
+import { useParams } from "next/navigation";
 import { Switch } from "@/components/ui/Switch";
 import { ArrowUpRight } from "lucide-react";
-
-interface Service {
-  id: number;
-  title: string;
-  description: string;
-  enabled: boolean;
-}
+import { useQuery } from "@tanstack/react-query";
+import { fetchUserById } from "@/services/UserService";
 
 const UserServices: React.FC = () => {
+  const { userId } = useParams();
   const [mounted, setMounted] = React.useState(false);
-  const [services, setServices] = useState<Service[]>([
-    {
-      id: 1,
-      title: "Arrosage de Jardin",
-      description:
-        "Tonte de pelouse, arrosage, et fertilisation pour un jardin toujours vert et soigné.",
-      enabled: false,
-    },
-    {
-      id: 2,
-      title: "Aménagement paysager",
-      description:
-        "Conception de jardins, plantation d'arbres et de fleurs pour un espace extérieur harmonieux.",
-      enabled: false,
-    },
-    {
-      id: 3,
-      title: "Aménagement paysager",
-      description:
-        "Conception de jardins, plantation d'arbres et de fleurs pour un espace extérieur harmonieux.",
-      enabled: false,
-    },
-  ]);
+
+  const { data: user, isLoading } = useQuery({
+    queryKey: ["user", userId],
+    queryFn: () => fetchUserById(userId as string),
+    enabled: mounted && !!userId,
+  });
+
+  const services = user?.services || [];
 
   React.useEffect(() => {
     setMounted(true);
   }, []);
 
   const handleToggle = (id: number) => (enabled: boolean) => {
-    setServices((prevServices) =>
-      prevServices.map((service) =>
-        service.id === id ? { ...service, enabled } : service
-      )
-    );
+    // TODO: Implémenter la mise à jour du service via l'API
+    console.log(`Service ${id} toggled to ${enabled}`);
+    // Ici nous pourrons appeler l'API de manière asynchrone
+    // updateUserService(userId as string, id, enabled).catch(console.error);
   };
 
   if (!mounted) {
     return null;
   }
 
+  if (isLoading) {
+    return (
+      <div className="p-5 rounded-3xl border border-brand-lower animate-pulse">
+        <div className="flex items-center justify-between mb-6">
+          <div className="h-6 w-24 bg-neutral-200 rounded" />
+          <div className="h-5 w-5 bg-neutral-200 rounded" />
+        </div>
+        <div className="space-y-6">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="h-5 w-48 bg-neutral-200 rounded" />
+                <div className="h-6 w-10 bg-neutral-200 rounded" />
+              </div>
+              <div className="h-4 w-full bg-neutral-200 rounded" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="p-5">
+    <div className="p-5 rounded-3xl border border-brand-lower">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-lg text-neutral-high font-semibold">Services</h2>
         <button className="text-neutral-high hover:text-blue transition-colors">
@@ -62,20 +65,26 @@ const UserServices: React.FC = () => {
         </button>
       </div>
       <div className="space-y-6">
-        {services.map((service) => (
-          <div key={service.id} className="space-y-2">
-            <div className="flex items-center justify-between">
-              <h3 className="text-blue text-base font-medium">
-                {service.title}
-              </h3>
-              <Switch
-                checked={service.enabled}
-                onCheckedChange={handleToggle(service.id)}
-              />
-            </div>
-            <p className="text-neutral-high text-xs">{service.description}</p>
+        {services.length === 0 ? (
+          <div className="text-center py-8">
+            <p className="text-neutral-high text-sm">Aucun service pour cet utilisateur</p>
           </div>
-        ))}
+        ) : (
+          services.map((service) => (
+            <div key={service.id} className="space-y-2">
+              <div className="flex items-center justify-between">
+                <h3 className="text-blue text-base font-medium">
+                  {service.title}
+                </h3>
+                <Switch
+                  checked={service.enabled}
+                  onCheckedChange={handleToggle(service.id)}
+                />
+              </div>
+              <p className="text-neutral-high text-xs">{service.description}</p>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

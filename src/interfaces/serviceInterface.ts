@@ -12,4 +12,6 @@ export interface Service {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  title: string;
+  enabled: boolean;
 }

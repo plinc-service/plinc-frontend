@@ -20,10 +20,7 @@ import {
 } from "@/components/ui/Table";
 
 import { Button } from "@/components/ui/Button";
-import {
-  ChevronRight,
-  ChevronLeft,
-} from "lucide-react";
+import { ChevronRight, ChevronLeft } from "lucide-react";
 
 interface DataTableProps<TData extends object, TValue> {
   columns: ColumnDef<TData, TValue>[];
