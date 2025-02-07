@@ -1,4 +1,4 @@
-import { Service } from "./serviceInterface";
+import { Service } from "@/types/services";
 
 export interface User {
   id: string;
