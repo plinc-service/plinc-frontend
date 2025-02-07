@@ -1,6 +1,7 @@
-import { User, UserResponse, Service } from "@/interfaces/userInterface";
-import { Transaction } from "@/interfaces/transactionInterface";
 import { SortField, SortOrder } from "@/app/(dashboard)/(routes)/users/page";
+import { Transaction } from "@/interfaces/transactionInterface";
+import { User, UserResponse } from "@/interfaces/userInterface";
+import { Service } from "@/types/services";
 import Axios from "@/utils/config-axios";
 
 interface FetchUsersParams {
@@ -41,7 +42,9 @@ export const fetchUserById = async (id: string): Promise<User> => {
   }
 };
 
-export const fetchUserTransactions = async (id: string): Promise<Transaction[]> => {
+export const fetchUserTransactions = async (
+  id: string
+): Promise<Transaction[]> => {
   try {
     const response = await Axios.get(`/administrator/transactions`, {
       params: {
@@ -49,8 +52,8 @@ export const fetchUserTransactions = async (id: string): Promise<Transaction[]> 
         page: 1,
         page_size: 10,
         sort_field: "created_at",
-        sort_order: "desc"
-      }
+        sort_order: "desc",
+      },
     });
     return response.data.data as Transaction[];
   } catch (error) {
@@ -64,7 +67,10 @@ export const fetchUserServices = async (id: string): Promise<Service[]> => {
     const response = await Axios.get(`/user/${id}/services`);
     return response.data.data as Service[];
   } catch (error) {
-    console.error("Erreur lors de la récupération des services de l'utilisateur :", error);
+    console.error(
+      "Erreur lors de la récupération des services de l'utilisateur :",
+      error
+    );
     throw error;
   }
 };
