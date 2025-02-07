@@ -1,3 +1,5 @@
+import { Service } from "./serviceInterface";
+
 export interface User {
   id: string;
   username: string;
@@ -11,6 +13,7 @@ export interface User {
   address_prestataire?: string;
   date_joined: string;
   is_active: boolean;
+  services: Service[];
 }
 
 export interface UserResponse {
