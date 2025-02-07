@@ -1,15 +1,28 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchUsers } from "@/services/UserService";
+import { SortField, SortOrder } from "@/app/(dashboard)/(routes)/users/page";
 
-export const useUsers = (page = 1) => {
+interface UseUsersProps {
+  page?: number;
+  searchQuery?: string;
+  sortField?: SortField;
+  sortOrder?: SortOrder;
+}
+
+export const useUsers = ({ 
+  page = 1, 
+  searchQuery = "", 
+  sortField = "date_joined", 
+  sortOrder = "desc" 
+}: UseUsersProps = {}) => {
   const {
     data,
     isLoading,
     error,
     refetch
   } = useQuery({
-    queryKey: ["users", page],
-    queryFn: () => fetchUsers(page)
+    queryKey: ["users", page, searchQuery, sortField, sortOrder],
+    queryFn: () => fetchUsers({ page, searchQuery, sortField, sortOrder })
   });
 
   return {
@@ -19,7 +32,7 @@ export const useUsers = (page = 1) => {
       next: data?.next
     },
     loading: isLoading,
-    error: error ? "Une erreur est survenue lors du chargement des utilisateurs." : null,
-    refetch
+    error: error?.message,
+    refetch,
   };
 };

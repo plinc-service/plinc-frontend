@@ -9,7 +9,7 @@ export const columns: ColumnDef<User>[] = [
     accessorKey: "id",
     header: "ID",
     cell: ({ row }) => (
-      <div className="min-w-[100px]">
+      <div className="w-32 min-w-[100px] truncate">
         <span className="text-muted-foreground">{row.getValue("id")}</span>
       </div>
     ),
@@ -31,10 +31,9 @@ export const columns: ColumnDef<User>[] = [
             />
           </div>
           <div className="flex flex-col">
-            <span className="font-medium text-sm text-neutral-high">{user.username}</span>
-            {user.profession && (
-              <span className="text-xs text-neutral-medium">{user.profession}</span>
-            )}
+            <span className="text-sm text-neutral-high">
+              {user.username}
+            </span>
           </div>
         </div>
       );
