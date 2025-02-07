@@ -1,14 +1,42 @@
-import { WalletResponse } from "@/interfaces/walletInterface";
+import {
+  WalletDetails,
+  WalletDetailsResponse,
+  WalletResponse,
+} from "@/interfaces/walletInterface";
 import Axios from "@/utils/config-axios";
 
-export const fetchWallets = async (page = 1): Promise<WalletResponse> => {
-  try {
-    const response = await Axios.get("/wallet", {
-      params: { page },
-    });
-    return response.data as WalletResponse;
-  } catch (error) {
-    console.error("Erreur lors de la récupération des portefeuilles :", error);
-    throw error;
-  }
+export const WalletService = {
+  fetchWallets: async (page = 1): Promise<WalletResponse> => {
+    try {
+      const response = await Axios.get("/wallet", {
+        params: { page },
+      });
+      return response.data as WalletResponse;
+    } catch (error) {
+      console.error(
+        "Erreur lors de la récupération des portefeuilles :",
+        error
+      );
+      throw error;
+    }
+  },
+  fetchWalletDetails: async (id: string): Promise<WalletDetails> => {
+    try {
+      const response = await Axios.get(`/wallet/${id}`);
+      const data = response.data as WalletDetailsResponse;
+
+      return {
+        id: String(data.data.id),
+        user: data.data.user,
+        amount: data.data.amount,
+        transactions: data.data.transactions,
+      };
+    } catch (error) {
+      console.error(
+        "Erreur lors de la récupération des détails du portefeuille :",
+        error
+      );
+      throw error;
+    }
+  },
 };

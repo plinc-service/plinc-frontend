@@ -32,6 +32,14 @@
   --color-brand-lower: #dbeafe;
   --color-brand-medium: #3b82f6;
 
+  /* Icon Color */
+  --color-success-background: #ecfdf5;
+  --color-success-border: #6ee7b7;
+  --color-danger-background: #fef2f2;
+  --color-danger-border: #fca5a5;
+  --color-danger: #b91c1c;
+  --color-success: #047857;
+
   /* Autres couleurs */
   --color-card: hsl(var(--card, 0, 0%, 100%));
   --color-card-foreground: hsl(var(--card-foreground, 0, 0%, 10%));

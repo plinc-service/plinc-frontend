@@ -1,9 +1,4 @@
-export interface Service {
-  id: number;
-  title: string;
-  description: string;
-  enabled: boolean;
-}
+import { Service } from "@/types/services";
 
 export interface User {
   id: string;

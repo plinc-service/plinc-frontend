@@ -1,4 +1,4 @@
-import { AccordionItemProps } from "@/interfaces/interface";
+import { AccordionItemProps } from "@/interfaces/accordionItemInterface";
 import { ChevronDown } from "lucide-react";
 import { useRef, useState } from "react";
 
