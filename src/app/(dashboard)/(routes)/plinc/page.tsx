@@ -5,150 +5,115 @@ import { PlincTable } from "./components/plinc-table";
 import { Search, AlignCenter, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { columns, type Plinc, enhanceColumnsWithRowClick } from "./columns";
+import { columns, enhanceColumnsWithRowClick, getStatusLabel } from "./columns";
 import { PlincDetailsModal } from "./components/PlincDetailsModal";
+import TopBar from "@/components/layout/TopBar";
 import { cn } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
+import { plincService } from "@/services/plincService";
 
-const mockData: Plinc[] = [
-  {
-    id: "00001",
-    provider: {
-      name: "John DOE",
-      image: "/avatar.svg",
-    },
-    client: {
-      name: "John DOE",
-      image: "/avatar.svg",
-    },
-    category: "Ménage",
-    date: "12-09-2024",
-    status: "En attente",
-    amount: "100€",
-  },
-  {
-    id: "00002",
-    provider: {
-      name: "Jane SMITH",
-      image: "/avatar.svg",
-    },
-    client: {
-      name: "Jane SMITH",
-      image: "/avatar.svg",
-    },
-    category: "Babysitting",
-    date: "12-09-2024",
-    status: "Accepter",
-    amount: "150€",
-  },
-  {
-    id: "00003",
-    provider: {
-      name: "Alice JOHNSON",
-      image: "/avatar.svg",
-    },
-    client: {
-      name: "Alice JOHNSON",
-      image: "/avatar.svg",
-    },
-    category: "Electricité",
-    date: "12-09-2024",
-    status: "Annuler",
-    amount: "80€",
-  },
-];
+
 
 const filters = [
   { label: "Tout", value: "all" },
   { label: "En attente", value: "en-attente" },
-  { label: "Accepter", value: "accepter" },
-  { label: "Confirmer", value: "confirmer" },
+  { label: "Accepté", value: "accepte" },
+  { label: "Confirmé", value: "confirme" },
   { label: "En cours", value: "en-cours" },
-  { label: "Terminer", value: "terminer" },
+  { label: "Terminé", value: "termine" },
+  { label: "Annulé", value: "annule" },
+  { label: "Rejeté", value: "rejete" },
 ];
 
 type SortConfig = {
-  key: keyof Plinc | "";
+  key: "date" | "status" | "serviceName" | "";
   direction: "asc" | "desc";
 };
 
 export default function PlinCPage() {
+  const [mounted, setMounted] = React.useState(false);
   const [activeFilter, setActiveFilter] = React.useState("all");
   const [searchQuery, setSearchQuery] = React.useState("");
-  const [sortConfig, setSortConfig] = React.useState<SortConfig>({ key: "", direction: "asc" });
+  const [sortConfig, setSortConfig] = React.useState<SortConfig>({
+    key: "",
+    direction: "asc",
+  });
   const [showSortMenu, setShowSortMenu] = React.useState(false);
   const [selectedPlincId, setSelectedPlincId] = React.useState<string>();
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [currentPage, setCurrentPage] = React.useState(1);
 
-  const handleRowClick = (id: string) => {
-    setSelectedPlincId(id);
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const { data: plincsData, isLoading } = useQuery({
+    queryKey: ["plincs", activeFilter, currentPage],
+    queryFn: () => plincService.getAllPlincs(currentPage, activeFilter),
+    enabled: mounted,
+  });
+
+  const handleRowClick = (id: number) => {
+    setSelectedPlincId(String(id));
     setIsModalOpen(true);
   };
 
   const sortOptions = [
     { label: "Date", value: "date" },
-    { label: "Montant", value: "amount" },
+    { label: "Service", value: "serviceName" },
     { label: "Statut", value: "status" },
   ];
 
   const filteredData = React.useMemo(() => {
-    let result = [...mockData];
-
-    if (activeFilter !== "all") {
-      const statusMap: Record<string, string> = {
-        "en-attente": "En attente",
-        "accepter": "Accepter",
-        "confirmer": "Confirmé",
-        "en-cours": "En cours",
-        "terminer": "Terminer"
-      };
-      result = result.filter(item => item.status === statusMap[activeFilter]);
-    }
+    if (!plincsData?.data) return [];
+    
+    let result = [...plincsData.data];
 
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      result = result.filter(item =>
-        item.id.toLowerCase().includes(query) ||
-        item.provider.name.toLowerCase().includes(query) ||
-        item.client.name.toLowerCase().includes(query) ||
-        item.category.toLowerCase().includes(query)
+      result = result.filter(
+        (item) =>
+          String(item.id).toLowerCase().includes(query) ||
+          item.service.owner.username.toLowerCase().includes(query) ||
+          item.service.name.toLowerCase().includes(query)
       );
     }
 
     // Tri
     if (sortConfig.key) {
       result.sort((a, b) => {
-        type PersonInfo = { name: string; image: string };
-        
-        let aValue = a[sortConfig.key as keyof Plinc];
-        let bValue = b[sortConfig.key as keyof Plinc];
-
-        // Comparaison pour les montants
-        if (sortConfig.key === "amount") {
-          const aAmount = parseFloat((aValue as string).replace("€", ""));
-          const bAmount = parseFloat((bValue as string).replace("€", ""));
-          return sortConfig.direction === "asc" ? aAmount - bAmount : bAmount - aAmount;
+        if (sortConfig.key === "date") {
+          const aDate = new Date(a.date).getTime();
+          const bDate = new Date(b.date).getTime();
+          return sortConfig.direction === "asc" ? aDate - bDate : bDate - aDate;
         }
 
-        // Comparaison pour provider/client
-        if (sortConfig.key === "provider" || sortConfig.key === "client") {
-          aValue = (aValue as PersonInfo).name;
-          bValue = (bValue as PersonInfo).name;
+        if (sortConfig.key === "serviceName") {
+          const aName = a.service.name.toLowerCase();
+          const bName = b.service.name.toLowerCase();
+          return sortConfig.direction === "asc"
+            ? aName.localeCompare(bName)
+            : bName.localeCompare(aName);
         }
 
-        if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
-        if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
+        if (sortConfig.key === "status") {
+          const aStatus = getStatusLabel(a);
+          const bStatus = getStatusLabel(b);
+          return sortConfig.direction === "asc"
+            ? aStatus.localeCompare(bStatus)
+            : bStatus.localeCompare(aStatus);
+        }
+
         return 0;
       });
     }
 
     return result;
-  }, [activeFilter, searchQuery, sortConfig]); 
+  }, [plincsData, searchQuery, sortConfig]);
 
   return (
     <div className="flex-1 space-y-4 p-8 pt-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold tracking-tight">PlinC</h2>
-      </div>
+      <TopBar pageName="Plinc" />
 
       <div className="space-y-4">
         <div className="flex flex-col gap-4">
@@ -186,7 +151,12 @@ export default function PlinCPage() {
                 onClick={() => setShowSortMenu(!showSortMenu)}
               >
                 <AlignCenter className="h-4 w-4" />
-                <span>Trier par {sortConfig.key && sortOptions.find(opt => opt.value === sortConfig.key)?.label}</span>
+                <span>
+                  Trier par{" "}
+                  {sortConfig.key &&
+                    sortOptions.find((opt) => opt.value === sortConfig.key)
+                      ?.label}
+                </span>
                 <ChevronDown className="h-4 w-4 text-neutral-high" />
               </Button>
 
@@ -197,9 +167,14 @@ export default function PlinCPage() {
                       key={option.value}
                       className="w-full px-4 py-2 text-left text-sm hover:bg-neutral-50 flex items-center justify-between"
                       onClick={() => {
-                        setSortConfig(prev => ({
-                          key: option.value as keyof Plinc,
-                          direction: prev.key === option.value ? (prev.direction === "asc" ? "desc" : "asc") : "asc"
+                        setSortConfig((prev) => ({
+                          key: option.value as SortConfig["key"],
+                          direction:
+                            prev.key === option.value
+                              ? prev.direction === "asc"
+                                ? "desc"
+                                : "asc"
+                              : "asc",
                         }));
                         setShowSortMenu(false);
                       }}
@@ -218,10 +193,19 @@ export default function PlinCPage() {
           </div>
         </div>
 
-        <PlincTable 
-          columns={enhanceColumnsWithRowClick(columns({ onRowClick: handleRowClick }), handleRowClick)}
-          data={filteredData}
-        />
+        {isLoading ? (
+          <div className="w-full h-48 flex items-center justify-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue" />
+          </div>
+        ) : (
+          <PlincTable
+            columns={enhanceColumnsWithRowClick(
+              columns({ onRowClick: handleRowClick }),
+              handleRowClick
+            )}
+            data={filteredData}
+          />
+        )}
 
         <PlincDetailsModal
           isOpen={isModalOpen}

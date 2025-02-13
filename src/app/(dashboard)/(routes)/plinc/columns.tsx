@@ -4,24 +4,20 @@ import Image from "next/image";
 import { ColumnDef } from "@tanstack/react-table";
 import { ChevronRight } from "lucide-react";
 
-export type Plinc = {
-  id: string;
-  provider: {
-    name: string;
-    image: string;
-  };
-  client: {
-    name: string;
-    image: string;
-  };
-  category: string;
-  date: string;
-  status: "En attente" | "Accepter" | "Annuler" | "Confirmé" | "Terminer";
-  amount: string;
+import type { Plinc } from '@/interfaces/plincInterface';
+
+export const getStatusLabel = (plinc: Plinc): string => {
+  if (plinc.rejected) return "Rejeté";
+  if (plinc.cancelled || plinc.user_cancelled || plinc.pro_cancelled) return "Annulé";
+  if (plinc.terminated_at) return "Terminé";
+  if (plinc.started_at) return "En cours";
+  if (plinc.confirmed) return "Confirmé";
+  if (plinc.accepted) return "Accepté";
+  return "En attente";
 };
 
 interface ColumnProps {
-  onRowClick: (id: string) => void;
+  onRowClick: (id: number) => void;
 }
 
 export const columns = ({ onRowClick }: ColumnProps): ColumnDef<Plinc>[] => [
@@ -35,101 +31,105 @@ export const columns = ({ onRowClick }: ColumnProps): ColumnDef<Plinc>[] => [
     ),
   },
   {
-    accessorKey: "provider",
+    id: "provider",
     header: "Prestataire",
     cell: ({ row }) => {
-      const provider = row.getValue("provider") as { name: string; image: string };
+      const service = row.original.service;
       return (
         <div className="flex items-center gap-3 min-w-[150px]">
           <div className="h-8 w-8 rounded-full bg-neutral-100 flex items-center justify-center overflow-hidden">
             <Image
               width={32}
               height={32}
-              src={provider.image}
-              alt={provider.name}
+              src={service.owner.image_url || "/avatar.svg"}
+              alt={service.owner.username}
               className="rounded-full"
             />
           </div>
-          <span className="font-medium text-sm text-neutral-high">{provider.name}</span>
+          <span className="font-medium text-sm text-neutral-high">{service.owner.username}</span>
         </div>
       );
     },
   },
   {
-    accessorKey: "client",
-    header: "Client",
+    id: "serviceName",
+    header: "Service",
     cell: ({ row }) => {
-      const client = row.getValue("client") as { name: string; image: string };
+      const service = row.original.service;
       return (
-        <div className="flex items-center gap-3 min-w-[150px]">
-          <div className="h-8 w-8 rounded-full bg-neutral-100 flex items-center justify-center overflow-hidden">
-            <Image
-              width={32}
-              height={32}
-              src={client.image}
-              alt={client.name}
-              className="rounded-full"
-            />
-          </div>
-          <span className="font-medium text-sm text-neutral-high">{client.name}</span>
+        <div className="min-w-[150px]">
+          <span className="text-neutral-high">{service.name}</span>
         </div>
       );
     },
-  },
-  {
-    accessorKey: "category",
-    header: "Catégorie",
-    cell: ({ row }) => (
-      <div className="min-w-[100px]">
-        <span className="text-neutral-high">{row.getValue("category")}</span>
-      </div>
-    ),
   },
   {
     accessorKey: "date",
     header: "Date",
-    cell: ({ row }) => (
-      <div className="min-w-[100px]">
-        <span className="text-neutral-high">{row.getValue("date")}</span>
-      </div>
-    ),
+    cell: ({ row }) => {
+      const date = new Date(row.getValue("date"));
+      return (
+        <div className="min-w-[100px]">
+          <span className="text-neutral-high">
+            {date.toLocaleDateString("fr-FR", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+            })}
+          </span>
+        </div>
+      );
+    },
   },
   {
-    accessorKey: "status",
+    id: "status",
     header: "Statut",
     cell: ({ row }) => {
-      const status = row.getValue("status") as string;
+      const plinc = row.original;
+      const status = getStatusLabel(plinc);
       const getStatusStyle = (status: string): { bg: string; dot: string; text: string } => {
         switch (status) {
           case "En attente":
             return {
               bg: "bg-badge-warning-bg",
-              dot: "bg-orange-300",
-              text: "text-white"
+              dot: "bg-badge-warning",
+              text: "text-badge-warning"
             };
-          case "Accepter":
+          case "Accepté":
             return {
-              bg: "bg-badge-secondary-bg",
-              dot: "bg-blue-300",
-              text: "text-blue"
+              bg: "bg-badge-success-bg",
+              dot: "bg-badge-success",
+              text: "text-badge-success"
             };
-          case "Annuler":
+          case "Annulé":
             return {
-              bg: "bg-badge-danger-bg",
-              dot: "bg-red-300",
-              text: "text-white"
+              bg: "bg-badge-error-bg",
+              dot: "bg-badge-error",
+              text: "text-badge-error"
             };
           case "Confirmé":
             return {
-              bg: "bg-badge-success-bg",
-              dot: "bg-green-300",
-              text: "text-white"
+              bg: "bg-badge-primary-bg",
+              dot: "bg-badge-primary",
+              text: "text-badge-primary"
             };
-          case "Terminer":
+          case "Terminé":
             return {
               bg: "bg-badge-tertiary-bg",
               dot: "bg-slate-400",
               text: "text-[#475569]"
+            };
+          case "Rejeté":
+            return {
+              bg: "bg-badge-error-bg",
+              dot: "bg-badge-error",
+              text: "text-badge-error"
+            };
+          case "En cours":
+            return {
+              bg: "bg-badge-primary-bg",
+              dot: "bg-badge-primary",
+              text: "text-badge-primary"
             };
           default:
             return {
@@ -153,13 +153,16 @@ export const columns = ({ onRowClick }: ColumnProps): ColumnDef<Plinc>[] => [
     },
   },
   {
-    accessorKey: "amount",
+    id: "price",
     header: "Montant",
-    cell: ({ row }) => (
-      <div className="min-w-[80px]">
-        <span className="text-neutral-high">{row.getValue("amount")}</span>
-      </div>
-    ),
+    cell: ({ row }) => {
+      const service = row.original.service;
+      return (
+        <div className="min-w-[80px]">
+          <span className="text-neutral-high">{service.hour_price}€</span>
+        </div>
+      );
+    },
   },
   {
     id: "actions",
@@ -173,7 +176,7 @@ export const columns = ({ onRowClick }: ColumnProps): ColumnDef<Plinc>[] => [
 
 export const enhanceColumnsWithRowClick = (
   columns: ColumnDef<Plinc>[],
-  onRowClick: (id: string) => void
+  onRowClick: (id: number) => void
 ): ColumnDef<Plinc>[] => {
   return columns.map(column => ({
     ...column,
@@ -188,7 +191,7 @@ export const enhanceColumnsWithRowClick = (
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            onRowClick(props.row.getValue("id") as string);
+            onRowClick(props.row.getValue("id") as number);
           }}
         >
           {cellContent}
