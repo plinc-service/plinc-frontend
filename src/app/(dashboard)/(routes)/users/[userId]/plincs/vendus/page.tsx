@@ -1,30 +1,57 @@
-import { use } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import UserHeader from "../../components/UserHeader";
-import UserPlincsVendus from "../../components/UserPlincsVendus";
+import UserPlincs from "../../components/UserPlincs";
+import { fetchUserById } from "@/services/UserService";
+import type { User } from "@/interfaces/userInterface";
 
-interface PageProps {
-  params: Promise<{
-    userId: string;
-  }>;
-}
+export default function Page() {
+  const params = useParams();
+  const userId = params.userId as string;
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-export default function Page({ params }: PageProps) {
-  const { userId } = use(params);
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        setLoading(true);
+        const userData = await fetchUserById(userId);
+        setUser(userData);
+      } catch (err) {
+        console.error('Error fetching user:', err);
+        setError('Failed to load user data');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // Dans une vraie application, ces données viendraient d'une API
-  const user = {
-    username: "John DOE",
-    email: "johndoe@gmail.com",
+    fetchUser();
+  }, [userId]);
+
+  if (loading) {
+    return <div className="p-5">Loading...</div>;
+  }
+
+  if (error || !user) {
+    return <div className="p-5 text-red-500">{error || 'User not found'}</div>;
+  }
+
+  const headerData = {
+    username: user.username,
+    email: user.email,
     stats: {
-      acheter: 5,
-      vendeurs: 2,
+      acheter: user.number_plinc_buyer,
+      vendeurs: user.number_plinc_seller,
     },
   };
 
   return (
-    <div className="space-y-6 p-5">
+    <div className="space-y-2 px-2 mx-3 mt-4">
       <div className="flex items-center gap-2 text-sm">
         <Link href="/users" className="text-neutral-high text-base">
           Utilisateurs
@@ -38,8 +65,8 @@ export default function Page({ params }: PageProps) {
       </div>
 
       <div className="bg-white rounded-2xl p-5">
-        <UserHeader user={user} />
-        <UserPlincsVendus />
+        <UserHeader user={headerData} />
+        <UserPlincs type="sold" />
       </div>
     </div>
   );

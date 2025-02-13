@@ -20,7 +20,11 @@ export type Plinc = {
   amount: string;
 };
 
-export const columns: ColumnDef<Plinc>[] = [
+interface ColumnProps {
+  onRowClick: (id: string) => void;
+}
+
+export const columns = ({ onRowClick }: ColumnProps): ColumnDef<Plinc>[] => [
   {
     accessorKey: "id",
     header: "ID",
@@ -159,10 +163,37 @@ export const columns: ColumnDef<Plinc>[] = [
   },
   {
     id: "actions",
-    cell: () => (
+    cell: ({ row }) => (
       <div className="flex justify-end">
         <ChevronRight className="h-4 w-4 text-neutral-high" />
       </div>
     ),
   },
 ];
+
+export const enhanceColumnsWithRowClick = (
+  columns: ColumnDef<Plinc>[],
+  onRowClick: (id: string) => void
+): ColumnDef<Plinc>[] => {
+  return columns.map(column => ({
+    ...column,
+    cell: (props) => {
+      const cellContent = typeof column.cell === 'function' 
+        ? column.cell(props)
+        : props.getValue();
+
+      return (
+        <div
+          className="cursor-pointer"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onRowClick(props.row.getValue("id") as string);
+          }}
+        >
+          {cellContent}
+        </div>
+      );
+    },
+  }));
+};

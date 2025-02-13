@@ -47,7 +47,7 @@ const UsersPage: React.FC = () => {
   };
 
   return (
-    <div className="relative w-full h-full p-5">
+    <div className="relative w-full h-full p-3">
       <TopBar pageName="Utilisateurs" />
 
       <div className="flex items-center justify-between my-5">

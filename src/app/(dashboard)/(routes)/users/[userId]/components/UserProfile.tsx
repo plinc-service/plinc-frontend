@@ -51,7 +51,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
           <div className="mt-4 w-full flex justify-around text-neutral-high">
             <div className="flex flex-col items-center relative px-6">
               <span className="text-2xl font-bold">{user.number_plinc_buyer}</span>
-              <span className="text-xs">Acheter</span>
+              <span className="text-xs">Achetés</span>
               <Separator
                 orientation="vertical"
                 className="absolute right-0 h-12"
@@ -59,7 +59,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
             </div>
             <div className="flex flex-col items-center">
               <span className="text-2xl font-bold">{user.number_plinc_seller}</span>
-              <span className="text-xs">Vendeurs</span>
+              <span className="text-xs">Vendus</span>
             </div>
           </div>
           <Separator

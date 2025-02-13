@@ -1,11 +1,12 @@
 "use client";
 
 import React from "react";
-import { DataTable } from "@/components/users/data-table";
+import { PlincTable } from "./components/plinc-table";
 import { Search, AlignCenter, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { columns, type Plinc } from "./columns";
+import { columns, type Plinc, enhanceColumnsWithRowClick } from "./columns";
+import { PlincDetailsModal } from "./components/PlincDetailsModal";
 import { cn } from "@/lib/utils";
 
 const mockData: Plinc[] = [
@@ -75,6 +76,13 @@ export default function PlinCPage() {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [sortConfig, setSortConfig] = React.useState<SortConfig>({ key: "", direction: "asc" });
   const [showSortMenu, setShowSortMenu] = React.useState(false);
+  const [selectedPlincId, setSelectedPlincId] = React.useState<string>();
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+  const handleRowClick = (id: string) => {
+    setSelectedPlincId(id);
+    setIsModalOpen(true);
+  };
 
   const sortOptions = [
     { label: "Date", value: "date" },
@@ -210,7 +218,16 @@ export default function PlinCPage() {
           </div>
         </div>
 
-        <DataTable columns={columns} data={filteredData} />
+        <PlincTable 
+          columns={enhanceColumnsWithRowClick(columns({ onRowClick: handleRowClick }), handleRowClick)}
+          data={filteredData}
+        />
+
+        <PlincDetailsModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          plincId={selectedPlincId}
+        />
       </div>
     </div>
   );

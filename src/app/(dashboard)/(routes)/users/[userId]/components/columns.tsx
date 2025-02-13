@@ -4,16 +4,14 @@ import Image from "next/image";
 import { ColumnDef } from "@tanstack/react-table";
 import { ChevronRight } from "lucide-react";
 
-export type Plinc = {
-  id: string;
-  provider: {
-    name: string;
-    image: string;
-  };
-  serviceTitle: string;
-  date: string;
-  status: "En attente" | "Accepter" | "Annuler" | "Confirmé" | "Terminer";
-  amount: string;
+import type { Plinc } from '@/interfaces/plincInterface';
+
+const getStatusLabel = (plinc: Plinc): string => {
+  if (plinc.cancelled || plinc.user_cancelled || plinc.pro_cancelled) return 'Annuler';
+  if (plinc.terminated_at) return 'Terminer';
+  if (plinc.confirmed) return 'Confirmé';
+  if (plinc.accepted) return 'Accepter';
+  return 'En attente';
 };
 
 export const columns: ColumnDef<Plinc>[] = [
@@ -22,39 +20,42 @@ export const columns: ColumnDef<Plinc>[] = [
     header: "ID",
     cell: ({ row }) => (
       <div className="min-w-[80px]">
-        <span className="text-neutral-high">#{row.getValue("id")}</span>
+        <span className="text-neutral-high">#{String(row.getValue("id")).padStart(5, '0')}</span>
       </div>
     ),
   },
   {
-    accessorKey: "provider",
+    id: "provider",
     header: "Prestataire",
     cell: ({ row }) => {
-      const provider = row.getValue("provider") as { name: string; image: string };
+      const service = row.original.service;
       return (
         <div className="flex items-center gap-3 min-w-[150px]">
           <div className="h-8 w-8 rounded-full bg-neutral-100 flex items-center justify-center overflow-hidden">
             <Image
               width={32}
               height={32}
-              src={provider.image}
-              alt={provider.name}
+              src={service.owner.image_url || "/avatar.svg"}
+              alt={service.owner.username}
               className="rounded-full"
             />
           </div>
-          <span className="font-medium text-sm text-neutral-high">{provider.name}</span>
+          <span className="font-medium text-sm text-neutral-high">{service.owner.username}</span>
         </div>
       );
     },
   },
   {
-    accessorKey: "serviceTitle",
+    id: "serviceName",
     header: "Titre du service",
-    cell: ({ row }) => (
-      <div className="min-w-[200px]">
-        <span className="text-neutral-high">{row.getValue("serviceTitle")}</span>
-      </div>
-    ),
+    cell: ({ row }) => {
+      const service = row.original.service;
+      return (
+        <div className="min-w-[200px]">
+          <span className="text-neutral-high">{service.name}</span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "date",
@@ -69,7 +70,8 @@ export const columns: ColumnDef<Plinc>[] = [
     accessorKey: "status",
     header: "Statut",
     cell: ({ row }) => {
-      const status = row.getValue("status") as string;
+      const plinc = row.original;
+      const status = getStatusLabel(plinc);
       const getStatusStyle = (status: string): { bg: string; dot: string; text: string } => {
         switch (status) {
           case "En attente":
@@ -124,13 +126,16 @@ export const columns: ColumnDef<Plinc>[] = [
     },
   },
   {
-    accessorKey: "amount",
+    id: "price",
     header: "Montant",
-    cell: ({ row }) => (
-      <div className="min-w-[80px]">
-        <span className="text-neutral-high">{row.getValue("amount")}</span>
-      </div>
-    ),
+    cell: ({ row }) => {
+      const service = row.original.service;
+      return (
+        <div className="min-w-[80px]">
+          <span className="text-neutral-high">{service.hour_price}€</span>
+        </div>
+      );
+    },
   },
   {
     id: "actions",
