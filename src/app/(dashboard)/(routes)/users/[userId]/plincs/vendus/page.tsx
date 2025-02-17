@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import UserSkeleton from "../../components/UserSkeleton";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ChevronRight } from "lucide-react";

@@ -49,6 +49,15 @@ export function DataTable<TData extends object, TValue>({
   }, []);
 
   const [pageIndex, setPageIndex] = React.useState((pagination?.currentPage ?? 1) - 1);
+  const [pageSize] = React.useState(10);
+
+  const paginationState = React.useMemo(
+    () => ({
+      pageSize,
+      pageIndex,
+    }),
+    [pageSize, pageIndex]
+  );
 
   const table = useReactTable({
     data,
@@ -58,30 +67,24 @@ export function DataTable<TData extends object, TValue>({
     manualPagination: !!pagination,
     pageCount: pagination?.totalPages ?? -1,
     state: {
-      pagination: {
-        pageSize: 10,
-        pageIndex,
-      },
+      pagination: paginationState,
     },
     onPaginationChange: (updater) => {
       if (typeof updater === 'function') {
-        const newState = updater({
-          pageSize: 10,
-          pageIndex,
-        });
+        const newState = updater(paginationState);
         setPageIndex(newState.pageIndex);
       }
     },
   });
 
   React.useEffect(() => {
-    if (pagination && mounted) {
-      const newPage = pageIndex + 1;
-      if (newPage !== pagination.currentPage) {
-        pagination.onPageChange(newPage);
-      }
+    if (!mounted || !pagination) return;
+
+    const newPage = pageIndex + 1;
+    if (newPage !== pagination.currentPage) {
+      pagination.onPageChange(newPage);
     }
-  }, [pageIndex, pagination, mounted]);
+  }, [mounted, pagination, pageIndex, pagination?.currentPage]);
 
   if (!mounted) {
     return null;

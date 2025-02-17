@@ -23,10 +23,6 @@ const UserServices: React.FC = () => {
     setMounted(true);
   }, []);
 
-  // const handleToggle = (id: number) => (enabled: boolean) => {
-  //   // console.log(`Service ${id} toggled to ${enabled}`);
-  // };
-
   if (!mounted) {
     return null;
   }
@@ -77,7 +73,7 @@ const UserServices: React.FC = () => {
                 </h3>
                 <Switch
                   checked={service.enabled}
-                  // onCheckedChange={handleToggle(service.id)}
+                  disabled
                 />
               </div>
             </div>

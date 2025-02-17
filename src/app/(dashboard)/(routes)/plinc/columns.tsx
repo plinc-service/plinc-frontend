@@ -162,11 +162,14 @@ export const columns = (): ColumnDef<Plinc>[] => [
   },
   {
     id: "actions",
-    cell: () => (
-      <div className="flex justify-end">
-        <ChevronRight className="h-4 w-4 text-neutral-high" />
-      </div>
-    ),
+    cell: ({ row }) => {
+      void row; // Keep the row parameter for potential future use
+      return (
+        <div className="flex justify-end">
+          <ChevronRight className="h-4 w-4 text-neutral-high" />
+        </div>
+      );
+    },
   },
 ];
 
