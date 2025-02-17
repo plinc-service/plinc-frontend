@@ -42,7 +42,7 @@ class PlincService {
 
   async getAllPlincs(page: number = 1, filterStatus: string = 'all'): Promise<PlincResponse> {
     try {
-      const params: Record<string, any> = { page };
+      const params: Record<string, string | number> = { page };
       const status = this.getStatusQueryParam(filterStatus);
       if (status) {
         params.status = status;

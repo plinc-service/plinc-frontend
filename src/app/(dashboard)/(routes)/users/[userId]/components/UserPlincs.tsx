@@ -60,6 +60,7 @@ const UserPlincs = ({ type = "bought" }: PlincsTableProps) => {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-8">
           <button
+          onClick={() => router.push(`/users/${userId}/plincs`)}
             className={`px-4 py-2 text-base font-medium cursor-pointer ${
               type === "bought"
                 ? "text-blue border-b-2 border-blue after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue"

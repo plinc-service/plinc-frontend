@@ -48,6 +48,8 @@ export function DataTable<TData extends object, TValue>({
     setMounted(true);
   }, []);
 
+  const [pageIndex, setPageIndex] = React.useState((pagination?.currentPage ?? 1) - 1);
+
   const table = useReactTable({
     data,
     columns,
@@ -55,22 +57,31 @@ export function DataTable<TData extends object, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     manualPagination: !!pagination,
     pageCount: pagination?.totalPages ?? -1,
-    initialState: {
+    state: {
       pagination: {
         pageSize: 10,
-        pageIndex: (pagination?.currentPage ?? 1) - 1,
+        pageIndex,
       },
+    },
+    onPaginationChange: (updater) => {
+      if (typeof updater === 'function') {
+        const newState = updater({
+          pageSize: 10,
+          pageIndex,
+        });
+        setPageIndex(newState.pageIndex);
+      }
     },
   });
 
   React.useEffect(() => {
     if (pagination && mounted) {
-      const newPage = table.getState().pagination.pageIndex + 1;
+      const newPage = pageIndex + 1;
       if (newPage !== pagination.currentPage) {
         pagination.onPageChange(newPage);
       }
     }
-  }, [table.getState().pagination.pageIndex]);
+  }, [pageIndex, pagination, mounted]);
 
   if (!mounted) {
     return null;
@@ -116,8 +127,8 @@ export function DataTable<TData extends object, TValue>({
                     className="hover:bg-brand-lowest cursor-pointer border-neutral-200"
                     onClick={() => {
                       const item = row.original;
-                      if ("id" in item) {
-                        const id = (item.id as string).replace("#", "");
+                      if ("id" in item && item.id) {
+                        const id = String(item.id).replace(/^#/, "");
                         router.push(`/users/${id}`);
                       }
                     }}
