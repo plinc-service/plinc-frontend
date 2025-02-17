@@ -112,21 +112,21 @@ export default function PlinCPage() {
   }, [plincsData, searchQuery, sortConfig]);
 
   return (
-    <div className="flex-1 space-y-4 p-8 pt-6">
+    <div className="flex-1 space-y-4 p-3">
       <TopBar pageName="Plinc" />
 
       <div className="space-y-4">
         <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2">
             {filters.map((filter) => (
               <button
                 key={filter.value}
                 onClick={() => setActiveFilter(filter.value)}
                 className={cn(
-                  "px-4 py-2 text-sm font-medium rounded-full border",
+                  "px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap",
                   activeFilter === filter.value
-                    ? "text-blue border-neutral-lowest bg-white"
-                    : "text-neutral-medium hover:text-neutral-high border-transparent transition-colors"
+                    ? "bg-blue text-white border-none"
+                    : "bg-white text-[#6B7280] hover:bg-gray-50 border border-[#E5E7EB] transition-colors"
                 )}
               >
                 {filter.label}
