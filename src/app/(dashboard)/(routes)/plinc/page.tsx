@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import PlinCSkeleton from "./components/PlinCSkeleton";
 import { PlincTable } from "./components/plinc-table";
 import { Search, AlignCenter, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/Input";
@@ -10,9 +11,7 @@ import { PlincDetailsModal } from "./components/PlincDetailsModal";
 import TopBar from "@/components/layout/TopBar";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { plincService } from "@/services/plincService";
-
-
+import { plincService } from "@/services/PlincService";
 
 const filters = [
   { label: "Tout", value: "all" },
@@ -41,7 +40,7 @@ export default function PlinCPage() {
   const [showSortMenu, setShowSortMenu] = React.useState(false);
   const [selectedPlincId, setSelectedPlincId] = React.useState<string>();
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [currentPage, setCurrentPage] = React.useState(1);
+  const currentPage = 1;
 
   React.useEffect(() => {
     setMounted(true);
@@ -66,7 +65,7 @@ export default function PlinCPage() {
 
   const filteredData = React.useMemo(() => {
     if (!plincsData?.data) return [];
-    
+
     let result = [...plincsData.data];
 
     if (searchQuery) {
@@ -112,8 +111,8 @@ export default function PlinCPage() {
   }, [plincsData, searchQuery, sortConfig]);
 
   return (
-    <div className="flex-1 space-y-4 p-3">
-      <TopBar pageName="Plinc" />
+    <div className="flex-1 space-y-4 p-3 mx-2">
+      <TopBar pageName="PlinC" />
 
       <div className="space-y-4">
         <div className="flex flex-col gap-4">
@@ -194,13 +193,11 @@ export default function PlinCPage() {
         </div>
 
         {isLoading ? (
-          <div className="w-full h-48 flex items-center justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue" />
-          </div>
+          <PlinCSkeleton />
         ) : (
           <PlincTable
             columns={enhanceColumnsWithRowClick(
-              columns({ onRowClick: handleRowClick }),
+              columns(),
               handleRowClick
             )}
             data={filteredData}

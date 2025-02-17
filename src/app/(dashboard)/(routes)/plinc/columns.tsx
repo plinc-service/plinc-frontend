@@ -16,11 +16,7 @@ export const getStatusLabel = (plinc: Plinc): string => {
   return "En attente";
 };
 
-interface ColumnProps {
-  onRowClick: (id: number) => void;
-}
-
-export const columns = ({ onRowClick }: ColumnProps): ColumnDef<Plinc>[] => [
+export const columns = (): ColumnDef<Plinc>[] => [
   {
     accessorKey: "id",
     header: "ID",
@@ -166,7 +162,7 @@ export const columns = ({ onRowClick }: ColumnProps): ColumnDef<Plinc>[] => [
   },
   {
     id: "actions",
-    cell: ({ row }) => (
+    cell: () => (
       <div className="flex justify-end">
         <ChevronRight className="h-4 w-4 text-neutral-high" />
       </div>

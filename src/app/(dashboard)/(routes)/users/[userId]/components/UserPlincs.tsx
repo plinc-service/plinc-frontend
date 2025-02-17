@@ -7,19 +7,19 @@ import { columns } from "./columns";
 import { Search, AlignCenter, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { plincService } from "@/services/plincService";
+import { plincService } from "@/services/PlincService";
 import type { Plinc } from "@/interfaces/plincInterface";
 
 interface PlincsTableProps {
-  type: 'bought' | 'sold';
+  type: "bought" | "sold";
 }
 
-const UserPlincs = ({ type = 'bought' }: PlincsTableProps) => {
+const UserPlincs = ({ type = "bought" }: PlincsTableProps) => {
   const router = useRouter();
   const params = useParams();
   const userId = params.userId as string;
-  
-  const [searchQuery, setSearchQuery] = React.useState('');
+
+  const [searchQuery, setSearchQuery] = React.useState("");
   const [plincs, setPlincs] = React.useState<Plinc[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -29,11 +29,15 @@ const UserPlincs = ({ type = 'bought' }: PlincsTableProps) => {
     const fetchPlincs = async () => {
       try {
         setLoading(true);
-        const response = await plincService.getUserPlincs(userId, type, currentPage);
+        const response = await plincService.getUserPlincs(
+          userId,
+          type,
+          currentPage
+        );
         setPlincs(response.data);
         setTotalPages(response.total_pages);
       } catch (error) {
-        console.error('Error fetching plincs:', error);
+        console.error("Error fetching plincs:", error);
       } finally {
         setLoading(false);
       }
@@ -44,9 +48,10 @@ const UserPlincs = ({ type = 'bought' }: PlincsTableProps) => {
 
   const filteredPlincs = React.useMemo(() => {
     if (!searchQuery) return plincs;
-    return plincs.filter(plinc => 
-      plinc.service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      plinc.customer.toLowerCase().includes(searchQuery.toLowerCase())
+    return plincs.filter(
+      (plinc) =>
+        plinc.service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        plinc.customer.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [plincs, searchQuery]);
 
@@ -55,13 +60,21 @@ const UserPlincs = ({ type = 'bought' }: PlincsTableProps) => {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-8">
           <button
-            className={`px-4 py-2 text-base font-medium cursor-pointer ${type === 'bought' ? 'text-blue border-b-2 border-blue after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue' : 'text-neutral-medium hover:text-neutral-high transition-colors'}`}
+            className={`px-4 py-2 text-base font-medium cursor-pointer ${
+              type === "bought"
+                ? "text-blue border-b-2 border-blue after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue"
+                : "text-neutral-medium hover:text-neutral-high transition-colors"
+            }`}
           >
             Achetés
           </button>
           <button
-            onClick={() => router.push('plincs/vendus')}
-            className={`px-4 py-2 text-base font-medium cursor-pointer ${type === 'sold' ? 'text-blue border-b-2 border-blue after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue' : 'text-neutral-medium hover:text-neutral-high transition-colors'}`}
+            onClick={() => router.push("plincs/vendus")}
+            className={`px-4 py-2 text-base font-medium cursor-pointer ${
+              type === "sold"
+                ? "text-blue border-b-2 border-blue after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue"
+                : "text-neutral-medium hover:text-neutral-high transition-colors"
+            }`}
           >
             Vendus
           </button>
@@ -86,14 +99,14 @@ const UserPlincs = ({ type = 'bought' }: PlincsTableProps) => {
           </Button>
         </div>
       </div>
-      <DataTable 
-        columns={columns} 
+      <DataTable
+        columns={columns}
         data={filteredPlincs}
         loading={loading}
         pagination={{
           currentPage,
           totalPages,
-          onPageChange: setCurrentPage
+          onPageChange: setCurrentPage,
         }}
       />
     </div>
