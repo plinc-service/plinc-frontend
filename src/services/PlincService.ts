@@ -21,7 +21,7 @@ class PlincService {
     isClient: boolean = true
   ): Promise<PlincResponse> {
     try {
-      const response = await Axios.get('plincs', {
+      const response = await Axios.get('/plincs', {
         params: {
           user_id: userId,
           is_client: isClient ? 1 : 0,
@@ -66,7 +66,7 @@ class PlincService {
         ...(isClient !== undefined && { is_client: isClient })
       };
 
-      const response = await Axios.get('plincs', { params });
+      const response = await Axios.get('/plincs', { params });
       return response.data as PlincResponse;
     } catch (error) {
       console.error('Error fetching all plincs:', error);
