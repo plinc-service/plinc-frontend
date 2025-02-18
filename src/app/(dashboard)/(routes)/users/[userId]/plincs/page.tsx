@@ -66,7 +66,7 @@ function Page() {
 
       <div className="bg-white rounded-2xl">
         <UserHeader user={headerData} />
-        <UserPlincs type="bought" />
+        <UserPlincs isClient={true} />
       </div>
     </div>
   );

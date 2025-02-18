@@ -11,10 +11,10 @@ import { plincService } from "@/services/PlincService";
 import type { Plinc } from "@/interfaces/plincInterface";
 
 interface PlincsTableProps {
-  type: "bought" | "sold";
+  isClient: boolean;
 }
 
-const UserPlincs = ({ type = "bought" }: PlincsTableProps) => {
+const UserPlincs = ({ isClient = true }: PlincsTableProps) => {
   const router = useRouter();
   const params = useParams();
   const userId = params.userId as string;
@@ -31,8 +31,13 @@ const UserPlincs = ({ type = "bought" }: PlincsTableProps) => {
         setLoading(true);
         const response = await plincService.getUserPlincs(
           userId,
-          type,
-          currentPage
+          currentPage,
+          10, // pageSize par défaut
+          'created_at',
+          'desc',
+          searchQuery,
+          undefined,
+          isClient
         );
         setPlincs(response.data);
         setTotalPages(response.total_pages);
@@ -44,14 +49,14 @@ const UserPlincs = ({ type = "bought" }: PlincsTableProps) => {
     };
 
     fetchPlincs();
-  }, [userId, type, currentPage]);
+  }, [userId, currentPage, isClient, searchQuery]);
 
   const filteredPlincs = React.useMemo(() => {
     if (!searchQuery) return plincs;
     return plincs.filter(
       (plinc) =>
         plinc.service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        plinc.customer.toLowerCase().includes(searchQuery.toLowerCase())
+        plinc.customer.username.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [plincs, searchQuery]);
 
@@ -62,7 +67,7 @@ const UserPlincs = ({ type = "bought" }: PlincsTableProps) => {
           <button
           onClick={() => router.push(`/users/${userId}/plincs`)}
             className={`px-4 py-2 text-base font-medium cursor-pointer ${
-              type === "bought"
+              isClient
                 ? "text-blue border-b-2 border-blue after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue"
                 : "text-neutral-medium hover:text-neutral-high transition-colors"
             }`}
@@ -72,7 +77,7 @@ const UserPlincs = ({ type = "bought" }: PlincsTableProps) => {
           <button
             onClick={() => router.push("plincs/vendus")}
             className={`px-4 py-2 text-base font-medium cursor-pointer ${
-              type === "sold"
+              !isClient
                 ? "text-blue border-b-2 border-blue after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue"
                 : "text-neutral-medium hover:text-neutral-high transition-colors"
             }`}

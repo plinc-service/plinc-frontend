@@ -4,49 +4,49 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { DataTable } from "@/components/users/data-table";
 import { Search, AlignCenter, ChevronDown } from "lucide-react";
-import { columns, type Plinc } from "./columns";
+import { columns } from "./columns";
+import { Plinc } from "@/interfaces/plincInterface";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { plincService } from "@/services/PlincService";
 
-const mockDataVendus: Plinc[] = [
-  {
-    id: "00001",
-    provider: {
-      name: "John DOE",
-      image: "/avatar.svg",
-    },
-    serviceTitle: "Cours de mathématiques",
-    date: "15-09-2024",
-    status: "Confirmé",
-    amount: "150€",
-  },
-  {
-    id: "00002",
-    provider: {
-      name: "John DOE",
-      image: "/avatar.svg",
-    },
-    serviceTitle: "Cours de physique",
-    date: "18-09-2024",
-    status: "En attente",
-    amount: "120€",
-  },
-  {
-    id: "00003",
-    provider: {
-      name: "John DOE",
-      image: "/avatar.svg",
-    },
-    serviceTitle: "Tutorat en anglais",
-    date: "20-09-2024",
-    status: "Terminer",
-    amount: "90€",
-  },
-];
+interface UserPlincsVendusProps {
+  userId: string;
+}
 
-const UserPlincsVendus = () => {
+const UserPlincsVendus = ({ userId }: UserPlincsVendusProps) => {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = React.useState("");
+  const [plincs, setPlincs] = React.useState<Plinc[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [totalPages, setTotalPages] = React.useState(1);
+  const PAGE_SIZE = 10;
+
+  React.useEffect(() => {
+    const fetchPlincs = async () => {
+      try {
+        const response = await plincService.getUserPlincs(
+          userId,
+          currentPage,
+          PAGE_SIZE,
+          'created_at',  // tri par date de création
+          'desc',        // ordre décroissant
+          searchQuery,   // recherche
+          undefined,     // status
+          false          // is_client = false pour les vendus
+        );
+        setPlincs(response.data);
+        setTotalPages(response.total_pages);
+      } catch (error) {
+        console.error('Error fetching plincs:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPlincs();
+  }, [userId, currentPage, searchQuery]);
 
   return (
     <div className="rounded-2xl p-2">
@@ -58,9 +58,7 @@ const UserPlincsVendus = () => {
           >
             Achetés
           </button>
-          <button
-            className="px-4 py-2 text-base text-blue border-b-2 border-blue font-medium relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue"
-          >
+          <button className="px-4 py-2 text-base text-blue border-b-2 border-blue font-medium relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue">
             Vendus
           </button>
         </div>
@@ -84,7 +82,16 @@ const UserPlincsVendus = () => {
           </Button>
         </div>
       </div>
-      <DataTable columns={columns} data={mockDataVendus} />
+      <DataTable 
+        columns={columns} 
+        data={plincs} 
+        loading={isLoading}
+        pagination={{
+          currentPage: currentPage,
+          totalPages: totalPages,
+          onPageChange: (page: number) => setCurrentPage(page)
+        }}
+      />
     </div>
   );
 };

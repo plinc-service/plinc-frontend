@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import UserSkeleton from "../../components/UserSkeleton";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ChevronRight } from "lucide-react";
@@ -67,7 +66,7 @@ export default function Page() {
 
       <div className="bg-white rounded-2xl p-5">
         <UserHeader user={headerData} />
-        <UserPlincs type="sold" />
+        <UserPlincs isClient={false} />
       </div>
     </div>
   );

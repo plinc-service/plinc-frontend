@@ -5,7 +5,6 @@ import Image from "next/image";
 import { X, ArrowUpRight } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/Dialog";
 import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/Button";
 import { PlincTrackingModal } from "./PlincTrackingModal";
 
 interface PlincDetailsModalProps {

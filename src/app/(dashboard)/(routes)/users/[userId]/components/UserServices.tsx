@@ -61,7 +61,7 @@ const UserServices: React.FC = () => {
         {services.length === 0 ? (
           <div className="text-center py-8">
             <p className="text-neutral-high text-base">
-              Aucun service pour cet utilisateur
+              Aucune donnée pour le moment
             </p>
           </div>
         ) : (

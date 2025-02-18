@@ -48,7 +48,7 @@ export default function PlinCPage() {
 
   const { data: plincsData, isLoading } = useQuery({
     queryKey: ["plincs", activeFilter, currentPage],
-    queryFn: () => plincService.getAllPlincs(currentPage, activeFilter),
+    queryFn: () => plincService.getAllPlincs(Number(currentPage), 10, undefined, 'desc', searchQuery, activeFilter),
     enabled: mounted,
   });
 
