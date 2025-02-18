@@ -19,7 +19,6 @@ const mockPlincDetails = {
   title: "Arrosage de Jardin",
   category: "Jardinage . Entretien",
   description: "Nunc sed faucibus bibendum feugiat sed interdum. Ipsum egestas condimentum mi massa. In tincidunt pharetra consectetur sed duis facilisis metus. Etiam egestas in nec sed et. Quis lobortis at sit dictum eget nibh tortor commodo cursus.",
-  status: "En attente",
   cost: "75 EUROS",
   address: "23 RUE DE LILAS",
   date: "Lundi 30 Septembre à 09:00",
@@ -40,7 +39,7 @@ export function PlincDetailsModal({ isOpen, onClose, plincId }: PlincDetailsModa
   const [isTrackingModalOpen, setIsTrackingModalOpen] = React.useState(false);
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] p-0">
+      <DialogContent className="sm:max-w-[600px] p-0 rounded-3xl overflow-hidden">
         <DialogTitle className="sr-only">Détails du PlinC</DialogTitle>
         <div className="relative">
           <button
@@ -55,27 +54,31 @@ export function PlincDetailsModal({ isOpen, onClose, plincId }: PlincDetailsModa
               Détails Plinc #{mockPlincDetails.id}
             </h2>
 
-            <div className="mt-4">
-              <h3 className="text-blue font-medium">
-                {mockPlincDetails.title}
-              </h3>
-              <p className="text-sm text-neutral-high mt-1">
-                {mockPlincDetails.category}
-              </p>
+            <div className="mt-4 flex items-start justify-between">
+              <div>
+                <h3 className="text-blue text-base font-medium">
+                  {mockPlincDetails.title}
+                </h3>
+                <p className="text-sm text-neutral-high mt-1">
+                  {mockPlincDetails.category}
+                </p>
+              </div>
+              <span className="px-3 py-1 rounded-full text-sm font-medium bg-orange-50 text-orange-500">
+                En attente
+              </span>
             </div>
 
-            <p className="mt-4 text-sm text-neutral-high">
+            <p className="mt-4 text-sm text-neutral-medium">
               {mockPlincDetails.description}
             </p>
 
-            <Button 
-              variant="outline"
-              className="mt-4 rounded-full text-sm font-medium px-6 py-2 border-neutral-low text-neutral-high hover:bg-neutral-50"
+            <button 
+              className="mt-4 inline-flex items-center text-sm font-medium text-blue bg-badge-secondary-bg p-3 rounded-full"
               onClick={() => setIsTrackingModalOpen(true)}
             >
               <span>Suivi de la prestation</span>
               <ArrowUpRight className="ml-2 h-4 w-4" />
-            </Button>
+            </button>
 
             <PlincTrackingModal
               isOpen={isTrackingModalOpen}
