@@ -67,6 +67,9 @@
 
   /* Font Size */
   --text-xxs: 0.625rem;
+
+  /* Screen */
+  --breakpoint-xxl: 90rem;
 }
 
 /* Couleurs pour le mode sombre */
