@@ -29,8 +29,8 @@ export default function Page() {
             Utilisateurs
           </Link>
           <ChevronRight className="h-4 w-4 text-neutral-high" />
-          <div className="h-5 w-32 bg-neutral-200 rounded animate-pulse" />
-        </div>
+          <span className="text-blue text-base">Détails utilisateur</span>
+          </div>
 
         <div className="flex gap-6">
           <div className="w-[620px] flex flex-col space-y-6">

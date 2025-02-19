@@ -41,7 +41,7 @@ const UserHeader: React.FC<UserHeaderProps> = ({ user }) => {
           <span className="text-2xl font-semibold text-neutral-high">
             {user.stats.acheter}
           </span>
-          <span className="text-sm text-neutral-medium">Acheter</span>
+          <span className="text-sm text-neutral-medium">Achetés</span>
         </div>
 
         <Separator orientation="vertical" className="h-12 bg-brand-lower" />

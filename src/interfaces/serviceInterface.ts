@@ -1,6 +1,8 @@
+import { User } from './userInterface';
+
 export interface Service {
   id: number;
-  owner: string;
+  owner: User;
   number_of_sells: number;
   number_of_waiting: number;
   name: string;

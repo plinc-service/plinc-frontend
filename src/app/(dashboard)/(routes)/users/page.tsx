@@ -47,10 +47,10 @@ const UsersPage: React.FC = () => {
   };
 
   return (
-    <div className="relative w-full h-full p-5">
+    <div className="relative w-full h-full p-3">
       <TopBar pageName="Utilisateurs" />
 
-      <div className="flex items-center justify-between my-5">
+      <div className="flex items-center justify-between my-5 mx-3">
         <div className="relative flex-1 max-w-[610px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-input-placeholder" />
           <Input

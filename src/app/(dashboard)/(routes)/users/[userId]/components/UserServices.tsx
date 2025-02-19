@@ -3,7 +3,7 @@
 import React from "react";
 import { useParams } from "next/navigation";
 import { Switch } from "@/components/ui/Switch";
-import { ArrowUpRight } from "lucide-react";
+import { MoveDiagonal } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserById } from "@/services/UserService";
 
@@ -22,13 +22,6 @@ const UserServices: React.FC = () => {
   React.useEffect(() => {
     setMounted(true);
   }, []);
-
-  const handleToggle = (id: number) => (enabled: boolean) => {
-    // TODO: Implémenter la mise à jour du service via l'API
-    console.log(`Service ${id} toggled to ${enabled}`);
-    // Ici nous pourrons appeler l'API de manière asynchrone
-    // updateUserService(userId as string, id, enabled).catch(console.error);
-  };
 
   if (!mounted) {
     return null;
@@ -61,27 +54,28 @@ const UserServices: React.FC = () => {
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-lg text-neutral-high font-semibold">Services</h2>
         <button className="text-neutral-high hover:text-blue transition-colors">
-          <ArrowUpRight className="h-5 w-5" />
+          <MoveDiagonal className="h-5 w-5" />
         </button>
       </div>
       <div className="space-y-6">
         {services.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-neutral-high text-sm">Aucun service pour cet utilisateur</p>
+            <p className="text-neutral-high text-base">
+              Aucune donnée pour le moment
+            </p>
           </div>
         ) : (
           services.map((service) => (
             <div key={service.id} className="space-y-2">
               <div className="flex items-center justify-between">
                 <h3 className="text-blue text-base font-medium">
-                  {service.title}
+                  {service.description}
                 </h3>
                 <Switch
                   checked={service.enabled}
-                  onCheckedChange={handleToggle(service.id)}
+                  disabled
                 />
               </div>
-              <p className="text-neutral-high text-xs">{service.description}</p>
             </div>
           ))
         )}

@@ -22,14 +22,24 @@ import {
 import { Button } from "@/components/ui/Button";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 
+interface DataTablePaginationProps {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}
+
 interface DataTableProps<TData extends object, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  loading?: boolean;
+  pagination?: DataTablePaginationProps;
 }
 
 export function DataTable<TData extends object, TValue>({
   columns,
   data,
+  loading = false,
+  pagination,
 }: DataTableProps<TData, TValue>) {
   const router = useRouter();
   const [mounted, setMounted] = React.useState(false);
@@ -38,17 +48,43 @@ export function DataTable<TData extends object, TValue>({
     setMounted(true);
   }, []);
 
+  const [pageIndex, setPageIndex] = React.useState((pagination?.currentPage ?? 1) - 1);
+  const [pageSize] = React.useState(10);
+
+  const paginationState = React.useMemo(
+    () => ({
+      pageSize,
+      pageIndex,
+    }),
+    [pageSize, pageIndex]
+  );
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    initialState: {
-      pagination: {
-        pageSize: 11,
-      },
+    manualPagination: !!pagination,
+    pageCount: pagination?.totalPages ?? -1,
+    state: {
+      pagination: paginationState,
+    },
+    onPaginationChange: (updater) => {
+      if (typeof updater === 'function') {
+        const newState = updater(paginationState);
+        setPageIndex(newState.pageIndex);
+      }
     },
   });
+
+  React.useEffect(() => {
+    if (!mounted || !pagination) return;
+
+    const newPage = pageIndex + 1;
+    if (newPage !== pagination.currentPage) {
+      pagination.onPageChange(newPage);
+    }
+  }, [mounted, pagination, pageIndex, pagination?.currentPage]);
 
   if (!mounted) {
     return null;
@@ -58,7 +94,12 @@ export function DataTable<TData extends object, TValue>({
     <div className="space-y-4">
       <div>
         <div className="rounded-md ">
-          <Table>
+          {loading ? (
+            <div className="w-full h-32 flex items-center justify-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue" />
+            </div>
+          ) : (
+            <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow
@@ -89,8 +130,8 @@ export function DataTable<TData extends object, TValue>({
                     className="hover:bg-brand-lowest cursor-pointer border-neutral-200"
                     onClick={() => {
                       const item = row.original;
-                      if ("id" in item) {
-                        const id = (item.id as string).replace("#", "");
+                      if ("id" in item && item.id) {
+                        const id = String(item.id).replace(/^#/, "");
                         router.push(`/users/${id}`);
                       }
                     }}
@@ -117,63 +158,36 @@ export function DataTable<TData extends object, TValue>({
               )}
             </TableBody>
           </Table>
+          )}
         </div>
 
-        <div className="flex items-center justify-between py-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            className="h-8 text-sm text-neutral-high"
-          >
-            <ChevronLeft className="ml-1 h-4 w-4 text-neutral-high" />
-            Précédent
-          </Button>
-          <div className="flex items-center gap-1">
-            {Array.from({ length: table.getPageCount() }, (_, i) => (
-              <Button
-                key={i}
-                variant={
-                  table.getState().pagination.pageIndex === i
-                    ? "default"
-                    : "ghost"
-                }
-                size="icon"
-                onClick={() => table.setPageIndex(i)}
-                className={`h-8 w-8 text-sm ${
-                  table.getState().pagination.pageIndex === i
-                    ? "bg-primary/10 hover:bg-primary/20 text-primary"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {String(i + 1).padStart(2, "0")}
-              </Button>
-            ))}
-            {table.getPageCount() > 7 && (
-              <>
-                <span className="mx-2 text-sm text-muted-foreground">...</span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 text-sm text-muted-foreground hover:text-foreground"
-                >
-                  {String(table.getPageCount()).padStart(2, "0")}
-                </Button>
-              </>
-            )}
+        {pagination && (
+          <div className="flex items-center justify-end space-x-4 py-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage() || loading}
+              className="h-8 text-sm text-neutral-high"
+            >
+              <ChevronLeft className="mr-2 h-4 w-4" />
+              Précédent
+            </Button>
+            <span className="text-sm text-neutral-medium">
+              Page {pagination.currentPage} sur {pagination.totalPages}
+            </span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage() || loading}
+              className="h-8 text-sm text-neutral-high"
+            >
+              Suivant
+              <ChevronRight className="ml-2 h-4 w-4" />
+            </Button>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-            className="h-8 text-sm text-neutral-high"
-          >
-            Suivant
-            <ChevronRight className="ml-1 h-4 w-4 text-neutral-high" />
-          </Button>
-        </div>
+        )}
       </div>
     </div>
   );

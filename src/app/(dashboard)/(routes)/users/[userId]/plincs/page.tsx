@@ -1,25 +1,52 @@
-import { use } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import UserPlincs from "../components/UserPlincs";
 import UserHeader from "../components/UserHeader";
+import { fetchUserById } from "@/services/UserService";
+import type { User } from "@/interfaces/userInterface";
 
-interface PageProps {
-  params: Promise<{
-    userId: string;
-  }>;
-}
+function Page() {
+  const params = useParams();
+  const userId = params.userId as string;
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-const Page = ({ params }: PageProps) => {
-  const { userId } = use(params);
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        setLoading(true);
+        const userData = await fetchUserById(userId);
+        setUser(userData);
+      } catch (err) {
+        console.error('Error fetching user:', err);
+        setError('Failed to load user data');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // call API
-  const user = {
-    username: "John DOE",
-    email: "johndoe@gmail.com",
+    fetchUser();
+  }, [userId]);
+
+  if (loading) {
+    return <div className="p-5">Loading...</div>;
+  }
+
+  if (error || !user) {
+    return <div className="p-5 text-red-500">{error || 'User not found'}</div>;
+  }
+
+  const headerData = {
+    username: user.username,
+    email: user.email,
     stats: {
-      acheter: 5,
-      vendeurs: 2,
+      acheter: user.number_plinc_buyer,
+      vendeurs: user.number_plinc_seller,
     },
   };
 
@@ -38,11 +65,11 @@ const Page = ({ params }: PageProps) => {
       </div>
 
       <div className="bg-white rounded-2xl">
-        <UserHeader user={user} />
-        <UserPlincs />
+        <UserHeader user={headerData} />
+        <UserPlincs isClient={true} />
       </div>
     </div>
   );
-};
+}
 
 export default Page;
