@@ -24,14 +24,13 @@ class PlincService {
       const response = await Axios.get('/plincs', {
         params: {
           user_id: userId,
-          is_client: isClient ? 1 : 0,
+          is_client: isClient ? 1 : 0,  // Changed to '1' or '0' string
           page,
           page_size: pageSize,
           ...(sortField && { sort_field: sortField }),
           ...(sortOrder && { sort_order: sortOrder }),
           ...(query && { query }),
           ...(status && { status }),
-          ...(isClient !== undefined && { is_client: isClient })
         },
       });
 
@@ -63,7 +62,7 @@ class PlincService {
         ...(status && { status }),
         ...(userId && { user_id: userId }),
         ...(serviceId && { service_id: serviceId }),
-        ...(isClient !== undefined && { is_client: isClient })
+        ...(isClient !== undefined && { is_client: isClient ? 1 : 0 }) 
       };
 
       const response = await Axios.get('/plincs', { params });
