@@ -102,11 +102,11 @@ const ValidationPage = () => {
 					</div>
 
 					{activeTab === "WithdrawalRequests" && (
-						<WithdrawalRequestsContent key="withdrawals" searchQuery={withdrawalSearch} />
+						<WithdrawalRequestsContent key="withdrawals" />
 					)}
 
 					{activeTab === "Services" && (
-						<ServicesContent key="services" searchQuery={serviceSearch} />
+						<ServicesContent key="services" />
 					)}
 				</Tabs>
 			</div>
@@ -114,7 +114,7 @@ const ValidationPage = () => {
 	);
 };
 
-const WithdrawalRequestsContent = ({ searchQuery }: { searchQuery: string }) => {
+const WithdrawalRequestsContent = () => {
 	return (
 		<div className="mt-4">
 			<WithdrawRequestTableWrapper />
@@ -122,7 +122,7 @@ const WithdrawalRequestsContent = ({ searchQuery }: { searchQuery: string }) => 
 	);
 };
 
-const ServicesContent = ({ searchQuery }: { searchQuery: string }) => {
+const ServicesContent = () => {
 	return (
 		<div className="mt-4">
 			<ServicesRequestTableWrapper />
