@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
-import { ColumnDef } from "@tanstack/react-table";
 import type { Plinc } from "@/interfaces/plincInterface";
+import { ColumnDef } from "@tanstack/react-table";
 import { ChevronRight } from "lucide-react";
+import Image from "next/image";
 
 const getStatusLabel = (plinc: Plinc): string => {
   if (plinc.cancelled || plinc.user_cancelled || plinc.pro_cancelled)

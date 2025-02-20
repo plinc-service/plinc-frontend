@@ -11,6 +11,7 @@ import { AlignCenter, ChevronDown, Search } from "lucide-react";
 
 const TransactionPage = () => {
 	const { data, error, loading } = useTransactionWallet();
+
 	return (
 		<div className="px-5 pt-5 flex flex-col h-full w-full">
 			<TopBar pageName="Transactions" />

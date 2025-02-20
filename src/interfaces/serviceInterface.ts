@@ -1,4 +1,43 @@
-import { User } from './userInterface';
+import { User } from "./userInterface";
+
+export interface CalendarHour {
+  id: number;
+  start_hour: string;
+  end_hour: string;
+  created_at: string;
+  updated_at: string;
+  calendar_day: string;
+}
+
+// Interface pour les jours de calendrier
+export interface CalendarDay {
+  id: number;
+  calendar_hours: CalendarHour[];
+  name: string;
+  index: number;
+  created_at: string;
+  updated_at: string;
+  calendar: string;
+}
+
+// Interface pour le calendrier
+export interface Calendar {
+  id: number;
+  user: string;
+  calendar_days: CalendarDay[];
+  created_at: string;
+  updated_at: string;
+}
+
+// Interface pour les réalisations
+export interface Realisation {
+  id: number;
+  name: string;
+  image: string;
+  description: string;
+  created_at: string;
+  updated_at: string;
+}
 
 export interface Service {
   id: number;
@@ -19,4 +58,19 @@ export interface Service {
   email?: string;
   image_url?: string;
   username?: string;
+}
+
+export interface ApiResponse {
+  success: boolean;
+  data: Service[];
+  previous: string | null;
+  next: string | null;
+  total_pages: number;
+}
+
+export interface ServicesRequestDetailsPopupProps {
+  open: boolean;
+  onClose: () => void;
+  refetchList: () => void;
+  servicesDetails?: Service | null;
 }
