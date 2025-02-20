@@ -7,7 +7,7 @@ const TopBar = ({ pageName }: { pageName: string }) => {
     <div className="flex items-center justify-between p-2 sticky w-full bg-white z-10 top-0">
       <h1 className="text-2xl font-semibold text-neutral-high">{pageName}</h1>
       <div className="flex items-center gap-4">
-        <Button variant="outline" size="icon" className="relative">
+        <Button variant="outline" size="icon" className="relative border-0">
           <Bell className="h-7 w-7" />
           <span className="absolute -right-0.5 -top-0.5 h-4 w-4 rounded-full bg-blue text-[10px] font-medium text-white flex items-center justify-center">
             2

@@ -21,7 +21,7 @@ export const columns: ColumnDef<Plinc>[] = [
       return (
         <div className="min-w-[200px]">
           <span className="text-neutral-high">
-            {row.original.service.title}
+            {row.original.service.name}
           </span>
         </div>
       );

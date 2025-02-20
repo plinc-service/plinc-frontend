@@ -51,7 +51,7 @@ const WalletDetailsPopup: React.FC<WalletDetailsPopupProps> = ({
                     alt={walletDetails.user?.username || "User"}
                     width={60}
                     height={60}
-                    className="rounded-full"
+                    className="rounded-full w-[60px] h-[60px] object-cover"
                   />
                   <div>
                     <DialogDescription className="text-sm font-semibold text-blue-600">
@@ -118,11 +118,10 @@ const WalletDetailsPopup: React.FC<WalletDetailsPopupProps> = ({
                           <div className="flex items-center w-full justify-between">
                             <div className="flex items-center gap-2">
                               <span
-                                className={`${
-                                  transaction.type === "retrait"
-                                    ? "bg-danger-background border-danger-border"
-                                    : "bg-success-background border-success-border"
-                                } border rounded-full w-7 h-7 flex items-center justify-center`}
+                                className={`${transaction.type === "retrait"
+                                  ? "bg-danger-background border-danger-border"
+                                  : "bg-success-background border-success-border"
+                                  } border rounded-full w-7 h-7 flex items-center justify-center`}
                               >
                                 {transaction.type === "retrait" ? (
                                   <ArrowUpRight
@@ -149,11 +148,10 @@ const WalletDetailsPopup: React.FC<WalletDetailsPopupProps> = ({
                               </div>
                             </div>
                             <span
-                              className={`${
-                                transaction.type === "retrait"
-                                  ? "text-danger"
-                                  : "text-success"
-                              } block text-base`}
+                              className={`${transaction.type === "retrait"
+                                ? "text-danger"
+                                : "text-success"
+                                } block text-base`}
                             >
                               {transaction.type === "retrait" ? "-" : "+"}
                               {transaction.amount}€

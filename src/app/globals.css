@@ -15,6 +15,7 @@
   /* Button colors */
   --color-button-secondary-bg: #dbeafe;
   --color-button-tertiary-border: #cbd5e1;
+  --color-button-outline-bg-hover: #F1F5F9;
 
   /* Badge colors */
   --color-badge-warning-bg: #f97316;

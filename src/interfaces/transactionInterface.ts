@@ -12,6 +12,8 @@ export interface Transaction {
   status: number;
   created_at: string;
   updated_at: string;
+  siret_num: number | null;
+  iban_num: number | null;
 }
 
 export interface TransactionResponse {
@@ -20,4 +22,11 @@ export interface TransactionResponse {
   previous: string | null;
   next: string | null;
   total_pages: number;
+}
+
+export interface TransactionDetailsPopupProps {
+  open: boolean;
+  onClose: () => void;
+  refetchList: () => void;
+  transactionDetails?: Transaction | null;
 }

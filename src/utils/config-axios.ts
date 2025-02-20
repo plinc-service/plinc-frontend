@@ -1,6 +1,6 @@
 import axios from "axios";
 const Axios = axios.create({
-  baseURL: "https://api-plinc.gini-africa.com/administrator/",
+  baseURL: "https://api-plinc.gini-africa.com/administrator",
 });
 
 Axios.interceptors.request.use((request) => {

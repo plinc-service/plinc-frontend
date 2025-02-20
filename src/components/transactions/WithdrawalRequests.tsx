@@ -1,16 +1,32 @@
 import { useWithdrawalRequests } from "@/hooks/useTransactions";
+import { Transaction } from "@/interfaces/transactionInterface";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { ScrollArea } from "../ui/ScrollArea";
+import WithdrawalRequestsPopup from "./WithdrawalRequestsPopup";
 
 const WithdrawalRequests = () => {
+
+	const [selectedWithdrawal, setSelectedWithdrawal] = useState<Transaction | null>(null);
+	const [isPopupOpen, setIsPopupOpen] = useState(false);
 
 	const {
 		data: withdrawals,
 		error: withdrawalsError,
+		refetch,
 		loading: withdrawalsLoading,
 	} = useWithdrawalRequests();
+
+	const handleWithdrawalClick = (withdrawal: Transaction) => {
+		setSelectedWithdrawal(withdrawal);
+		setIsPopupOpen(true);
+	};
+
+	const handleClosePopup = () => {
+		setIsPopupOpen(false);
+	};
 
 	return (
 		<div>
@@ -18,7 +34,7 @@ const WithdrawalRequests = () => {
 				<h3 className="text-base font-semibold text-neutral-high">
 					Demandes de retrait
 				</h3>
-				<Link className="text-primary text-base" href="#">Tout voir</Link>
+				<Link className="text-primary text-base" href="/validations">Tout voir</Link>
 			</div>
 			<ScrollArea className="h-[600px] xxl:h-[767px] 2xl:h-[1040px]">
 				{withdrawalsLoading ? (
@@ -29,7 +45,7 @@ const WithdrawalRequests = () => {
 					<ul className="space-y-2">
 						{withdrawals.length > 0 ? (
 							withdrawals.map((withdrawal) => (
-								<li key={withdrawal.id} className="border-b border-neutral-low px-1 pt-1 pb-2.5 mb-2.5 space-y-3 hover:bg-brand-lowest transition-colors cursor-pointer">
+								<li key={withdrawal.id} className="border-b border-neutral-low px-1 pt-1 pb-2.5 mb-2.5 space-y-3 hover:bg-brand-lowest transition-colors cursor-pointer" onClick={() => handleWithdrawalClick(withdrawal)}>
 									<div className="flex justify-between items-start">
 										<div className="flex gap-3">
 											<Image
@@ -80,6 +96,13 @@ const WithdrawalRequests = () => {
 					</ul>
 				)}
 			</ScrollArea>
+
+			<WithdrawalRequestsPopup
+				open={isPopupOpen}
+				onClose={handleClosePopup}
+				refetchList={refetch}
+				transactionDetails={selectedWithdrawal}
+			/>
 		</div>
 	)
 }

@@ -1,5 +1,5 @@
 import { TransactionsServices } from "@/services/TransactionService";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useTransactionWallet = () => {
   const { data, isLoading, error, refetch } = useQuery({
@@ -33,6 +33,7 @@ export const useWithdrawalRequests = () => {
         query: "retrait",
         sort_field: "created_at",
         sort_order: "desc",
+        status: "0",
       }),
   });
 
@@ -43,5 +44,28 @@ export const useWithdrawalRequests = () => {
       ? "Une erreur est survenue lors du chargement des retraits."
       : null,
     refetch,
+  };
+};
+
+export const useValidateOrRejectWithdrawal = (
+  onSuccessCallback?: () => void
+) => {
+  const mutation = useMutation({
+    mutationFn: ({ id, status }: { id: string; status: number }) =>
+      TransactionsServices.validateOrRejectWithdrawal(id, status),
+    onSuccess: () => {
+      if (onSuccessCallback) {
+        onSuccessCallback();
+      }
+    },
+  });
+
+  return {
+    validateOrRejectWithdrawal: mutation.mutate,
+    loading: mutation.isPending,
+    error: mutation.error
+      ? "Une erreur est survenue lors du traitement de la demande."
+      : null,
+    success: mutation.isSuccess,
   };
 };
