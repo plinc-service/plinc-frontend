@@ -2,7 +2,6 @@ import ProfileImage from "@/components/ui/ProfileImage";
 import { Service } from "@/interfaces/serviceInterface";
 import { ColumnDef } from "@tanstack/react-table";
 import { ChevronRight } from "lucide-react";
-import Image from "next/image";
 
 export const ServiceRequestColumns: ColumnDef<Service>[] = [
 	{
@@ -16,7 +15,7 @@ export const ServiceRequestColumns: ColumnDef<Service>[] = [
 			const user = row.original.owner;
 			return (
 				<div className="flex items-center gap-3">
-					<span className="font-medium text-sm text-neutral-high">{user?.email || "non disponible"}</span>
+					<span className="font-medium text-sm text-neutral-high">{user.email}</span>
 				</div>
 			);
 		},
@@ -78,30 +77,13 @@ export const ServiceRequestColumns: ColumnDef<Service>[] = [
 		accessorKey: "provider",
 		header: "Prestataire",
 		cell: ({ row }) => {
-			if (!row.original || !row.original.owner) {
-				return (
-					<div className="flex items-center gap-3 min-w-[150px]">
-						<div className="h-8 w-8 rounded-full bg-neutral-100 flex items-center justify-center overflow-hidden">
-							<ProfileImage src="/avatar.png" alt="Utilisateur inconnu" />
-						</div>
-						<span className="font-medium text-sm text-neutral-high">Utilisateur inconnu</span>
-					</div>
-				);
-			}
-
 			const provider = row.original;
 			return (
 				<div className="flex items-center gap-3 min-w-[150px]">
 					<div className="h-8 w-8 rounded-full bg-neutral-100 flex items-center justify-center overflow-hidden">
-						<Image
-							width={32}
-							height={32}
-							src={provider.owner?.image_url || "/avatar.svg"}
-							alt={provider.owner?.username}
-							className="rounded-full"
-						/>
+						<ProfileImage src={provider.image_url ?? "/avatar.svg"} alt={provider.username ?? "user profile"} />
 					</div>
-					<span className="font-medium text-sm text-neutral-high">{provider.owner?.username}</span>
+					<span className="font-medium text-sm text-neutral-high">{provider.owner.username}</span>
 				</div>
 			);
 		},
