@@ -4,7 +4,7 @@ import { Loader2, X } from "lucide-react";
 import Image from 'next/image';
 import Link from "next/link";
 import { Dialog, DialogContent, DialogTitle } from "../ui/Dialog";
-import { Separator } from "../ui/separator";
+import { Separator } from "../ui/Separator";
 
 
 
