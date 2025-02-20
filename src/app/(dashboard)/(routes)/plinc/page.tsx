@@ -16,13 +16,29 @@ import { plincService } from "@/services/PlincService";
 const filters = [
   { label: "Tout", value: "all" },
   { label: "En attente", value: "en-attente" },
-  { label: "Accepté", value: "accepte" },
-  { label: "Confirmé", value: "confirme" },
+  { label: "Accepter", value: "accepte" },
+  { label: "Confirmer", value: "confirme" },
   { label: "En cours", value: "en-cours" },
-  { label: "Terminé", value: "termine" },
-  { label: "Annulé", value: "annule" },
-  { label: "Rejeté", value: "rejete" },
+  { label: "Terminer", value: "termine" },
+  { label: "Annuler", value: "annule" },
+  { label: "Rejeter", value: "rejete" },
 ];
+
+const getStatusNumber = (filterValue: string): number => {
+  switch (filterValue) {
+    case "en-attente": return 0;
+    case "accepte": return 1;
+    case "rejete": return 2;
+    case "confirme": return 3;
+    case "annule": return 4;
+    case "en-cours": return 5;
+    case "livre": return 6;
+    case "litige": return 7;
+    case "termine": return 8;
+    default: return -1;
+  }
+};
+
 
 type SortConfig = {
   key: "date" | "status" | "serviceName" | "";
@@ -39,6 +55,7 @@ export default function PlinCPage() {
   });
   const [showSortMenu, setShowSortMenu] = React.useState(false);
   const [selectedPlincId, setSelectedPlincId] = React.useState<string>();
+  const [status, setStatus] = React.useState<number>()
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const currentPage = 1;
 
@@ -48,13 +65,17 @@ export default function PlinCPage() {
 
   const { data: plincsData, isLoading } = useQuery({
     queryKey: ["plincs", activeFilter, currentPage],
-    queryFn: () => plincService.getAllPlincs(Number(currentPage), 10, undefined, 'desc', searchQuery, activeFilter),
+    queryFn: () => plincService.getAllPlincs(Number(currentPage), 10, undefined, 'desc', searchQuery, getStatusNumber(activeFilter)),
     enabled: mounted,
   });
 
   const handleRowClick = (id: number) => {
-    setSelectedPlincId(String(id));
-    setIsModalOpen(true);
+    const plinc = filteredData.find(item => item.id === id);
+    if (plinc) {
+      setStatus(Number(plinc.status));
+      setSelectedPlincId(String(id)); // Assurez-vous que l'ID est converti en chaîne
+      setIsModalOpen(true);
+    }
   };
 
   const sortOptions = [
@@ -67,7 +88,15 @@ export default function PlinCPage() {
     if (!plincsData?.data) return [];
 
     let result = [...plincsData.data];
+    console.log(result)
 
+
+    // Filtrage par statut
+    if (activeFilter !== "all") {
+      result = result.filter(plinc => plinc.status === getStatusNumber(activeFilter));
+    }
+
+    // Filtrage par recherche si nécessaire
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       result = result.filter(
@@ -96,8 +125,8 @@ export default function PlinCPage() {
         }
 
         if (sortConfig.key === "status") {
-          const aStatus = getStatusLabel(a);
-          const bStatus = getStatusLabel(b);
+          const aStatus = getStatusLabel(a.status);
+          const bStatus = getStatusLabel(b.status);
           return sortConfig.direction === "asc"
             ? aStatus.localeCompare(bStatus)
             : bStatus.localeCompare(aStatus);
@@ -108,7 +137,7 @@ export default function PlinCPage() {
     }
 
     return result;
-  }, [plincsData, searchQuery, sortConfig]);
+  }, [plincsData, searchQuery, sortConfig, activeFilter]);
 
   return (
     <div className="flex-1 space-y-4 p-3 mx-2">
@@ -208,6 +237,7 @@ export default function PlinCPage() {
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           plincId={selectedPlincId}
+          status={status}
         />
       </div>
     </div>

@@ -73,7 +73,6 @@ const UserServices: React.FC = () => {
                 </h3>
                 <Switch
                   checked={service.enabled}
-                  disabled
                 />
               </div>
             </div>

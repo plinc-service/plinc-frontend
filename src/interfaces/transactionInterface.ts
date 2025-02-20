@@ -7,6 +7,7 @@ export interface Transaction {
   plinc: Plinc;
   type: string;
   amount: number;
+  description?: string;
   payment_intent_id: string;
   payout_id: string;
   status: number;
