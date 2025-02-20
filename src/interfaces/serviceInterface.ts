@@ -53,6 +53,7 @@ export interface Service {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+<<<<<<< HEAD
 }
 
 export interface ApiResponse {
@@ -69,3 +70,11 @@ export interface ServicesRequestDetailsPopupProps {
   refetchList: () => void;
   servicesDetails?: Service | null;
 }
+=======
+  title: string;
+  enabled: boolean;
+  email?: string;
+  image_url?: string;
+  username?: string;
+}
+>>>>>>> 643838e608da07cdc34810700d8acf5dd97936eb

@@ -1,6 +1,6 @@
 "use client";
 
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@/components/ui/Separator";
 
 export const UserProfileSkeleton = () => {
   return (
@@ -20,14 +20,20 @@ export const UserProfileSkeleton = () => {
             <div className="flex flex-col items-center relative px-6">
               <div className="h-8 w-16 bg-neutral-200 rounded mb-1" />
               <div className="h-4 w-12 bg-neutral-200 rounded" />
-              <Separator orientation="vertical" className="absolute right-0 h-12" />
+              <Separator
+                orientation="vertical"
+                className="absolute right-0 h-12"
+              />
             </div>
             <div className="flex flex-col items-center">
               <div className="h-8 w-16 bg-neutral-200 rounded mb-1" />
               <div className="h-4 w-12 bg-neutral-200 rounded" />
             </div>
           </div>
-          <Separator orientation="vertical" className="absolute right-0 h-full" />
+          <Separator
+            orientation="vertical"
+            className="absolute right-0 h-full"
+          />
 
           <div className="h-10 w-full bg-neutral-200 rounded-full mt-4" />
         </div>

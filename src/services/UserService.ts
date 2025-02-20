@@ -35,6 +35,7 @@ export const fetchUsers = async ({
 export const fetchUserById = async (id: string): Promise<User> => {
   try {
     const response = await Axios.get(`/user/${id}`);
+    console.log(response);
     return response.data.data as User;
   } catch (error) {
     console.error("Erreur lors de la récupération de l'utilisateur :", error);
@@ -69,6 +70,22 @@ export const fetchUserServices = async (id: string): Promise<Service[]> => {
   } catch (error) {
     console.error(
       "Erreur lors de la récupération des services de l'utilisateur :",
+      error
+    );
+    throw error;
+  }
+};
+
+
+export const fetchUserTransactionsHistory = async (
+  id: string,
+): Promise<Transaction[]> => {
+  try {
+    const response = await Axios.get(`/transactions?user_id=${id}`);
+    return response.data.data as Transaction[];
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération des transactions de l'utilisateur :",
       error
     );
     throw error;

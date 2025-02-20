@@ -96,7 +96,7 @@ export default function Page() {
             <UserRevenue />
           </div>
           <div className="bg-white rounded-2xl overflow-hidden">
-            <UserTransactions />
+            <UserTransactions  />
           </div>
         </div>
       </div>

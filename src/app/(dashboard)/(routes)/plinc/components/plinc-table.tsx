@@ -90,9 +90,9 @@ export function PlincTable<TData extends object, TValue>({
                 <TableRow>
                   <TableCell
                     colSpan={columns.length}
-                    className="h-24 text-center"
+                    className="h-24 text-center text-base text-neutral-high"
                   >
-                    Aucun résultat.
+                    Aucune donnée pour le moment.
                   </TableCell>
                 </TableRow>
               )}

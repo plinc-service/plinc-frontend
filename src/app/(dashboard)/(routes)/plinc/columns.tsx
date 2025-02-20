@@ -4,16 +4,31 @@ import Image from "next/image";
 import { ColumnDef } from "@tanstack/react-table";
 import { ChevronRight } from "lucide-react";
 
-import type { Plinc } from '@/interfaces/plincInterface';
+import type { Plinc } from "@/interfaces/plincInterface";
 
-export const getStatusLabel = (plinc: Plinc): string => {
-  if (plinc.rejected) return "Rejeté";
-  if (plinc.cancelled || plinc.user_cancelled || plinc.pro_cancelled) return "Annulé";
-  if (plinc.terminated_at) return "Terminé";
-  if (plinc.started_at) return "En cours";
-  if (plinc.confirmed) return "Confirmé";
-  if (plinc.accepted) return "Accepté";
-  return "En attente";
+export const getStatusLabel = (plinc: number): string => {
+  switch (plinc) {
+    case 0:
+      return "En attente";
+    case 1:
+      return "Accepter";
+    case 2:
+      return "Rejeter";
+    case 3:
+      return "Confirmer";
+    case 4:
+      return "Annuler";
+    case 5:
+      return "En cours";
+    case 6:
+      return "Livré";
+    case 7:
+      return "Litigé";
+    case 8:
+      return "Terminer";
+    default:
+      return "En attente";
+  }
 };
 
 export const columns = (): ColumnDef<Plinc>[] => [
@@ -42,7 +57,9 @@ export const columns = (): ColumnDef<Plinc>[] => [
               className="rounded-full"
             />
           </div>
-          <span className="font-medium text-sm text-neutral-high">{service.owner.username}</span>
+          <span className="font-medium text-sm text-neutral-high">
+            {service.owner.username}
+          </span>
         </div>
       );
     },
@@ -82,56 +99,58 @@ export const columns = (): ColumnDef<Plinc>[] => [
     header: "Statut",
     cell: ({ row }) => {
       const plinc = row.original;
-      const status = getStatusLabel(plinc);
-      const getStatusStyle = (status: string): { bg: string; dot: string; text: string } => {
+      const status = getStatusLabel(plinc.status);
+      const getStatusStyle = (
+        status: string
+      ): { bg: string; dot: string; text: string } => {
         switch (status) {
           case "En attente":
             return {
               bg: "bg-badge-warning-bg",
-              dot: "bg-badge-warning",
-              text: "text-badge-warning"
+              dot: "bg-badge-warning-text",
+              text: "text-badge-warning-text",
             };
-          case "Accepté":
+          case "Accepter":
+            return {
+              bg: "bg-button-secondary-bg",
+              dot: "bg-badge-secondary-text",
+              text: "text-badge-secondary-text",
+            };
+          case "Annuler":
+            return {
+              bg: "bg-badge-danger-bg",
+              dot: "bg-danger-background",
+              text: "text-danger-background",
+            };
+          case "Confirmer":
             return {
               bg: "bg-badge-success-bg",
-              dot: "bg-badge-success",
-              text: "text-badge-success"
+              dot: "bg-success-background",
+              text: "text-success-background",
             };
-          case "Annulé":
-            return {
-              bg: "bg-badge-error-bg",
-              dot: "bg-badge-error",
-              text: "text-badge-error"
-            };
-          case "Confirmé":
-            return {
-              bg: "bg-badge-primary-bg",
-              dot: "bg-badge-primary",
-              text: "text-badge-primary"
-            };
-          case "Terminé":
+          case "Terminer":
             return {
               bg: "bg-badge-tertiary-bg",
-              dot: "bg-slate-400",
-              text: "text-[#475569]"
+              dot: "bg-neutral-high",
+              text: "text-neutral-high",
             };
-          case "Rejeté":
+          case "Rejeter":
             return {
-              bg: "bg-badge-error-bg",
-              dot: "bg-badge-error",
-              text: "text-badge-error"
+              bg: "bg-badge-danger-bg",
+              dot: "bg-danger-background",
+              text: "text-danger-background",
             };
           case "En cours":
             return {
               bg: "bg-badge-primary-bg",
               dot: "bg-badge-primary",
-              text: "text-badge-primary"
+              text: "text-badge-primary",
             };
           default:
             return {
               bg: "bg-slate-100",
               dot: "bg-slate-400",
-              text: "text-neutral-high"
+              text: "text-neutral-high",
             };
         }
       };
@@ -140,7 +159,9 @@ export const columns = (): ColumnDef<Plinc>[] => [
 
       return (
         <div className="min-w-[100px]">
-          <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${style.bg} ${style.text}`}>
+          <span
+            className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${style.bg} ${style.text}`}
+          >
             <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
             {status}
           </span>
@@ -177,12 +198,13 @@ export const enhanceColumnsWithRowClick = (
   columns: ColumnDef<Plinc>[],
   onRowClick: (id: number) => void
 ): ColumnDef<Plinc>[] => {
-  return columns.map(column => ({
+  return columns.map((column) => ({
     ...column,
     cell: (props) => {
-      const cellContent = typeof column.cell === 'function' 
-        ? column.cell(props)
-        : props.getValue();
+      const cellContent =
+        typeof column.cell === "function"
+          ? column.cell(props)
+          : props.getValue();
 
       return (
         <div

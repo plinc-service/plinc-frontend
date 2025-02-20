@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@/components/ui/Separator";
 
 import { User } from "@/interfaces/userInterface";
 
@@ -41,16 +41,19 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
           </div>
 
           <div className="mt-3 text-center space-y-2">
-            <h2 className="text-lg font-medium text-blue">{user.first_name} {user.last_name}</h2>
+            <h2 className="text-lg font-medium text-blue">
+              {user.first_name} {user.last_name}
+            </h2>
             <p className="text-sm text-neutral-high">{user.username}</p>
             <p className="text-xs text-neutral-high">{user.email}</p>
             <p className="text-sm text-blue font-semibold">PlinC</p>
-
           </div>
 
           <div className="mt-4 w-full flex justify-around text-neutral-high">
             <div className="flex flex-col items-center relative px-6">
-              <span className="text-2xl font-bold">{user.number_plinc_buyer}</span>
+              <span className="text-2xl font-bold">
+                {user.number_plinc_buyer}
+              </span>
               <span className="text-xs">Achetés</span>
               <Separator
                 orientation="vertical"
@@ -58,7 +61,9 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
               />
             </div>
             <div className="flex flex-col items-center">
-              <span className="text-2xl font-bold">{user.number_plinc_seller}</span>
+              <span className="text-2xl font-bold">
+                {user.number_plinc_seller}
+              </span>
               <span className="text-xs">Vendus</span>
             </div>
           </div>
@@ -67,7 +72,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
             className="absolute right-0 h-full"
           />
 
-          <Link 
+          <Link
             href={`/users/${user.id.replace("#", "")}/plincs`}
             className="text-sm mt-4 bg-blue text-white p-2.5 rounded-full w-full block text-center hover:bg-blue/90 transition-colors"
           >
@@ -95,27 +100,34 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
               <h3 className="text-xs font-medium text-neutral-high">
                 Adresse client
               </h3>
-              <p className="text-sm font-medium text-blue">{user.address_client || 'Non renseigné'}</p>
+              <p className="text-sm font-medium text-blue">
+                {user.address_client || "Non renseigné"}
+              </p>
             </div>
 
             <div className="space-y-1">
-              <h3 className="text-xs font-medium text-neutral-high">Adresse prestataire</h3>
-              <p className="text-sm font-medium text-blue">{user.address_prestataire || 'Non renseigné'}</p>
+              <h3 className="text-xs font-medium text-neutral-high">
+                Adresse prestataire
+              </h3>
+              <p className="text-sm font-medium text-blue">
+                {user.address_prestataire || "Non renseigné"}
+              </p>
             </div>
           </div>
 
-
           <div className="grid grid-cols-1">
             <div className="space-y-1">
-              <h3 className="text-xs font-medium text-neutral-high">
-                SIRET
-              </h3>
-              <p className="text-sm font-medium text-blue">{user.siret_num || 'Non renseigné'}</p>
+              <h3 className="text-xs font-medium text-neutral-high">SIRET</h3>
+              <p className="text-sm font-medium text-blue">
+                {user.siret_num || "Non renseigné"}
+              </p>
             </div>
 
             <div className="space-y-1 my-5">
               <h3 className="text-xs font-medium text-neutral-high">IBAN</h3>
-              <p className="text-sm font-medium text-blue">{user.iban_num || 'Non renseigné'}</p>
+              <p className="text-sm font-medium text-blue">
+                {user.iban_num || "Non renseigné"}
+              </p>
             </div>
           </div>
         </div>
