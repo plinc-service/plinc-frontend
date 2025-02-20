@@ -14,7 +14,7 @@ Ce projet est construit avec Next.js, un framework React moderne et performant p
 ### 1. Cloner le dépôt
 
 ```bash
-git clone https://github.com/SergeCodeur/plinc.git
+git clone https://github.com/plinc-service/plinc-frontend.git
 cd plinc
 ```
 
