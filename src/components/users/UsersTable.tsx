@@ -2,26 +2,28 @@
 
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
-import { useUsers } from "@/hooks/useUsers";
-import { useState } from "react";
 import UserSkeleton from "./UserSkeleton";
-import { SortField, SortOrder } from "@/app/(dashboard)/(routes)/users/page";
+import { User } from "@/interfaces/userInterface";
 
 interface UsersTableProps {
-  searchQuery: string;
-  sortField: SortField;
-  sortOrder: SortOrder;
+  data: User[];
+  loading: boolean;
+  error: string | null;
+  pagination: {
+    currentPage: number;
+    previous: boolean;
+    next: boolean;
+  };
+  onPageChange: (page: number) => void;
 }
 
-const UsersTable: React.FC<UsersTableProps> = ({ searchQuery, sortField, sortOrder }) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const { users, loading, error, pagination } = useUsers({
-    page: currentPage,
-    searchQuery,
-    sortField,
-    sortOrder
-  });
-
+const UsersTable: React.FC<UsersTableProps> = ({ 
+  data, 
+  loading, 
+  error, 
+  pagination,
+  onPageChange 
+}) => {
   if (loading) {
     return (
       <div className="space-y-1">
@@ -42,18 +44,18 @@ const UsersTable: React.FC<UsersTableProps> = ({ searchQuery, sortField, sortOrd
 
   return (
     <div>
-      <DataTable columns={columns} data={users} />
+      <DataTable columns={columns} data={data} />
       {(pagination.previous || pagination.next) && (
         <div className="mt-4 flex items-center justify-end gap-2">
           <button
-            onClick={() => setCurrentPage(prev => prev - 1)}
+            onClick={() => onPageChange(pagination.currentPage - 1)}
             disabled={!pagination.previous}
             className="px-3 py-2 rounded-lg border border-neutral-200 disabled:opacity-50"
           >
             Précédent
           </button>
           <button
-            onClick={() => setCurrentPage(prev => prev + 1)}
+            onClick={() => onPageChange(pagination.currentPage + 1)}
             disabled={!pagination.next}
             className="px-3 py-2 rounded-lg border border-neutral-200 disabled:opacity-50"
           >

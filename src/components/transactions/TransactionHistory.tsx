@@ -38,7 +38,7 @@ const TransactionHistory = () => {
 	if (!transactions.length) {
 		return (
 			<div className="mt-4 h-[390px] xxl:h-[570px] 2xl:h-[842px] flex justify-center items-center">
-				<p className="text-sm text-neutral-medium">Aucune transaction disponible.</p>
+				<p className="text-sm text-neutral-medium">Aucune donnée pour le moment.</p>
 			</div>
 		);
 	}

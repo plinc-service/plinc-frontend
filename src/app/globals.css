@@ -23,6 +23,13 @@
   --color-badge-success-bg: #10b981;
   --color-badge-tertiary-bg: #cbd5e1;
 
+  /* Status text colors*/
+  --color-badge-warning-text: #fff7ED;
+  --color-badge-secondary-text: #3B82F6;
+  --color-badge-danger-text: #EF4444;
+  --color-badge-success-text: #10B981;
+  --color-badge-tertiary-text: #CBD5E1;
+
   /* Common colors */
   --color-neutral-high: #475569;
   --color-neutral-low: #cbd5e1;

@@ -189,8 +189,8 @@ const WalletDetailsPopup: React.FC<WalletDetailsPopupProps> = ({
                       <ScrollBar orientation="vertical" />
                     </ScrollArea>
                   ) : (
-                    <p className="text-sm text-neutral-medium">
-                      Aucune transaction disponible.
+                    <p className="text-neutral-medium text-base text-neutral-high">
+                      Aucune donnée pour le moment.
                     </p>
                   )}
                 </div>

@@ -1,7 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+
 import {
   ColumnDef,
   flexRender,
@@ -21,7 +22,7 @@ import {
 
 import { Button } from "@/components/ui/Button";
 import { ChevronRight, ChevronLeft } from "lucide-react";
-
+import DataTableSkeleton from "./DataTableSkeleton";
 interface DataTablePaginationProps {
   currentPage: number;
   totalPages: number;
@@ -48,7 +49,9 @@ export function DataTable<TData extends object, TValue>({
     setMounted(true);
   }, []);
 
-  const [pageIndex, setPageIndex] = React.useState((pagination?.currentPage ?? 1) - 1);
+  const [pageIndex, setPageIndex] = React.useState(
+    (pagination?.currentPage ?? 1) - 1
+  );
   const [pageSize] = React.useState(10);
 
   const paginationState = React.useMemo(
@@ -70,7 +73,7 @@ export function DataTable<TData extends object, TValue>({
       pagination: paginationState,
     },
     onPaginationChange: (updater) => {
-      if (typeof updater === 'function') {
+      if (typeof updater === "function") {
         const newState = updater(paginationState);
         setPageIndex(newState.pageIndex);
       }
@@ -86,6 +89,10 @@ export function DataTable<TData extends object, TValue>({
     }
   }, [mounted, pagination, pageIndex, pagination?.currentPage]);
 
+  const pathname = usePathname();
+  const pathTab = pathname.split("/");
+  const isSpecificPage = pathTab[1] + pathTab[3] === "usersplincs";
+
   if (!mounted) {
     return null;
   }
@@ -95,69 +102,69 @@ export function DataTable<TData extends object, TValue>({
       <div>
         <div className="rounded-md ">
           {loading ? (
-            <div className="w-full h-32 flex items-center justify-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue" />
-            </div>
+           <DataTableSkeleton/>
           ) : (
             <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow
-                  key={headerGroup.id}
-                  className="hover:bg-transparent border-neutral-200"
-                >
-                  {headerGroup.headers.map((header) => (
-                    <TableHead
-                      key={header.id}
-                      className="h-11 px-6 text-neutral-high text-base font-medium"
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
+              <TableHeader>
+                {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow
-                    key={row.id}
-                    className="hover:bg-brand-lowest cursor-pointer border-neutral-200"
-                    onClick={() => {
-                      const item = row.original;
-                      if ("id" in item && item.id) {
-                        const id = String(item.id).replace(/^#/, "");
-                        router.push(`/users/${id}`);
-                      }
-                    }}
+                    key={headerGroup.id}
+                    className="hover:bg-transparent border-neutral-200"
                   >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="px-6 py-3">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
+                    {headerGroup.headers.map((header) => (
+                      <TableHead
+                        key={header.id}
+                        className="h-11 px-6 text-neutral-high text-base font-medium"
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
                     ))}
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
-                  >
-                    Aucun résultat.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      className="hover:bg-brand-lowest cursor-pointer border-neutral-200"
+                      onClick={() => {
+                        const item = row.original;
+                        if (!isSpecificPage) {
+                          if ("id" in item && item.id) {
+                            const id = String(item.id).replace(/^#/, "");
+                            router.push(`/users/${id}`);
+                          }
+                        }
+                      }}
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id} className="px-6 py-3">
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 text-center text-base text-neutral-high"
+                    >
+                      Aucune donnée pour le moment.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
           )}
         </div>
 

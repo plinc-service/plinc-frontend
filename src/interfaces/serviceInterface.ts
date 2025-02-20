@@ -16,4 +16,7 @@ export interface Service {
   updated_at: string;
   title: string;
   enabled: boolean;
+  email?: string;
+  image_url?: string;
+  username?: string;
 }
