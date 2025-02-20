@@ -1,6 +1,6 @@
 "use client"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/Dialog";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@/components/ui/Separator";
 import { ServicesRequestDetailsPopupProps } from "@/interfaces/serviceInterface";
 import { Loader2, X } from "lucide-react";
 import Image from 'next/image';
