@@ -67,7 +67,7 @@ export const ServiceRequestColumns: ColumnDef<Service>[] = [
 				year: "numeric"
 			}).replace(/\//g, "-");
 			return (
-				<div>
+				<div className="min-w-[140px]">
 					<span className="text-neutral-high">{formattedDate}</span>
 				</div>
 			)
