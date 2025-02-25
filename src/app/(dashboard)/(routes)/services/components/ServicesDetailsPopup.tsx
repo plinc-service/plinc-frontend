@@ -1,66 +1,28 @@
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/Dialog";
+import { Separator } from "@/components/ui/Separator";
 import Spinner from "@/components/ui/Spinner";
-import { useValidateOrRejectWithdrawal } from "@/hooks/useTransactions";
+import { Switch } from "@/components/ui/Switch";
 import { ServicesRequestDetailsPopupProps } from "@/interfaces/serviceInterface";
 import {
 	X
 } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import ValidateOrRejectButtons from "../../services/components/ValidateOrRejectButtons";
-import UserProfilePopup from "./UserProfilePopup";
+import { useState } from "react";
+import UserProfilePopup from "../../validations/components/UserProfilePopup";
 
-const ServicesRequestsPopup: React.FC<ServicesRequestDetailsPopupProps> = ({
+
+interface ServicesDetailsPopupProps extends ServicesRequestDetailsPopupProps { }
+
+const ServicesDetailsPopup: React.FC<ServicesDetailsPopupProps> = ({
 	open,
 	onClose,
 	servicesDetails,
 	refetchList
 }) => {
 
-	const [localError, setLocalError] = useState<string | null>(null);
 	const [isUserProfileOpen, setIsUserProfileOpen] = useState(false);
 
-	const {
-		validateOrRejectWithdrawal,
-		loading,
-		error,
-	} = useValidateOrRejectWithdrawal(() => {
-		refetchList();
-		onClose();
-	});
-
-	useEffect(() => {
-		if (error) {
-			setLocalError(error);
-		}
-	}, [error]);
-
-	useEffect(() => {
-		if (!open) {
-			setLocalError(null);
-		}
-	}, [open]);
-
-	const handleValidate = () => {
-		if (servicesDetails?.id) {
-			validateOrRejectWithdrawal({
-				id: servicesDetails.id.toString(),
-				status: 1
-			});
-		}
-	};
-
-	const handleReject = () => {
-		if (servicesDetails?.id) {
-			validateOrRejectWithdrawal({
-				id: servicesDetails.id.toString(),
-				status: 2
-			});
-		}
-	};
-
 	const handleClose = () => {
-		setLocalError(null);
 		onClose();
 	};
 
@@ -76,11 +38,6 @@ const ServicesRequestsPopup: React.FC<ServicesRequestDetailsPopupProps> = ({
 		<>
 			<Dialog open={open} onOpenChange={handleClose}>
 				<DialogContent className="max-w-[700px] w-full">
-					{localError && (
-						<div className="bg-red-50 text-red-600 p-3 rounded-md">
-							{error}
-						</div>
-					)}
 
 					<div className="space-y-3">
 						{/* HEADER */}
@@ -88,7 +45,7 @@ const ServicesRequestsPopup: React.FC<ServicesRequestDetailsPopupProps> = ({
 							<>
 								<div className="flex justify-between items-center">
 									<DialogTitle className="text-lg text-neutral-high font-medium">
-										Services {servicesDetails.id}
+										Services #{servicesDetails.id}
 									</DialogTitle>
 									<button className="hover:text-[#94A3B8] cursor-pointer" onClick={onClose}>
 										<X />
@@ -97,6 +54,30 @@ const ServicesRequestsPopup: React.FC<ServicesRequestDetailsPopupProps> = ({
 								<div>
 									<div className="flex justify-between items-center">
 										<span className="font-semibold block text-primary text-xl">{servicesDetails.name}</span>
+										<Switch />
+									</div>
+
+									<div className="space-y-1 mt-2">
+										<span className="block text-lg font-medium text-neutral-high">{servicesDetails.category}</span>
+										<p className="text-neutral-high text-base">{servicesDetails.description || "Pas de description"}</p>
+									</div>
+
+									<div className="w-full flex justify-between items-center">
+										<div className="mt-4 w-fit flex justify-center text-neutral-high">
+											<div className="flex flex-col items-center relative px-6">
+												<span className="text-2xl font-bold">{servicesDetails.number_of_sells}</span>
+												<span className="text-xs">ventes</span>
+												<Separator
+													orientation="vertical"
+													className="absolute right-0 h-12"
+												/>
+											</div>
+											<div className="flex flex-col items-center px-6">
+												<span className="text-2xl font-bold">{servicesDetails.number_of_waiting}</span>
+												<span className="text-xs">en cours</span>
+											</div>
+										</div>
+
 										<span className="block text-neutral-high text-sm">
 											Crée le{" "}{new Date(servicesDetails?.created_at).toLocaleDateString("fr-FR", {
 												day: "2-digit",
@@ -106,17 +87,7 @@ const ServicesRequestsPopup: React.FC<ServicesRequestDetailsPopupProps> = ({
 										</span>
 									</div>
 
-									<div className="space-y-1 mt-2">
-										<span className="block text-lg font-medium text-neutral-high">{servicesDetails.category}</span>
-										<p className="text-neutral-high text-lg">{servicesDetails.description || "Pas de description"}</p>
-									</div>
-
-									{/* Buttons for validating or rejecting withdrawal requests */}
-									<ValidateOrRejectButtons
-										onValidate={handleValidate}
-										onReject={handleReject}
-										loading={loading}
-									/>
+									<Separator orientation="horizontal" className="mt-4" />
 
 									<div className="space-y-2.5 mt-6">
 										<p className="text-primary font-medium">Créer par</p>
@@ -166,4 +137,4 @@ const ServicesRequestsPopup: React.FC<ServicesRequestDetailsPopupProps> = ({
 	);
 };
 
-export default ServicesRequestsPopup;
+export default ServicesDetailsPopup;

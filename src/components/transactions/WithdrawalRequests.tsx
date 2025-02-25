@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { ScrollArea } from "../ui/ScrollArea";
+import Spinner from "../ui/Spinner";
 import WithdrawalRequestsPopup from "./WithdrawalRequestsPopup";
 
 const WithdrawalRequests = () => {
@@ -38,7 +39,9 @@ const WithdrawalRequests = () => {
 			</div>
 			<ScrollArea className="h-[600px] xxl:h-[767px] 2xl:h-[1040px]">
 				{withdrawalsLoading ? (
-					<p>Chargement des retraits...</p>
+					<div className="flex justify-center items-center h-[600px] xxl:h-[767px] 2xl:h-[1040px]">
+						<Spinner />
+					</div>
 				) : withdrawalsError ? (
 					<p className="text-red-500">{withdrawalsError}</p>
 				) : (
