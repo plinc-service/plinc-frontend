@@ -1,5 +1,6 @@
 import { TransactionsServices } from "@/services/TransactionService";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 
 export const useTransactionWallet = () => {
   const { data, isLoading, error, refetch } = useQuery({
@@ -26,14 +27,20 @@ export const useTransactionWallet = () => {
 };
 
 export const useWithdrawalRequests = () => {
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(10);
+  const [searchQuery, setSearchQuery] = useState("");
+
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["fetchWithdrawalRequests"],
+    queryKey: ["fetchWithdrawalRequests", searchQuery],
     queryFn: () =>
       TransactionsServices.fetchTransactions({
-        query: "retrait",
+        query: searchQuery || "retrait",
         sort_field: "created_at",
         sort_order: "desc",
         status: "0",
+        page: page,
+        page_size: pageSize,
       }),
   });
 
@@ -44,6 +51,9 @@ export const useWithdrawalRequests = () => {
       ? "Une erreur est survenue lors du chargement des retraits."
       : null,
     refetch,
+    page,
+    setPage,
+    setSearchQuery,
   };
 };
 
