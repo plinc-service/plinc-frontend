@@ -3,55 +3,21 @@ import { Input } from "@/components/ui/Input";
 import { AlignCenter, ChevronDown, ChevronsUpDown, Search } from "lucide-react";
 
 interface StatutDataTableFilterProps {
-	selectedStatus: number | undefined;
-	setSelectedStatus: (isActive?: number) => void;
 	searchQuery: string;
 	setSearchQuery: (query: string) => void;
-	refetch: () => void;
 }
 
-export function StatutDataTableFilter({
-	selectedStatus,
-	setSelectedStatus,
+export function ServicesDataTableFilter({
 	searchQuery,
 	setSearchQuery,
-	refetch,
 }: StatutDataTableFilterProps) {
-	const options = [
-		{ label: "Tout", value: undefined },
-		{ label: "Activé", value: 1 },
-		{ label: "Désactivé", value: 0 },
-	];
-
-	const handleFilterClick = (value?: number) => {
-		const newStatus = selectedStatus === value ? undefined : value;
-		setSelectedStatus(newStatus);
-		refetch();
-	};
 
 	const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setSearchQuery(e.target.value);
 	};
 
 	return (
-		<div className="flex justify-between items-center w-full mb-5">
-			<div className="flex items-center gap-2">
-				{options.map((option, index) => {
-					const isActive = selectedStatus === option.value || (option.value === undefined && selectedStatus === undefined);
-
-					return (
-						<Button
-							key={index}
-							size="sm"
-							variant={isActive ? "default" : "outline"}
-							onClick={() => handleFilterClick(option.value)}
-						>
-							{option.label}
-						</Button>
-					);
-				})}
-			</div>
-
+		<>
 			<div className="flex items-center justify-end gap-2">
 				<div className="relative flex-1 w-fit">
 					<Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-input-placeholder" />
@@ -74,10 +40,10 @@ export function StatutDataTableFilter({
 					variant="outline"
 					className="h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full"
 				>
-					<span>Ventes</span>
+					<span>Montant</span>
 					<ChevronsUpDown className="h-4 w-4" />
 				</Button>
 			</div>
-		</div>
+		</>
 	);
 }

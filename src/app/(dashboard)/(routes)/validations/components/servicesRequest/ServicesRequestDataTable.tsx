@@ -4,43 +4,39 @@ import {
 	ColumnDef,
 	flexRender,
 	getCoreRowModel,
-	getPaginationRowModel,
-	useReactTable,
+	useReactTable
 } from "@tanstack/react-table";
 
 import {
 	Table,
-	TableBody,
-	TableCell,
 	TableHead,
 	TableHeader,
-	TableRow,
+	TableRow
 } from "@/components/ui/Table";
 
 import { Button } from "@/components/ui/Button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import ServicesRequestTableBody from "./ServicesRequestTableBody";
 
 interface ServicesRequestsDataTableProps<TData extends object, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
 	onClick: (item: TData) => void;
+	isLoading: boolean;
+	error: string | null;
 }
 
 export function ServicesRequestsDataTable<TData extends object, TValue>({
 	columns,
 	data,
-	onClick
+	onClick,
+	isLoading,
+	error,
 }: ServicesRequestsDataTableProps<TData, TValue>) {
 	const table = useReactTable({
 		data,
 		columns,
 		getCoreRowModel: getCoreRowModel(),
-		getPaginationRowModel: getPaginationRowModel(),
-		initialState: {
-			pagination: {
-				pageSize: 11,
-			},
-		},
 	});
 
 	return (
@@ -70,35 +66,13 @@ export function ServicesRequestsDataTable<TData extends object, TValue>({
 								</TableRow>
 							))}
 						</TableHeader>
-						<TableBody>
-							{table.getRowModel().rows?.length ? (
-								table.getRowModel().rows.map((row) => (
-									<TableRow
-										key={row.id}
-										className="hover:bg-brand-lowest cursor-pointer border-neutral-200"
-										onClick={() => onClick(row.original)}
-									>
-										{row.getVisibleCells().map((cell) => (
-											<TableCell key={cell.id} className="px-6 py-3">
-												{flexRender(
-													cell.column.columnDef.cell,
-													cell.getContext()
-												)}
-											</TableCell>
-										))}
-									</TableRow>
-								))
-							) : (
-								<TableRow>
-									<TableCell
-										colSpan={columns.length}
-										className="h-24 text-center"
-									>
-										Aucun résultat.
-									</TableCell>
-								</TableRow>
-							)}
-						</TableBody>
+						<ServicesRequestTableBody
+							table={table}
+							columns={columns}
+							isLoading={isLoading}
+							error={error}
+							onClick={onClick}
+						/>
 					</Table>
 				</div>
 

@@ -15,8 +15,32 @@ const ValidationPage = () => {
 	const [withdrawalSearch, setWithdrawalSearch] = useState("");
 	const [serviceSearch, setServiceSearch] = useState("");
 
+	// État pour déclencher les requêtes de recherche
+	const [triggerWithdrawalSearch, setTriggerWithdrawalSearch] = useState(false);
+	const [triggerServiceSearch, setTriggerServiceSearch] = useState(false);
+
 	const handleTabChange = (value: string) => {
 		setActiveTab(value);
+	};
+
+	// Fonction pour gérer l'appui sur Entrée
+	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, tabType: string) => {
+		if (e.key === 'Enter') {
+			if (tabType === 'withdrawal') {
+				setTriggerWithdrawalSearch(prev => !prev);
+			} else if (tabType === 'service') {
+				setTriggerServiceSearch(prev => !prev);
+			}
+		}
+	};
+
+	// Fonction pour déclencher la recherche
+	const handleSearch = (tabType: string) => {
+		if (tabType === 'withdrawal') {
+			setTriggerWithdrawalSearch(prev => !prev);
+		} else if (tabType === 'service') {
+			setTriggerServiceSearch(prev => !prev);
+		}
 	};
 
 	const renderFilters = () => {
@@ -30,6 +54,7 @@ const ValidationPage = () => {
 							className="pl-9 h-10"
 							value={withdrawalSearch}
 							onChange={(e) => setWithdrawalSearch(e.target.value)}
+							onKeyDown={(e) => handleKeyDown(e, 'withdrawal')}
 						/>
 					</div>
 					<Button
@@ -59,6 +84,7 @@ const ValidationPage = () => {
 							className="pl-9 h-10"
 							value={serviceSearch}
 							onChange={(e) => setServiceSearch(e.target.value)}
+							onKeyDown={(e) => handleKeyDown(e, 'service')}
 						/>
 					</div>
 					<Button
@@ -102,11 +128,19 @@ const ValidationPage = () => {
 					</div>
 
 					{activeTab === "WithdrawalRequests" && (
-						<WithdrawalRequestsContent key="withdrawals" />
+						<WithdrawalRequestsContent
+							key="withdrawals"
+							searchQuery={withdrawalSearch}
+							triggerSearch={triggerWithdrawalSearch}
+						/>
 					)}
 
 					{activeTab === "Services" && (
-						<ServicesContent key="services" />
+						<ServicesContent
+							key="services"
+							searchQuery={serviceSearch}
+							triggerSearch={triggerServiceSearch}
+						/>
 					)}
 				</Tabs>
 			</div>
@@ -114,18 +148,30 @@ const ValidationPage = () => {
 	);
 };
 
-const WithdrawalRequestsContent = () => {
+const WithdrawalRequestsContent = ({
+	searchQuery,
+	triggerSearch
+}: {
+	searchQuery: string;
+	triggerSearch: boolean
+}) => {
 	return (
 		<div className="mt-4">
-			<WithdrawRequestTableWrapper />
+			<WithdrawRequestTableWrapper searchQuery={searchQuery} triggerSearch={triggerSearch} />
 		</div>
 	);
 };
 
-const ServicesContent = () => {
+const ServicesContent = ({
+	searchQuery,
+	triggerSearch
+}: {
+	searchQuery: string;
+	triggerSearch: boolean
+}) => {
 	return (
 		<div className="mt-4">
-			<ServicesRequestTableWrapper />
+			<ServicesRequestTableWrapper searchQuery={searchQuery} triggerSearch={triggerSearch} />
 		</div>
 	);
 };

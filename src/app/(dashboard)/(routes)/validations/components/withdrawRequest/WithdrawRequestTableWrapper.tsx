@@ -1,20 +1,39 @@
 import WithdrawalRequestsPopup from "@/components/transactions/WithdrawalRequestsPopup";
 import { useWithdrawalRequests } from "@/hooks/useTransactions";
 import { Transaction } from "@/interfaces/transactionInterface";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { columns } from "./columns";
 import { WithdrawalRequestsDataTable } from "./WithdrawRequestDataTable";
 
-const WithdrawRequestTableWrapper = () => {
+interface WithdrawRequestTableWrapperProps {
+	searchQuery: string;
+	triggerSearch: boolean;
+}
+
+const WithdrawRequestTableWrapper = ({
+	searchQuery,
+	triggerSearch
+}: WithdrawRequestTableWrapperProps) => {
 	const [selectedWithdrawal, setSelectedWithdrawal] = useState<Transaction | null>(null);
 	const [isPopupOpen, setIsPopupOpen] = useState(false);
 
 	const {
 		data: withdrawal,
-		refetch: refetch
-		// error: withdrawalsError,
-		// loading: withdrawalsLoading,
+		refetch,
+		error,
+		loading,
+		setSearchQuery
 	} = useWithdrawalRequests();
+
+	useEffect(() => {
+		setSearchQuery(searchQuery);
+	}, [searchQuery, setSearchQuery]);
+
+	useEffect(() => {
+		if (searchQuery.trim() !== '') {
+			refetch();
+		}
+	}, [triggerSearch, refetch, searchQuery]);
 
 	const handleWithdrawalClick = (withdrawal: Transaction) => {
 		setSelectedWithdrawal(withdrawal);
@@ -27,7 +46,14 @@ const WithdrawRequestTableWrapper = () => {
 
 	return (
 		<>
-			<WithdrawalRequestsDataTable columns={columns} data={withdrawal} onClick={(item: Transaction) => handleWithdrawalClick(item)} />
+			<WithdrawalRequestsDataTable
+				columns={columns}
+				data={withdrawal}
+				onClick={(item: Transaction) => handleWithdrawalClick(item)}
+				error={error}
+				isLoading={loading}
+			/>
+
 			<WithdrawalRequestsPopup
 				open={isPopupOpen}
 				onClose={handleClosePopup}
