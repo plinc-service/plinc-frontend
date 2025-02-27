@@ -1,22 +1,22 @@
 import { Skeleton } from "@/components/ui/Skeleton";
 import { TableBody, TableCell, TableRow } from "@/components/ui/Table";
-import { Column, flexRender, Table } from "@tanstack/react-table";
+import { ColumnDef, flexRender, Table } from "@tanstack/react-table";
 
-interface ServicesTableBodyProps<TData> {
+interface ServicesTableBodyProps<TData, TValue> {
 	table: Table<TData>;
-	columns: Column<TData>[];
+	columns: ColumnDef<TData, TValue>[];
 	isLoading: boolean;
 	error: string | null;
 	onClick: (item: TData) => void;
 }
 
-const ServicesRequestTableBody = <TData,>({
+const ServicesRequestTableBody = <TData, TValue>({
 	table,
 	columns,
 	isLoading,
 	error,
 	onClick,
-}: ServicesTableBodyProps<TData>) => {
+}: ServicesTableBodyProps<TData, TValue>) => {
 	if (isLoading) {
 		return (
 			<TableBody>
