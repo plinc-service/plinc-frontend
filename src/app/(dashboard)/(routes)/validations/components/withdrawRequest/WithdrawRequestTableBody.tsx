@@ -1,10 +1,10 @@
 import { Skeleton } from "@/components/ui/Skeleton";
 import { TableBody, TableCell, TableRow } from "@/components/ui/Table";
-import { flexRender, Table } from "@tanstack/react-table";
+import { Column, flexRender, Table } from "@tanstack/react-table";
 
 interface WithdrawtTableBodyProps<TData> {
 	table: Table<TData>;
-	columns: any[];
+	columns: Column<TData>[];
 	isLoading: boolean;
 	error: string | null;
 	onClick: (item: TData) => void;

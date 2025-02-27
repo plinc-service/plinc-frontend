@@ -10,10 +10,7 @@ import Image from "next/image";
 import { useState } from "react";
 import UserProfilePopup from "../../validations/components/UserProfilePopup";
 
-
-interface ServicesDetailsPopupProps extends ServicesRequestDetailsPopupProps { }
-
-const ServicesDetailsPopup: React.FC<ServicesDetailsPopupProps> = ({
+const ServicesDetailsPopup: React.FC<ServicesRequestDetailsPopupProps> = ({
 	open,
 	onClose,
 	servicesDetails,
