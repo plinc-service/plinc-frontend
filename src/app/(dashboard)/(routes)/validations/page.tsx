@@ -11,11 +11,9 @@ import WithdrawRequestTableWrapper from "./components/withdrawRequest/WithdrawRe
 const ValidationPage = () => {
 	const [activeTab, setActiveTab] = useState("WithdrawalRequests");
 
-	// État de recherche pour chaque onglet
 	const [withdrawalSearch, setWithdrawalSearch] = useState("");
 	const [serviceSearch, setServiceSearch] = useState("");
 
-	// État pour déclencher les requêtes de recherche
 	const [triggerWithdrawalSearch, setTriggerWithdrawalSearch] = useState(false);
 	const [triggerServiceSearch, setTriggerServiceSearch] = useState(false);
 
@@ -23,7 +21,6 @@ const ValidationPage = () => {
 		setActiveTab(value);
 	};
 
-	// Fonction pour gérer l'appui sur Entrée
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, tabType: string) => {
 		if (e.key === 'Enter') {
 			if (tabType === 'withdrawal') {
@@ -31,15 +28,6 @@ const ValidationPage = () => {
 			} else if (tabType === 'service') {
 				setTriggerServiceSearch(prev => !prev);
 			}
-		}
-	};
-
-	// Fonction pour déclencher la recherche
-	const handleSearch = (tabType: string) => {
-		if (tabType === 'withdrawal') {
-			setTriggerWithdrawalSearch(prev => !prev);
-		} else if (tabType === 'service') {
-			setTriggerServiceSearch(prev => !prev);
 		}
 	};
 
