@@ -6,8 +6,8 @@ export interface AuthResponse {
     token: string;
     user: User;
   };
-  previous: any | null;
-  next: any | null;
+  previous: string | null;
+  next: string | null;
   total_pages: number;
 }
 

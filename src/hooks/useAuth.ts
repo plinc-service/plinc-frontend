@@ -11,7 +11,7 @@ interface LoginCredentials {
 
 interface MutationCallbacks {
   onSuccess?: (user: User) => void;
-  onError?: (error: any) => void;
+  onError?: (error: unknown) => void;
 }
 
 export const useAuth = () => {
@@ -44,7 +44,11 @@ export const useAuth = () => {
         callbacks?.onSuccess?.(data.data.user);
       },
       onError: (error) => {
-        callbacks?.onError?.(error);
+        if (callbacks?.onError) {
+          callbacks.onError(error);
+        } else if (process.env.NODE_ENV === "development") {
+          console.error("Erreur lors de l'authentification :", error);
+        }
       },
     });
   };

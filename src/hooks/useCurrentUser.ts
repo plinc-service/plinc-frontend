@@ -11,7 +11,7 @@ export const useCurrentUser = () => {
       try {
         const userData = AuthService.getUser();
         setUser(userData);
-      } catch (error) {
+      } catch {
         setUser(null);
       } finally {
         setLoading(false);
