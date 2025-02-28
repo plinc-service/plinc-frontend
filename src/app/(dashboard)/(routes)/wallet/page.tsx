@@ -28,7 +28,6 @@ export default function WalletPage() {
 
   const handleWalletClick = async (walletId: string) => {
     try {
-      console.log("Détails du wallet :");
       const walletDetails: WalletDetails =
         await WalletService.fetchWalletDetails(walletId);
 
@@ -109,15 +108,15 @@ export default function WalletPage() {
         <ul className="grid grid-cols-4 gap-4">
           {loading
             ? Array.from({ length: 16 }, (_, index) => (
-                <WalletSkeleton key={`skeleton-${index}`} />
-              ))
+              <WalletSkeleton key={`skeleton-${index}`} />
+            ))
             : wallets.map((wallet) => (
-                <WalletCard
-                  key={wallet.id}
-                  wallet={wallet}
-                  onClick={handleWalletClick}
-                />
-              ))}
+              <WalletCard
+                key={wallet.id}
+                wallet={wallet}
+                onClick={handleWalletClick}
+              />
+            ))}
         </ul>
         {/* Pagination */}
         <div className="w-full flex item-center justify-between mt-5">

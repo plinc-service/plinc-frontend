@@ -1,17 +1,17 @@
 "use client";
 
-import React from "react";
-import PlinCSkeleton from "./components/PlinCSkeleton";
-import { PlincTable } from "./components/plinc-table";
-import { Search, AlignCenter, ChevronDown } from "lucide-react";
-import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
-import { columns, enhanceColumnsWithRowClick, getStatusLabel } from "./columns";
-import { PlincDetailsModal } from "./components/PlincDetailsModal";
 import TopBar from "@/components/layout/TopBar";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 import { cn } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
 import { plincService } from "@/services/PlincService";
+import { useQuery } from "@tanstack/react-query";
+import { AlignCenter, ChevronDown, Search } from "lucide-react";
+import React from "react";
+import { columns, enhanceColumnsWithRowClick, getStatusLabel } from "./columns";
+import PlinCSkeleton from "./components/PlinCSkeleton";
+import { PlincDetailsModal } from "./components/PlincDetailsModal";
+import { PlincTable } from "./components/plinc-table";
 
 const filters = [
   { label: "Tout", value: "all" },
@@ -88,8 +88,6 @@ export default function PlinCPage() {
     if (!plincsData?.data) return [];
 
     let result = [...plincsData.data];
-    console.log(result)
-
 
     // Filtrage par statut
     if (activeFilter !== "all") {
