@@ -1,14 +1,42 @@
 import axios from "axios";
+import { AuthService } from "../services/AuthService";
+
 const Axios = axios.create({
   baseURL: "https://api-plinc.gini-africa.com/administrator",
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-Axios.interceptors.request.use((request) => {
-  const accessToken = "f9ed23adfefef33db200ffd8dc626c9e6a5c08ad";
-  if (accessToken) {
-    request.headers.Authorization = "Token " + accessToken;
+Axios.interceptors.request.use(
+  (config) => {
+    const token = AuthService.getToken();
+
+    if (token) {
+      config.headers["Authorization"] = `Token ${token}`;
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-  return request;
-});
+);
+
+Axios.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response.status === 401 || error.response.status === 403) {
+      AuthService.logout();
+
+      if (typeof window !== "undefined") {
+        window.location.href = "/login";
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default Axios;

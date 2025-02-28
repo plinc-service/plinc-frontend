@@ -1,6 +1,6 @@
-import { Plinc } from '@/interfaces/plincInterface';
-import { PlincDetails } from '@/interfaces/plincDetails';
-import Axios from '@/utils/config-axios';
+import { PlincDetails } from "@/interfaces/plincDetails";
+import { Plinc } from "@/interfaces/plincInterface";
+import Axios from "@/utils/config-axios";
 
 export interface PlincResponse {
   success: boolean;
@@ -16,16 +16,16 @@ class PlincService {
     page: number = 1,
     pageSize: number = 10,
     sortField?: string,
-    sortOrder: 'asc' | 'desc' = 'desc',
+    sortOrder: "asc" | "desc" = "desc",
     query?: string,
     status?: string,
     isClient: boolean = false
   ): Promise<PlincResponse> {
     try {
-      const response = await Axios.get('/plincs', {
+      const response = await Axios.get("/plincs", {
         params: {
           user_id: userId,
-          is_client: isClient ? "1" : "0",  // Changed to '1' or '0' string
+          is_client: isClient ? "1" : "0", // Changed to '1' or '0' string
           page,
           page_size: pageSize,
           ...(sortField && { sort_field: sortField }),
@@ -37,7 +37,7 @@ class PlincService {
 
       return response.data as PlincResponse;
     } catch (error) {
-      console.error('Error fetching plincs:', error);
+      console.error("Error fetching plincs:", error);
       throw error;
     }
   }
@@ -46,7 +46,7 @@ class PlincService {
     page: number = 1,
     pageSize: number = 10,
     sortField?: string,
-    sortOrder: 'asc' | 'desc' = 'desc',
+    sortOrder: "asc" | "desc" = "desc",
     query?: string,
     status?: number,
     userId?: string,
@@ -63,14 +63,13 @@ class PlincService {
         ...(status && { status }),
         ...(userId && { user_id: userId }),
         ...(serviceId && { service_id: serviceId }),
-        ...(isClient !== undefined && { is_client: isClient ? 1 : 0 }) 
+        ...(isClient !== undefined && { is_client: isClient ? 1 : 0 }),
       };
 
-      const response = await Axios.get('/plincs', { params });
-      console.log(response);
+      const response = await Axios.get("/plincs", { params });
       return response.data as PlincResponse;
     } catch (error) {
-      console.error('Error fetching all plincs:', error);
+      console.error("Error fetching all plincs:", error);
       throw error;
     }
   }
@@ -80,7 +79,7 @@ class PlincService {
       const response = await Axios.get(`/plinc/${id}`);
       const plincDetails = response.data.data;
       const data = {
-        id : plincDetails.id,
+        id: plincDetails.id,
         service: {
           name: plincDetails.service.name,
           description: plincDetails.service.description,
@@ -88,8 +87,8 @@ class PlincService {
           hour_price: plincDetails.service.hour_price,
           created_at: plincDetails.service.created_at,
         },
-        date : plincDetails.date,
-        address : plincDetails.address || "Adresse non disponible",
+        date: plincDetails.date,
+        address: plincDetails.address || "Adresse non disponible",
         client: {
           name: plincDetails.customer.username,
           email: plincDetails.customer.email,
@@ -100,10 +99,10 @@ class PlincService {
           email: plincDetails.service.owner.email,
           image: plincDetails.service.owner.image_url || "/avatar.svg",
         },
-      }
+      };
       return data as PlincDetails;
     } catch (error) {
-      console.error('Erreur lors de la récupération du plinc :', error);
+      console.error("Erreur lors de la récupération du plinc :", error);
       throw error;
     }
   }

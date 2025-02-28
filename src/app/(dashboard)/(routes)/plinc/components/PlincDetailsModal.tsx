@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useEffect } from "react";
-import Image from "next/image";
-import { X, ArrowUpRight } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/Dialog";
 import { Separator } from "@/components/ui/Separator";
-import { PlincTrackingModal } from "./PlincTrackingModal";
-import { plincService } from "@/services/PlincService";
 import { PlincDetails } from "@/interfaces/plincDetails";
+import { plincService } from "@/services/PlincService";
+import { ArrowUpRight, X } from "lucide-react";
+import Image from "next/image";
+import React, { useEffect } from "react";
 import { getStatusLabel } from "../columns";
+import { PlincTrackingModal } from "./PlincTrackingModal";
 
 interface PlincDetailsModalProps {
   isOpen: boolean;
@@ -33,7 +33,6 @@ export function PlincDetailsModal({
       if (plincId) {
         try {
           const plincDetail = await plincService.getPlincById(plincId);
-          console.log(plincDetail);
           setPlincDetails(plincDetail);
         } catch (error) {
           console.error(
@@ -144,17 +143,14 @@ export function PlincDetailsModal({
                   </p>
                 </div>
                 <span
-                  className={`${
-                    getStatusStyle(getStatusLabel(status || 0)).bg
-                  } ${
-                    getStatusStyle(getStatusLabel(status || 0)).text
-                  }  px-3 py-1 rounded-full text-sm font-medium`}
+                  className={`${getStatusStyle(getStatusLabel(status || 0)).bg
+                    } ${getStatusStyle(getStatusLabel(status || 0)).text
+                    }  px-3 py-1 rounded-full text-sm font-medium`}
                 >
                   {getStatusLabel(status || 0)}
                   <span
-                    className={`w-1.5 h-1.5 rounded-full bg-red-950  ${
-                      getStatusStyle(getStatusLabel(status || 0)).dot
-                    }`}
+                    className={`w-1.5 h-1.5 rounded-full bg-red-950  ${getStatusStyle(getStatusLabel(status || 0)).dot
+                      }`}
                   />
                 </span>
               </div>

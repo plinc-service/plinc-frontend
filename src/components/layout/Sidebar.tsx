@@ -2,10 +2,10 @@
 
 import { sidebarItems } from "@/constants/Sidebar";
 import { cn } from "@/lib/utils";
-import { LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import LogOutButton from "../ui/LogOutButton";
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -44,9 +44,8 @@ export function Sidebar() {
             >
               {item.icon && (
                 <item.icon
-                  className={`${
-                    active ? "text-blue" : "text-neutral-high"
-                  } h-4 w-4`}
+                  className={`${active ? "text-blue" : "text-neutral-high"
+                    } h-4 w-4`}
                 />
               )}
               {item.title}
@@ -56,13 +55,7 @@ export function Sidebar() {
       </div>
 
       <div className="mt-auto p-2">
-        <Link
-          href="/logout"
-          className="flex items-center gap-3 rounded-md px-3 py-2 text-sm"
-        >
-          <LogOut className="h-4 w-4" />
-          Se déconnecter
-        </Link>
+        <LogOutButton />
       </div>
     </aside>
   );

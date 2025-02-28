@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { MoveDiagonal, MoveDownRight, MoveUpRight } from "lucide-react";
-import { fetchUserTransactionsHistory } from "@/services/UserService";
-import { useParams } from "next/navigation";
 import { Transaction } from "@/interfaces/transactionInterface";
+import { fetchUserTransactionsHistory } from "@/services/UserService";
+import { MoveDiagonal, MoveDownRight, MoveUpRight } from "lucide-react";
+import { useParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 
 const UserTransactions: React.FC = () => {
- 
+
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const { userId } = useParams();
   const [mounted, setMounted] = React.useState(false);
@@ -35,7 +35,6 @@ const UserTransactions: React.FC = () => {
         if (!userId) return;
         const data = await fetchUserTransactionsHistory(userId.toString());
         setTransactions(data);
-        console.log(data);
       } catch (error) {
         console.error(
           "Erreur lors de la récupération des transactions :",
@@ -71,16 +70,14 @@ const UserTransactions: React.FC = () => {
             <div key={transaction.id} className="py-4 first:pt-0 last:pb-0">
               <div className="flex items-start gap-3">
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    transaction.type === "retrait" ? "bg-red-50" : "bg-green-50"
-                  }`}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center ${transaction.type === "retrait" ? "bg-red-50" : "bg-green-50"
+                    }`}
                 >
                   <span
-                    className={`${
-                      transaction.type === "retrait"
+                    className={`${transaction.type === "retrait"
                         ? "text-red-500"
                         : "text-green-500"
-                    }`}
+                      }`}
                   >
                     {transaction.type === "retrait" ? (
                       <MoveUpRight className="h-4 w-4" />
@@ -107,11 +104,10 @@ const UserTransactions: React.FC = () => {
                       </p>
                     </div>
                     <span
-                      className={`font-medium ${
-                        transaction.type === "retrait"
+                      className={`font-medium ${transaction.type === "retrait"
                           ? "text-red-500"
                           : "text-green-500"
-                      }`}
+                        }`}
                     >
                       {transaction.type === "retrait" ? "-" : "+"}
                       {transaction.amount}€

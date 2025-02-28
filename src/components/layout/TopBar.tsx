@@ -1,8 +1,12 @@
+"use client";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { Bell, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { Button } from "../ui/Button";
 
 const TopBar = ({ pageName }: { pageName: string }) => {
+  const { loading, user } = useCurrentUser();
+
   return (
     <div className="flex items-center justify-between p-2 sticky w-full bg-white z-10 top-0">
       <h1 className="text-2xl font-semibold text-neutral-high">{pageName}</h1>
@@ -24,8 +28,8 @@ const TopBar = ({ pageName }: { pageName: string }) => {
             />
           </div>
           <div className="flex flex-col items-start text-neutral-high">
-            <span className="font-medium">John DOE</span>
-            <span className="text-xs">johndoe@gmail.com</span>
+            <span className="font-medium max-w-[137px] truncate w-full">{user?.username || "Admin"}</span>
+            <span className="text-xs max-w-[137px] truncate w-full">{user?.email || " "}</span>
           </div>
           <ChevronDown className="h-4 w-4 text-neutral-high" />
         </div>
