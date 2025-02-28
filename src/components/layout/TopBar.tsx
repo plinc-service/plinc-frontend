@@ -3,6 +3,7 @@ import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { Bell, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { Button } from "../ui/Button";
+import { Skeleton } from "../ui/Skeleton";
 
 const TopBar = ({ pageName }: { pageName: string }) => {
   const { loading, user } = useCurrentUser();
@@ -18,19 +19,33 @@ const TopBar = ({ pageName }: { pageName: string }) => {
           </span>
         </Button>
         <div className="flex items-center gap-3 cursor-pointer">
-          <div className="rounded-full bg-neutral-100 flex items-center justify-center">
-            <Image
-              src="/avatar.svg"
-              alt="John DOE"
-              width={40}
-              height={40}
-              className="rounded-full"
-            />
-          </div>
-          <div className="flex flex-col items-start text-neutral-high">
-            <span className="font-medium max-w-[137px] truncate w-full">{user?.username || "Admin"}</span>
-            <span className="text-xs max-w-[137px] truncate w-full">{user?.email || " "}</span>
-          </div>
+          {loading ? (
+            <>
+              <div className="rounded-full bg-neutral-100 flex items-center justify-center">
+                <Skeleton className="h-10 w-10 rounded-full" />
+              </div>
+              <div className="flex flex-col items-start gap-1">
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-3 w-24" />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="rounded-full bg-neutral-100 flex items-center justify-center">
+                <Image
+                  src={user?.image_url || "/avatar.svg"}
+                  alt={user?.username || "Admin"}
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                />
+              </div>
+              <div className="flex flex-col items-start text-neutral-high">
+                <span className="font-medium max-w-[137px] truncate w-full">{user?.username || "Admin"}</span>
+                <span className="text-xs max-w-[137px] truncate w-full">{user?.email || " "}</span>
+              </div>
+            </>
+          )}
           <ChevronDown className="h-4 w-4 text-neutral-high" />
         </div>
       </div>
