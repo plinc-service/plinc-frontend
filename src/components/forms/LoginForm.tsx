@@ -73,7 +73,7 @@ const LoginForm = () => {
         )}
         <div className="space-y-3 mb-5">
           <h1 className="text-xl font-semibold">Connectez-vous</h1>
-          <p className="text-sm">Accédez à l'espace administrateur de PLINC</p>
+          <p className="text-sm">Accédez à l&apos;espace administrateur de PLINC</p>
         </div>
         <div className="space-y-5">
           <FormField
