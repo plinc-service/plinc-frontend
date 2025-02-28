@@ -24,7 +24,6 @@ import Spinner from "../ui/Spinner";
 const LoginForm = () => {
 
   const { login, isLoading } = useAuth();
-  const [loginError, setLoginError] = useState<string | null>(null);
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -42,7 +41,6 @@ const LoginForm = () => {
   })
 
   function onSubmit(values: z.infer<typeof LoginFormSchema>) {
-    setLoginError(null);
     login(
       { email: values.email, password: values.password },
       {
@@ -50,25 +48,7 @@ const LoginForm = () => {
           form.reset();
         },
         onError: (error: unknown) => {
-          if (error instanceof Error) {
-            setLoginError(error.message);
-          } else if (typeof error === "object" && error !== null && "response" in error) {
-            const err = error as {
-              response: {
-                status: number;
-                data?: {
-                  message?: string
-                }
-              }
-            };
-            if (err.response.status === 401) {
-              setLoginError("Email ou mot de passe incorrect");
-            } else {
-              setLoginError(err.response.data?.message || "Une erreur est survenue");
-            }
-          } else {
-            setLoginError("Impossible de se connecter au serveur");
-          }
+          console.error("Erreur lors de la connexion :", error);
         }
       }
     );
@@ -76,11 +56,6 @@ const LoginForm = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className=" max-w-md w-full bg-white p-10 rounded-3xl text-neutral-high">
-        {loginError && (
-          <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-            {loginError}
-          </div>
-        )}
         <div className="space-y-3 mb-5">
           <h1 className="text-xl font-semibold">Connectez-vous</h1>
           <p className="text-sm">Accédez à l&apos;espace administrateur de PLINC</p>

@@ -1,7 +1,6 @@
-// hooks/useAuth.ts
 import { User } from "@/interfaces/userInterface";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { AuthService } from "../services/AuthService";
 
 interface LoginCredentials {
@@ -17,7 +16,6 @@ interface MutationCallbacks {
 export const useAuth = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const loginMutation = useMutation({
     mutationFn: (credentials: LoginCredentials) =>
@@ -25,7 +23,7 @@ export const useAuth = () => {
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
 
-      const redirectTo = searchParams?.get("from") || "/dashboard";
+      const redirectTo = "/dashboard";
       router.push(redirectTo);
 
       return response.data.user;
