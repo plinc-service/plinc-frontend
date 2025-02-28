@@ -49,12 +49,22 @@ const LoginForm = () => {
         onSuccess: () => {
           form.reset();
         },
-        onError: (error: any) => {
-          if (error.response) {
-            if (error.response.status === 401) {
+        onError: (error: unknown) => {
+          if (error instanceof Error) {
+            setLoginError(error.message);
+          } else if (typeof error === "object" && error !== null && "response" in error) {
+            const err = error as {
+              response: {
+                status: number;
+                data?: {
+                  message?: string
+                }
+              }
+            };
+            if (err.response.status === 401) {
               setLoginError("Email ou mot de passe incorrect");
             } else {
-              setLoginError(error.response.data.message || "Une erreur est survenue");
+              setLoginError(err.response.data?.message || "Une erreur est survenue");
             }
           } else {
             setLoginError("Impossible de se connecter au serveur");
