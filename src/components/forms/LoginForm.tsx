@@ -102,7 +102,7 @@ const LoginForm = () => {
           <Link href={"/forgot-password"} className="text-primary mt-2 text-sm">Mot de passe oublié</Link>
         </div>
         <Button type="submit" className="w-full mt-10 h-10" disabled={isLoading}>
-          {isLoading ? (<Spinner className="text-white" />) : "Se connecter"}
+          {isLoading ? <Spinner className="text-white" /> : "Se connecter"}
         </Button>
       </form>
     </Form>

@@ -10,6 +10,7 @@ import {
 	FormMessage
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
+import { useAuth } from "@/hooks/useAuth";
 import { ForgotPasswordFormSchema } from "@/schemas/ForgotPasswordFormSchemas";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,8 +18,13 @@ import { Mail } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useAuthContext } from "../contexts/AuthContext";
+import Spinner from "../ui/Spinner";
 
 const ForgotPasswordForm = () => {
+
+	const { resetPassword, resetIsLoading } = useAuth();
+	const { setEmail } = useAuthContext();
 
 	const form = useForm<z.infer<typeof ForgotPasswordFormSchema>>({
 		resolver: zodResolver(ForgotPasswordFormSchema),
@@ -28,7 +34,8 @@ const ForgotPasswordForm = () => {
 	})
 
 	function onSubmit(values: z.infer<typeof ForgotPasswordFormSchema>) {
-		console.log(values)
+		setEmail(values.email);
+		resetPassword(values.email);
 	}
 
 	return (
@@ -56,7 +63,9 @@ const ForgotPasswordForm = () => {
 						)}
 					/>
 				</div>
-				<Button type="submit" className="w-full mt-10 h-10">Envoyer un lien de réinitialisation</Button>
+				<Button type="submit" className="w-full mt-10 h-10" disabled={resetIsLoading} >
+					{resetIsLoading ? <Spinner className="text-white" /> : "Envoyer un lien de réinitialisation"}
+				</Button>
 				<Button variant="ghost" className="w-full mt-2 bg-transparent h-10" asChild>
 					<Link href="/login">
 						Je me souviens de mon mot de passe

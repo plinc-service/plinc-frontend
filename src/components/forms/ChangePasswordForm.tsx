@@ -10,6 +10,7 @@ import {
 	FormMessage
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
+import { useAuth } from "@/hooks/useAuth";
 import { ChangePasswordFormSchema } from "@/schemas/ChangePasswordFormSchemas";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,12 +18,21 @@ import { Eye, EyeOff, Lock } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useAuthContext } from "../contexts/AuthContext";
+import Spinner from "../ui/Spinner";
 
 const ChangePasswordForm = () => {
+	const { email } = useAuthContext();
+	const { changePassword, changePasswordIsLoading } = useAuth();
 	const [showPassword, setShowPassword] = useState(false);
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
 	const toggleShowPassword = () => {
 		setShowPassword(!showPassword);
+	};
+
+	const toggleShowConfirmPassword = () => {
+		setShowConfirmPassword(!showConfirmPassword);
 	};
 
 	const form = useForm<z.infer<typeof ChangePasswordFormSchema>>({
@@ -34,7 +44,7 @@ const ChangePasswordForm = () => {
 	})
 
 	function onSubmit(values: z.infer<typeof ChangePasswordFormSchema>) {
-		console.log(values)
+		changePassword(values.newPassword, values.confirmNewPassword, email);
 	}
 
 	return (
@@ -75,12 +85,12 @@ const ChangePasswordForm = () => {
 								<div className="relative">
 									<Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-input-placeholder" size={16} />
 									<FormControl className="mt-1.5">
-										<Input type={showPassword ? "text" : "password"} className="h-10 px-9" placeholder="********" {...field} />
+										<Input type={showConfirmPassword ? "text" : "password"} className="h-10 px-9" placeholder="********" {...field} />
 									</FormControl>
-									{showPassword ? (
-										<Eye className="absolute right-3 top-1/2 -translate-y-1/2 text-input-placeholder cursor-pointer" size={16} onClick={toggleShowPassword} />
+									{showConfirmPassword ? (
+										<Eye className="absolute right-3 top-1/2 -translate-y-1/2 text-input-placeholder cursor-pointer" size={16} onClick={toggleShowConfirmPassword} />
 									) : (
-										<EyeOff className="absolute right-3 top-1/2 -translate-y-1/2 text-input-placeholder cursor-pointer" size={16} onClick={toggleShowPassword} />
+										<EyeOff className="absolute right-3 top-1/2 -translate-y-1/2 text-input-placeholder cursor-pointer" size={16} onClick={toggleShowConfirmPassword} />
 									)}
 								</div>
 								<FormMessage />
@@ -88,7 +98,9 @@ const ChangePasswordForm = () => {
 						)}
 					/>
 				</div>
-				<Button type="submit" className="w-full mt-10">Changer le mot de passe</Button>
+				<Button type="submit" className="w-full mt-10" disabled={changePasswordIsLoading}>
+					{changePasswordIsLoading ? <Spinner className="text-white" /> : "Changer le mot de passe"}
+				</Button>
 			</form>
 		</Form>
 	)
