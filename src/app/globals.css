@@ -15,7 +15,7 @@
   /* Button colors */
   --color-button-secondary-bg: #dbeafe;
   --color-button-tertiary-border: #cbd5e1;
-  --color-button-outline-bg-hover: #F1F5F9;
+  --color-button-outline-bg-hover: #f1f5f9;
 
   /* Badge colors */
   --color-badge-warning-bg: #f97316;
@@ -25,11 +25,11 @@
   --color-badge-tertiary-bg: #cbd5e1;
 
   /* Status text colors*/
-  --color-badge-warning-text: #fff7ED;
-  --color-badge-secondary-text: #3B82F6;
-  --color-badge-danger-text: #EF4444;
-  --color-badge-success-text: #10B981;
-  --color-badge-tertiary-text: #CBD5E1;
+  --color-badge-warning-text: #fff7ed;
+  --color-badge-secondary-text: #3b82f6;
+  --color-badge-danger-text: #ef4444;
+  --color-badge-success-text: #10b981;
+  --color-badge-tertiary-text: #cbd5e1;
 
   /* Common colors */
   --color-neutral-high: #475569;
@@ -78,6 +78,21 @@
 
   /* Screen */
   --breakpoint-xxl: 90rem;
+
+  /* Animations */
+  --animate-caret-blink: caret-blink 1.25s ease-out infinite;
+
+  @keyframes caret-blink: {
+    0%,
+    70%,
+    100% {
+      opacity: 1;
+    }
+    20%,
+    50% {
+      opacity: 0;
+    }
+  }
 }
 
 /* Couleurs pour le mode sombre */

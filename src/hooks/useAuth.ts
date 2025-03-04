@@ -57,9 +57,123 @@ export const useAuth = () => {
     router.push("/login");
   };
 
+  const resetPasswordMutation = useMutation({
+    mutationFn: (email: string) => AuthService.resetPassword(email),
+    onSuccess: () => {
+      router.push("/otp-verification");
+    },
+    onError: (error) => {
+      throw error;
+    },
+  });
+
+  const resetPassword = (
+    email: string,
+    callbacks?: { onSuccess?: () => void; onError?: (error: unknown) => void }
+  ) => {
+    return resetPasswordMutation.mutate(email, {
+      onSuccess: () => {
+        callbacks?.onSuccess?.();
+      },
+      onError: (error) => {
+        if (callbacks?.onError) {
+          callbacks.onError(error);
+        } else if (process.env.NODE_ENV === "development") {
+          console.error("Erreur lors de la réinitialisation :", error);
+        }
+      },
+    });
+  };
+
+  const verifyOTPMutation = useMutation({
+    mutationFn: (data: { email: string; otp: string }) =>
+      AuthService.verifyOTP(data.email, data.otp),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      router.push("/change-password");
+    },
+    onError: (error) => {
+      throw error;
+    },
+  });
+
+  const verifyOTP = (
+    email: string,
+    otp: string,
+    callbacks?: { onSuccess?: () => void; onError?: (error: unknown) => void }
+  ) => {
+    return verifyOTPMutation.mutate(
+      { email, otp },
+      {
+        onSuccess: () => {
+          callbacks?.onSuccess?.();
+        },
+        onError: (error) => {
+          if (callbacks?.onError) {
+            callbacks.onError(error);
+          } else if (process.env.NODE_ENV === "development") {
+            console.error("Erreur lors de la vérification OTP:", error);
+          }
+        },
+      }
+    );
+  };
+
+  const changePasswordMutation = useMutation({
+    mutationFn: (data: {
+      password: string;
+      confirm_password: string;
+      email: string;
+    }) =>
+      AuthService.changePassword(
+        data.confirm_password,
+        data.password,
+        data.email
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      router.push("/login");
+    },
+    onError: (error) => {
+      throw error;
+    },
+  });
+
+  const changePassword = (
+    password: string,
+    confirm_password: string,
+    email: string,
+    callbacks?: { onSuccess?: () => void; onError?: (error: unknown) => void }
+  ) => {
+    return changePasswordMutation.mutate(
+      { password, confirm_password, email },
+      {
+        onSuccess: () => {
+          callbacks?.onSuccess?.();
+        },
+        onError: (error) => {
+          if (callbacks?.onError) {
+            callbacks.onError(error);
+          } else if (process.env.NODE_ENV === "development") {
+            console.error("Erreur lors du changement de mot de passe:", error);
+          }
+        },
+      }
+    );
+  };
+
   return {
     login,
     logout,
+    resetPassword,
+    resetIsLoading: resetPasswordMutation.isPending,
+    resetError: resetPasswordMutation.error,
+    verifyOTP,
+    verifyIsLoading: verifyOTPMutation.isPending,
+    verifyError: verifyOTPMutation.error,
+    changePassword,
+    changePasswordIsLoading: changePasswordMutation.isPending,
+    changePasswordError: changePasswordMutation.error,
     isAuthenticated: AuthService.isAuthenticated,
     currentUser: AuthService.getUser,
     isLoading: loginMutation.isPending,

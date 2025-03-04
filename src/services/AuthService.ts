@@ -84,4 +84,35 @@ export const AuthService = {
   isAuthenticated: () => {
     return !!AuthService.getToken();
   },
+
+  resetPassword: async (email: string): Promise<void> => {
+    const url = "https://api-plinc.gini-africa.com/auth/reset-password/confirm";
+    try {
+      await axios.post(url, { email });
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  verifyOTP: async (email: string, otp: string): Promise<void> => {
+    const url = "https://api-plinc.gini-africa.com/auth/confirm-reset";
+    try {
+      await axios.post(url, { email, otp });
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  changePassword: async (
+    password: string,
+    confirm_password: string,
+    email: string
+  ): Promise<void> => {
+    const url = "https://api-plinc.gini-africa.com/auth/reset-password";
+    try {
+      await axios.post(url, { password, confirm_password, email });
+    } catch (error) {
+      throw error;
+    }
+  },
 };
