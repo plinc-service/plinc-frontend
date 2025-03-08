@@ -20,7 +20,11 @@ const ServicesTableWrapper = () => {
 		selectedStatus,
 		setSelectedStatus,
 		searchQuery,
-		setSearchQuery
+		setSearchQuery,
+		sortField,
+		setSortField,
+		sortOrder,
+		setSortOrder
 	} = useServicesRequests();
 
 	const handleServiceClick = (service: Service) => {
@@ -39,6 +43,10 @@ const ServicesTableWrapper = () => {
 				setSelectedStatus={setSelectedStatus}
 				searchQuery={searchQuery}
 				setSearchQuery={setSearchQuery}
+				sortField={sortField}
+				setSortField={setSortField}
+				sortOrder={sortOrder}
+				setSortOrder={setSortOrder}
 				refetch={refetch} />
 
 			{/* Services Data Table */}

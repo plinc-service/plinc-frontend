@@ -21,17 +21,13 @@ import ServicesRequestTableBody from "./ServicesRequestTableBody";
 interface ServicesRequestsDataTableProps<TData extends object, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
-	onClick: (item: TData) => void;
-	isLoading: boolean;
-	error: string | null;
+	onRowClick: (item: TData) => void;
 }
 
 export function ServicesRequestsDataTable<TData extends object, TValue>({
 	columns,
 	data,
-	onClick,
-	isLoading,
-	error,
+	onRowClick,
 }: ServicesRequestsDataTableProps<TData, TValue>) {
 	const table = useReactTable({
 		data,
@@ -68,10 +64,7 @@ export function ServicesRequestsDataTable<TData extends object, TValue>({
 						</TableHeader>
 						<ServicesRequestTableBody
 							table={table}
-							columns={columns}
-							isLoading={isLoading}
-							error={error}
-							onClick={onClick}
+							onRowClick={onRowClick}
 						/>
 					</Table>
 				</div>

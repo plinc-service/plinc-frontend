@@ -3,13 +3,24 @@ import {
   WalletDetailsResponse,
   WalletResponse,
 } from "@/interfaces/walletInterface";
+import { SortOrder, WalletSortField } from "@/hooks/useWallets";
 import Axios from "@/utils/config-axios";
 
 export const WalletService = {
-  fetchWallets: async (page = 1): Promise<WalletResponse> => {
+  fetchWallets: async (
+    page = 1, 
+    search = "", 
+    sortField: WalletSortField = "created_at", 
+    sortOrder: SortOrder = "desc"
+  ): Promise<WalletResponse> => {
     try {
       const response = await Axios.get("/wallet", {
-        params: { page },
+        params: { 
+          page,
+          search,
+          sort_field: sortField,
+          sort_order: sortOrder 
+        },
       });
       return response.data as WalletResponse;
     } catch (error) {

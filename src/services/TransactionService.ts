@@ -39,6 +39,10 @@ export const TransactionsServices = {
     status?: string;
   }): Promise<Transaction[]> => {
     try {
+      console.log("Fetching transactions with params:", {
+        page, page_size, query, sort_field, sort_order, user_id, status
+      });
+      
       const response = await Axios.get("/transactions", {
         params: {
           page,
@@ -50,6 +54,8 @@ export const TransactionsServices = {
           status,
         },
       });
+      
+      console.log("Transaction response:", response.data);
       return response.data.data;
     } catch (error) {
       console.error("Erreur lors de la récupération des transactions :", error);

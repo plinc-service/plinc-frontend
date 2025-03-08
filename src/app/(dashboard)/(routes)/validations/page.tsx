@@ -7,6 +7,9 @@ import { AlignCenter, ChevronDown, ChevronsUpDown, Search } from "lucide-react";
 import { useState } from "react";
 import ServicesRequestTableWrapper from "./components/servicesRequest/ServicesRequestTableWrapper";
 import WithdrawRequestTableWrapper from "./components/withdrawRequest/WithdrawRequestTableWrapper";
+import { ServiceFilter, WithdrawalFilter } from "./components/FilterComponents";
+import { useServicesRequests, SortField } from "@/hooks/useValidations";
+import { useWithdrawalRequests, TransactionSortField, SortOrder } from "@/hooks/useTransactions";
 
 const ValidationPage = () => {
 	const [activeTab, setActiveTab] = useState("WithdrawalRequests");
@@ -16,6 +19,23 @@ const ValidationPage = () => {
 
 	const [triggerWithdrawalSearch, setTriggerWithdrawalSearch] = useState(false);
 	const [triggerServiceSearch, setTriggerServiceSearch] = useState(false);
+
+	// Hooks pour la gestion du tri
+	const {
+		sortField: withdrawalSortField,
+		setSortField: setWithdrawalSortField,
+		sortOrder: withdrawalSortOrder,
+		setSortOrder: setWithdrawalSortOrder,
+		refetch: refetchWithdrawals
+	} = useWithdrawalRequests();
+
+	const {
+		sortField: serviceSortField,
+		setSortField: setServiceSortField,
+		sortOrder: serviceSortOrder,
+		setSortOrder: setServiceSortOrder,
+		refetch: refetchServices
+	} = useServicesRequests();
 
 	const handleTabChange = (value: string) => {
 		setActiveTab(value);
@@ -31,59 +51,32 @@ const ValidationPage = () => {
 		}
 	};
 
-	const renderFilters = () => {
+	const renderSearch = () => {
 		if (activeTab === "WithdrawalRequests") {
 			return (
-				<>
-					<div className="relative flex-1 max-w-[610px]">
-						<Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-input-placeholder" />
-						<Input
-							placeholder="Rechercher une demande de retrait"
-							className="pl-9 h-10"
-							value={withdrawalSearch}
-							onChange={(e) => setWithdrawalSearch(e.target.value)}
-							onKeyDown={(e) => handleKeyDown(e, 'withdrawal')}
-						/>
-					</div>
-					<Button
-						variant="outline"
-						className="h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full"
-					>
-						<AlignCenter className="h-4 w-4" />
-						<span>Trier par</span>
-						<ChevronDown className="h-4 w-4 text-neutral-high" />
-					</Button>
-					<Button
-						variant="outline"
-						className="h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full"
-					>
-						<span>Montant</span>
-						<ChevronsUpDown className="h-4 w-4" />
-					</Button>
-				</>
+				<div className="relative">
+					<Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-input-placeholder" />
+					<Input
+						placeholder="Rechercher une demande de retrait"
+						className="pl-9 h-10"
+						value={withdrawalSearch}
+						onChange={(e) => setWithdrawalSearch(e.target.value)}
+						onKeyDown={(e) => handleKeyDown(e, 'withdrawal')}
+					/>
+				</div>
 			);
 		} else if (activeTab === "Services") {
 			return (
-				<>
-					<div className="relative flex-1 max-w-[610px]">
-						<Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-input-placeholder" />
-						<Input
-							placeholder="Rechercher un service"
-							className="pl-9 h-10"
-							value={serviceSearch}
-							onChange={(e) => setServiceSearch(e.target.value)}
-							onKeyDown={(e) => handleKeyDown(e, 'service')}
-						/>
-					</div>
-					<Button
-						variant="outline"
-						className="h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full"
-					>
-						<AlignCenter className="h-4 w-4" />
-						<span>Trier par</span>
-						<ChevronDown className="h-4 w-4 text-neutral-high" />
-					</Button>
-				</>
+				<div className="relative">
+					<Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-input-placeholder" />
+					<Input
+						placeholder="Rechercher un service"
+						className="pl-9 h-10"
+						value={serviceSearch}
+						onChange={(e) => setServiceSearch(e.target.value)}
+						onKeyDown={(e) => handleKeyDown(e, 'service')}
+					/>
+				</div>
 			);
 		}
 		return null;
@@ -100,18 +93,38 @@ const ValidationPage = () => {
 					value={activeTab}
 				>
 					<div className="flex justify-between items-center">
-						<TabsList>
-							<TabsTrigger value="WithdrawalRequests" className="cursor-pointer text-neutral-high">
-								Demandes de retraits
-							</TabsTrigger>
-							<TabsTrigger value="Services" className="cursor-pointer text-neutral-high">
-								Services
-							</TabsTrigger>
-						</TabsList>
+						<div className="flex items-center gap-2">
+							<TabsList>
+								<TabsTrigger value="WithdrawalRequests" className="cursor-pointer text-neutral-high">
+									Demandes de retraits
+								</TabsTrigger>
+								<TabsTrigger value="Services" className="cursor-pointer text-neutral-high">
+									Services
+								</TabsTrigger>
+							</TabsList>
+						</div>
 
 						{/* Zone des filtres qui change selon l'onglet actif */}
 						<div className="inline-flex items-center gap-2">
-							{renderFilters()}
+							{renderSearch()}
+							{activeTab === "WithdrawalRequests" && (
+								<WithdrawalFilter 
+									sortField={withdrawalSortField}
+									setSortField={setWithdrawalSortField}
+									sortOrder={withdrawalSortOrder}
+									setSortOrder={setWithdrawalSortOrder}
+									refetch={refetchWithdrawals}
+								/>
+							)}
+							{activeTab === "Services" && (
+								<ServiceFilter 
+									sortField={serviceSortField}
+									setSortField={setServiceSortField}
+									sortOrder={serviceSortOrder}
+									setSortOrder={setServiceSortOrder}
+									refetch={refetchServices}
+								/>
+							)}
 						</div>
 					</div>
 
@@ -120,6 +133,8 @@ const ValidationPage = () => {
 							key="withdrawals"
 							searchQuery={withdrawalSearch}
 							triggerSearch={triggerWithdrawalSearch}
+							sortField={withdrawalSortField}
+							sortOrder={withdrawalSortOrder}
 						/>
 					)}
 
@@ -128,6 +143,8 @@ const ValidationPage = () => {
 							key="services"
 							searchQuery={serviceSearch}
 							triggerSearch={triggerServiceSearch}
+							sortField={serviceSortField}
+							sortOrder={serviceSortOrder}
 						/>
 					)}
 				</Tabs>
@@ -136,30 +153,53 @@ const ValidationPage = () => {
 	);
 };
 
+interface ContentProps {
+	searchQuery: string;
+	triggerSearch: boolean;
+}
+
+interface WithdrawalContentProps extends ContentProps {
+	sortField: TransactionSortField;
+	sortOrder: SortOrder;
+}
+
+interface ServiceContentProps extends ContentProps {
+	sortField: SortField;
+	sortOrder: SortOrder;
+}
+
 const WithdrawalRequestsContent = ({
 	searchQuery,
-	triggerSearch
-}: {
-	searchQuery: string;
-	triggerSearch: boolean
-}) => {
+	triggerSearch,
+	sortField,
+	sortOrder
+}: WithdrawalContentProps) => {
 	return (
-		<div className="mt-4">
-			<WithdrawRequestTableWrapper searchQuery={searchQuery} triggerSearch={triggerSearch} />
+		<div className="w-full mt-6">
+			<WithdrawRequestTableWrapper
+				searchQuery={searchQuery}
+				triggerSearch={triggerSearch}
+				sortField={sortField}
+				sortOrder={sortOrder}
+			/>
 		</div>
 	);
 };
 
 const ServicesContent = ({
 	searchQuery,
-	triggerSearch
-}: {
-	searchQuery: string;
-	triggerSearch: boolean
-}) => {
+	triggerSearch,
+	sortField,
+	sortOrder
+}: ServiceContentProps) => {
 	return (
-		<div className="mt-4">
-			<ServicesRequestTableWrapper searchQuery={searchQuery} triggerSearch={triggerSearch} />
+		<div className="w-full mt-6">
+			<ServicesRequestTableWrapper
+				searchQuery={searchQuery}
+				triggerSearch={triggerSearch}
+				sortField={sortField}
+				sortOrder={sortOrder}
+			/>
 		</div>
 	);
 };

@@ -2,6 +2,9 @@ import { TransactionsServices } from "@/services/TransactionService";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
+export type TransactionSortField = "created_at" | "amount" | "type";
+export type SortOrder = "asc" | "desc";
+
 export const useTransactionWallet = () => {
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["fetchGlobalWallet"],
@@ -26,22 +29,67 @@ export const useTransactionWallet = () => {
   };
 };
 
+export const useTransactionHistory = () => {
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(10);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortField, setSortField] = useState<TransactionSortField>("created_at");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
+  const [transactionType, setTransactionType] = useState<string | undefined>(undefined);
+
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["transactions", page, searchQuery, sortField, sortOrder, transactionType],
+    queryFn: () =>
+      TransactionsServices.fetchTransactions({
+        page,
+        page_size: pageSize,
+        query: searchQuery,
+        sort_field: sortField,
+        sort_order: sortOrder,
+        status: transactionType === "retrait-en-attente" ? "0" : undefined,
+      }),
+  });
+
+  return {
+    transactions: data || [],
+    loading: isLoading,
+    error: error
+      ? "Une erreur est survenue lors du chargement des transactions."
+      : null,
+    page,
+    setPage,
+    searchQuery,
+    setSearchQuery,
+    sortField,
+    setSortField,
+    sortOrder,
+    setSortOrder,
+    transactionType,
+    setTransactionType,
+    refetch,
+  };
+};
+
 export const useWithdrawalRequests = () => {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortField, setSortField] = useState<TransactionSortField>("created_at");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["fetchWithdrawalRequests", searchQuery],
+    queryKey: ["fetchWithdrawalRequests", searchQuery, sortField, sortOrder],
     queryFn: () =>
       TransactionsServices.fetchTransactions({
         query: searchQuery || "retrait",
-        sort_field: "created_at",
-        sort_order: "desc",
+        sort_field: sortField,
+        sort_order: sortOrder,
         status: "0",
         page: page,
         page_size: pageSize,
       }),
+    enabled: true,
+    refetchOnWindowFocus: false,
   });
 
   return {
@@ -53,7 +101,12 @@ export const useWithdrawalRequests = () => {
     refetch,
     page,
     setPage,
+    searchQuery,
     setSearchQuery,
+    sortField,
+    setSortField,
+    sortOrder,
+    setSortOrder,
   };
 };
 

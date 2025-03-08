@@ -1,12 +1,19 @@
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { SortField, SortOrder } from "@/hooks/useValidations";
+import { cn } from "@/lib/utils";
 import { AlignCenter, ChevronDown, ChevronsUpDown, Search } from "lucide-react";
+import { useState } from "react";
 
 interface StatutDataTableFilterProps {
 	selectedStatus: number | undefined;
 	setSelectedStatus: (isActive?: number) => void;
 	searchQuery: string;
 	setSearchQuery: (query: string) => void;
+	sortField: SortField;
+	setSortField: (field: SortField) => void;
+	sortOrder: SortOrder;
+	setSortOrder: (order: SortOrder) => void;
 	refetch: () => void;
 }
 
@@ -15,6 +22,10 @@ export function StatutDataTableFilter({
 	setSelectedStatus,
 	searchQuery,
 	setSearchQuery,
+	sortField,
+	setSortField,
+	sortOrder,
+	setSortOrder,
 	refetch,
 }: StatutDataTableFilterProps) {
 	const options = [
@@ -31,6 +42,32 @@ export function StatutDataTableFilter({
 
 	const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setSearchQuery(e.target.value);
+	};
+
+	// Gestion du tri par date
+	const handleDateSort = () => {
+		// Si on trie déjà par date, on inverse l'ordre
+		if (sortField === "created_at") {
+			setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+		} else {
+			// Sinon, on change le champ de tri pour date
+			setSortField("created_at");
+			setSortOrder("desc");
+		}
+		refetch();
+	};
+
+	// Gestion du tri par ventes
+	const handleSalesSort = () => {
+		// Si on trie déjà par ventes, on inverse l'ordre
+		if (sortField === "number_of_sells") {
+			setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+		} else {
+			// Sinon, on change le champ de tri pour ventes
+			setSortField("number_of_sells");
+			setSortOrder("desc");
+		}
+		refetch();
 	};
 
 	return (
@@ -62,20 +99,37 @@ export function StatutDataTableFilter({
 						onChange={handleSearchChange}
 					/>
 				</div>
+				{/* Bouton Trier par Date */}
 				<Button
 					variant="outline"
-					className="h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full"
+					className={cn(
+						"h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full",
+						sortField === "created_at" && "border-blue"
+					)}
+					onClick={handleDateSort}
 				>
 					<AlignCenter className="h-4 w-4" />
-					<span>Trier par</span>
-					<ChevronDown className="h-4 w-4 text-neutral-high" />
+					<span className={cn(sortField === "created_at" && "text-blue")}>Trier par Date</span>
+					{sortField === "created_at" && (
+						<span className="ml-1 text-blue">
+							{sortOrder === "asc" ? "↑" : "↓"}
+						</span>
+					)}
 				</Button>
+
+				{/* Bouton Ventes avec indication d'ordre ascendant/descendant */}
 				<Button
 					variant="outline"
-					className="h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full"
+					className={cn(
+						"h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full",
+						sortField === "number_of_sells" && "border-blue"
+					)}
+					onClick={handleSalesSort}
 				>
-					<span>Ventes</span>
-					<ChevronsUpDown className="h-4 w-4" />
+					<span className={cn(sortField === "number_of_sells" && "text-blue")}>
+						Ventes {sortField === "number_of_sells" && (sortOrder === "asc" ? "(Croissant)" : "(Décroissant)")}
+					</span>
+					<ChevronsUpDown className={cn("h-4 w-4", sortField === "number_of_sells" && "text-blue")} />
 				</Button>
 			</div>
 		</div>

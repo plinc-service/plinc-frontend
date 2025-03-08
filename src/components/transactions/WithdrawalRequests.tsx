@@ -6,10 +6,10 @@ import Link from "next/link";
 import { useState } from "react";
 import { ScrollArea } from "../ui/ScrollArea";
 import Spinner from "../ui/Spinner";
+import { WithdrawalFilter } from "./WithdrawalFilter";
 import WithdrawalRequestsPopup from "./WithdrawalRequestsPopup";
 
 const WithdrawalRequests = () => {
-
 	const [selectedWithdrawal, setSelectedWithdrawal] = useState<Transaction | null>(null);
 	const [isPopupOpen, setIsPopupOpen] = useState(false);
 
@@ -18,6 +18,10 @@ const WithdrawalRequests = () => {
 		error: withdrawalsError,
 		refetch,
 		loading: withdrawalsLoading,
+		searchQuery,
+		setSearchQuery,
+		page,
+		setPage,
 	} = useWithdrawalRequests();
 
 	const handleWithdrawalClick = (withdrawal: Transaction) => {
@@ -37,6 +41,15 @@ const WithdrawalRequests = () => {
 				</h3>
 				<Link className="text-primary text-base" href="/validations">Tout voir</Link>
 			</div>
+
+			{/* Ajout du filtre de recherche */}
+			<div className="mb-4">
+				<WithdrawalFilter
+					searchQuery={searchQuery}
+					setSearchQuery={setSearchQuery}
+				/>
+			</div>
+
 			<ScrollArea className="h-[600px] xxl:h-[767px] 2xl:h-[1040px]">
 				{withdrawalsLoading ? (
 					<div className="flex justify-center items-center h-[600px] xxl:h-[767px] 2xl:h-[1040px]">

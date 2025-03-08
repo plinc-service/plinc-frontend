@@ -2,29 +2,40 @@
 
 import TopBar from "@/components/layout/TopBar";
 import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
 import { WalletCard } from "@/components/wallet/WalletCard";
 import WalletDetailsPopup from "@/components/wallet/WalletDetailsPopup";
 import WalletSkeleton from "@/components/wallet/WalletSkeleton";
 import { useWallets } from "@/hooks/useWallets";
 import { WalletDetails } from "@/interfaces/walletInterface";
 import { WalletService } from "@/services/WalletService";
-import {
-  AlignCenter,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  Search,
-} from "lucide-react";
-import { useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useState } from "react";
+import { WalletFilter } from "./components/WalletFilter";
 
 export default function WalletPage() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const { wallets, loading, error, pagination } = useWallets(currentPage);
-  const [selectedWallet, setSelectedWallet] = useState<WalletDetails | null>(
-    null
-  );
+  const {
+    wallets,
+    loading,
+    error,
+    pagination,
+    page,
+    setPage,
+    searchQuery,
+    setSearchQuery,
+    sortField,
+    setSortField,
+    sortOrder,
+    setSortOrder,
+    refetch
+  } = useWallets();
+
+  const [selectedWallet, setSelectedWallet] = useState<WalletDetails | null>(null);
   const [isPopupOpen, setPopupOpen] = useState(false);
+
+  // Mise à jour de la page lors de changement de pagination
+  useEffect(() => {
+    setPage(page);
+  }, [page, setPage]);
 
   const handleWalletClick = async (walletId: string) => {
     try {
@@ -67,43 +78,35 @@ export default function WalletPage() {
 
   const handlePrevious = () => {
     if (pagination.previous) {
-      const page = Number(
+      const prevPage = Number(
         new URL(pagination.previous).searchParams.get("page")
       );
-      setCurrentPage(page);
+      setPage(prevPage);
     }
   };
 
   const handleNext = () => {
     if (pagination.next) {
-      const page = Number(new URL(pagination.next).searchParams.get("page"));
-      setCurrentPage(page);
+      const nextPage = Number(new URL(pagination.next).searchParams.get("page"));
+      setPage(nextPage);
     }
   };
 
   return (
     <div className="px-5 pt-5 pb-[30px] flex flex-col h-full w-full">
       <TopBar pageName="Portefeuille" />
-      <div className="flex items-center justify-between mt-4">
-        <div className="relative flex-1 max-w-[610px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-input-placeholder" />
-          <Input placeholder="Rechercher" className="pl-9 h-10" />
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="relative flex-1 max-w-[95px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-high" />
-            <Input placeholder="Label" className="pl-9 h-10" />
-          </div>
-          <Button
-            variant="outline"
-            className="h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full"
-          >
-            <AlignCenter className="h-4 w-4" />
-            <span>Trier par</span>
-            <ChevronDown className="h-4 w-4 text-neutral-high" />
-          </Button>
-        </div>
-      </div>
+      
+      {/* Filtre */}
+      <WalletFilter 
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        sortField={sortField}
+        setSortField={setSortField}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+        refetch={refetch}
+      />
+      
       <div className="flex flex-col justify-between mt-5 flex-1">
         <ul className="grid grid-cols-4 gap-4">
           {loading

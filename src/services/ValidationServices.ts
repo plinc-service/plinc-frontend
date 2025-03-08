@@ -20,6 +20,10 @@ export const ValidationServices = {
     user_id?: string;
   }): Promise<Service[]> => {
     try {
+      console.log("Fetching services with params:", {
+        page, page_size, query, sort_field, sort_order, is_active, user_id
+      });
+      
       const response = await Axios.get("/services", {
         params: {
           page,
@@ -31,6 +35,8 @@ export const ValidationServices = {
           user_id,
         },
       });
+      
+      console.log("Services response:", response.data);
       return response.data.data;
     } catch (error) {
       console.error("Erreur lors de la récupération des services :", error);
