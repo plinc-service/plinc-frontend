@@ -4,7 +4,15 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { SortOrder, TransactionSortField } from "@/hooks/useTransactions";
 import { cn } from "@/lib/utils";
-import { AlignCenter, ChevronsUpDown, Search } from "lucide-react";
+import { AlignCenter, Check, ChevronDown, ChevronsUpDown, Search } from "lucide-react";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "@/components/ui/DropdownMenu";
 
 interface TransactionFilterProps {
   searchQuery: string;
@@ -41,42 +49,39 @@ export function TransactionFilter({
   };
 
   // Gestion du tri par date
-  const handleDateSort = () => {
-    // Si on trie déjà par date, on inverse l'ordre
-    if (sortField === "created_at") {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    } else {
-      // Sinon, on change le champ de tri pour date
-      setSortField("created_at");
-      setSortOrder("desc");
-    }
-    refetch();
+  const handleDateSort = (order: SortOrder) => {
+    // Mise à jour des états de tri
+    setSortField("created_at");
+    setSortOrder(order);
+    
+    // Force le refetch après la mise à jour de l'état
+    setTimeout(() => {
+      refetch();
+    }, 10);
   };
 
   // Gestion du tri par montant
-  const handleAmountSort = () => {
-    // Si on trie déjà par montant, on inverse l'ordre
-    if (sortField === "amount") {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    } else {
-      // Sinon, on change le champ de tri pour montant
-      setSortField("amount");
-      setSortOrder("desc");
-    }
-    refetch();
+  const handleAmountSort = (order: SortOrder) => {
+    // Mise à jour des états de tri
+    setSortField("amount");
+    setSortOrder(order);
+    
+    // Force le refetch après la mise à jour de l'état
+    setTimeout(() => {
+      refetch();
+    }, 10);
   };
 
   // Gestion du tri par type
-  const handleTypeSort = () => {
-    // Si on trie déjà par type, on inverse l'ordre
-    if (sortField === "type") {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    } else {
-      // Sinon, on change le champ de tri pour type
-      setSortField("type");
-      setSortOrder("desc");
-    }
-    refetch();
+  const handleTypeSort = (order: SortOrder) => {
+    // Mise à jour des états de tri
+    setSortField("type");
+    setSortOrder(order);
+    
+    // Force le refetch après la mise à jour de l'état
+    setTimeout(() => {
+      refetch();
+    }, 10);
   };
 
   // Gestion du changement de type de transaction
@@ -119,53 +124,107 @@ export function TransactionFilter({
           />
         </div>
         <div className="flex items-center gap-2">
-          {/* Bouton Trier par Date */}
-          <Button
-            variant="outline"
-            className={cn(
-              "h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full",
-              sortField === "created_at" && "border-blue"
-            )}
-            onClick={handleDateSort}
-          >
-            <AlignCenter className="h-4 w-4" />
-            <span className={cn(sortField === "created_at" && "text-blue")}>Trier par Date</span>
-            {sortField === "created_at" && (
-              <span className="ml-1 text-blue">
-                {sortOrder === "asc" ? "↑" : "↓"}
-              </span>
-            )}
-          </Button>
+          {/* Menu déroulant pour le tri principal */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full">
+                <AlignCenter className="h-4 w-4" />
+                <span>Trier par</span>
+                <ChevronDown className="h-4 w-4 opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>Options de tri</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              
+              {/* Options de tri par date */}
+              <DropdownMenuLabel className="font-normal text-xs text-muted-foreground px-2 py-1">Date</DropdownMenuLabel>
+              <DropdownMenuItem 
+                onClick={() => handleDateSort("asc")} 
+                className={cn(
+                  sortField === "created_at" && sortOrder === "asc" ? "bg-accent" : ""
+                )}
+              >
+                <span>Du plus ancien au plus récent</span>
+                {sortField === "created_at" && sortOrder === "asc" && (
+                  <Check className="h-4 w-4 ml-auto" />
+                )}
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => handleDateSort("desc")} 
+                className={cn(
+                  sortField === "created_at" && sortOrder === "desc" ? "bg-accent" : ""
+                )}
+              >
+                <span>Du plus récent au plus ancien</span>
+                {sortField === "created_at" && sortOrder === "desc" && (
+                  <Check className="h-4 w-4 ml-auto" />
+                )}
+              </DropdownMenuItem>
+              
+              {/* Options de tri par montant */}
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel className="font-normal text-xs text-muted-foreground px-2 py-1">Montant</DropdownMenuLabel>
+              <DropdownMenuItem 
+                onClick={() => handleAmountSort("asc")} 
+                className={cn(
+                  sortField === "amount" && sortOrder === "asc" ? "bg-accent" : ""
+                )}
+              >
+                <span>Montant (croissant)</span>
+                {sortField === "amount" && sortOrder === "asc" && (
+                  <Check className="h-4 w-4 ml-auto" />
+                )}
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => handleAmountSort("desc")} 
+                className={cn(
+                  sortField === "amount" && sortOrder === "desc" ? "bg-accent" : ""
+                )}
+              >
+                <span>Montant (décroissant)</span>
+                {sortField === "amount" && sortOrder === "desc" && (
+                  <Check className="h-4 w-4 ml-auto" />
+                )}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
-          {/* Bouton Montant avec indication d'ordre ascendant/descendant */}
-          <Button
-            variant="outline"
-            className={cn(
-              "h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full",
-              sortField === "amount" && "border-blue"
-            )}
-            onClick={handleAmountSort}
-          >
-            <span className={cn(sortField === "amount" && "text-blue")}>
-              Montant {sortField === "amount" && (sortOrder === "asc" ? "(Croissant)" : "(Décroissant)")}
-            </span>
-            <ChevronsUpDown className={cn("h-4 w-4", sortField === "amount" && "text-blue")} />
-          </Button>
-
-          {/* Bouton Type avec indication d'ordre ascendant/descendant */}
-          <Button
-            variant="outline"
-            className={cn(
-              "h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full",
-              sortField === "type" && "border-blue"
-            )}
-            onClick={handleTypeSort}
-          >
-            <span className={cn(sortField === "type" && "text-blue")}>
-              Type {sortField === "type" && (sortOrder === "asc" ? "(A-Z)" : "(Z-A)")}
-            </span>
-            <ChevronsUpDown className={cn("h-4 w-4", sortField === "type" && "text-blue")} />
-          </Button>
+          {/* Menu déroulant spécifique pour le tri par type */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full">
+                <span>Type</span>
+                <ChevronDown className="h-4 w-4 opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-48">
+              <DropdownMenuLabel>Tri par type de transaction</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem 
+                onClick={() => handleTypeSort("asc")} 
+                className={cn(
+                  sortField === "type" && sortOrder === "asc" ? "bg-accent" : ""
+                )}
+              >
+                <span>Paiements puis retraits</span>
+                {sortField === "type" && sortOrder === "asc" && (
+                  <Check className="h-4 w-4 ml-auto" />
+                )}
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => handleTypeSort("desc")} 
+                className={cn(
+                  sortField === "type" && sortOrder === "desc" ? "bg-accent" : ""
+                )}
+              >
+                <span>Retraits puis paiements</span>
+                {sortField === "type" && sortOrder === "desc" && (
+                  <Check className="h-4 w-4 ml-auto" />
+                )}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </div>

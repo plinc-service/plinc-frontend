@@ -35,6 +35,8 @@ const ServicesTableWrapper = () => {
 	const handleClosePopup = () => {
 		setIsPopupOpen(false);
 	};
+	
+
 	return (
 		<>
 			{/* Filter */}

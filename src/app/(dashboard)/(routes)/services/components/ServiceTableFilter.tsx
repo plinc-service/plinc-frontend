@@ -2,8 +2,16 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { SortField, SortOrder } from "@/hooks/useValidations";
 import { cn } from "@/lib/utils";
-import { AlignCenter, ChevronDown, ChevronsUpDown, Search } from "lucide-react";
+import { AlignCenter, Check, ChevronDown, ChevronsUpDown, Search } from "lucide-react";
 import { useState } from "react";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "@/components/ui/DropdownMenu";
 
 interface StatutDataTableFilterProps {
 	selectedStatus: number | undefined;
@@ -45,29 +53,27 @@ export function StatutDataTableFilter({
 	};
 
 	// Gestion du tri par date
-	const handleDateSort = () => {
-		// Si on trie déjà par date, on inverse l'ordre
-		if (sortField === "created_at") {
-			setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-		} else {
-			// Sinon, on change le champ de tri pour date
-			setSortField("created_at");
-			setSortOrder("desc");
-		}
-		refetch();
+	const handleDateSort = (order: SortOrder) => {
+		// Mise à jour des états de tri
+		setSortField("created_at");
+		setSortOrder(order);
+		
+		// Force le refetch après la mise à jour de l'état
+		setTimeout(() => {
+			refetch();
+		}, 10);
 	};
 
 	// Gestion du tri par ventes
-	const handleSalesSort = () => {
-		// Si on trie déjà par ventes, on inverse l'ordre
-		if (sortField === "number_of_sells") {
-			setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-		} else {
-			// Sinon, on change le champ de tri pour ventes
-			setSortField("number_of_sells");
-			setSortOrder("desc");
-		}
-		refetch();
+	const handleSalesSort = (order: SortOrder) => {
+		// Mise à jour des états de tri
+		setSortField("number_of_sells");
+		setSortOrder(order);
+		
+		// Force le refetch après la mise à jour de l'état
+		setTimeout(() => {
+			refetch();
+		}, 10);
 	};
 
 	return (
@@ -99,38 +105,64 @@ export function StatutDataTableFilter({
 						onChange={handleSearchChange}
 					/>
 				</div>
-				{/* Bouton Trier par Date */}
-				<Button
-					variant="outline"
-					className={cn(
-						"h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full",
-						sortField === "created_at" && "border-blue"
-					)}
-					onClick={handleDateSort}
-				>
-					<AlignCenter className="h-4 w-4" />
-					<span className={cn(sortField === "created_at" && "text-blue")}>Trier par Date</span>
-					{sortField === "created_at" && (
-						<span className="ml-1 text-blue">
-							{sortOrder === "asc" ? "↑" : "↓"}
-						</span>
-					)}
-				</Button>
 
-				{/* Bouton Ventes avec indication d'ordre ascendant/descendant */}
-				<Button
-					variant="outline"
-					className={cn(
-						"h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full",
-						sortField === "number_of_sells" && "border-blue"
-					)}
-					onClick={handleSalesSort}
-				>
-					<span className={cn(sortField === "number_of_sells" && "text-blue")}>
-						Ventes {sortField === "number_of_sells" && (sortOrder === "asc" ? "(Croissant)" : "(Décroissant)")}
-					</span>
-					<ChevronsUpDown className={cn("h-4 w-4", sortField === "number_of_sells" && "text-blue")} />
-				</Button>
+				{/* Menu déroulant pour le tri */}
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button 
+							variant="outline" 
+							className="h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full"
+						>
+							<span>Trier par</span>
+							<ChevronDown className="h-4 w-4" />
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align="end" className="w-56">
+						{/* Options de tri par date */}
+						<DropdownMenuLabel>Date d'inscription</DropdownMenuLabel>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem 
+							onClick={() => handleDateSort("asc")} 
+							className={`flex items-center justify-between ${sortField === "created_at" && sortOrder === "asc" ? "bg-blue/10" : ""}`}
+						>
+							<span>Du plus ancien au plus récent</span>
+							{sortField === "created_at" && sortOrder === "asc" && (
+								<Check className="h-4 w-4 ml-2 text-blue" />
+							)}
+						</DropdownMenuItem>
+						<DropdownMenuItem 
+							onClick={() => handleDateSort("desc")} 
+							className={`flex items-center justify-between ${sortField === "created_at" && sortOrder === "desc" ? "bg-blue/10" : ""}`}
+						>
+							<span>Du plus récent au plus ancien</span>
+							{sortField === "created_at" && sortOrder === "desc" && (
+								<Check className="h-4 w-4 ml-2 text-blue" />
+							)}
+						</DropdownMenuItem>
+
+						{/* Options de tri par ventes */}
+						<DropdownMenuLabel className="mt-2">Nombre de ventes</DropdownMenuLabel>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem 
+							onClick={() => handleSalesSort("asc")} 
+							className={`flex items-center justify-between ${sortField === "number_of_sells" && sortOrder === "asc" ? "bg-blue/10" : ""}`}
+						>
+							<span>Ventes (croissant)</span>
+							{sortField === "number_of_sells" && sortOrder === "asc" && (
+								<Check className="h-4 w-4 ml-2 text-blue" />
+							)}
+						</DropdownMenuItem>
+						<DropdownMenuItem 
+							onClick={() => handleSalesSort("desc")} 
+							className={`flex items-center justify-between ${sortField === "number_of_sells" && sortOrder === "desc" ? "bg-blue/10" : ""}`}
+						>
+							<span>Ventes (décroissant)</span>
+							{sortField === "number_of_sells" && sortOrder === "desc" && (
+								<Check className="h-4 w-4 ml-2 text-blue" />
+							)}
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
 			</div>
 		</div>
 	);
