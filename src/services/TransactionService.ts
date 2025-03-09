@@ -63,7 +63,7 @@ export const TransactionsServices = {
   ): Promise<void> => {
     try {
       const baseUrl = "https://api-plinc.gini-africa.com";
-      await axios.put(`${baseUrl}/wallet/transaction/activation/${id}`, {
+      await axios.put(`${baseUrl}/wallet/services/activation/${id}`, {
         status,
       });
     } catch (error) {
