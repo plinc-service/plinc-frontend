@@ -58,7 +58,7 @@ export function WithdrawalFilter({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-44">
-          <DropdownMenuLabel>Date d'inscription</DropdownMenuLabel>
+          <DropdownMenuLabel>Date d&apos;inscription</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem 
             onClick={() => handleDateSort("asc")} 
@@ -130,7 +130,7 @@ export function ServiceFilter({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-44">
-          <DropdownMenuLabel>Date d'inscription</DropdownMenuLabel>
+          <DropdownMenuLabel>Date d&apos;inscription</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem 
             onClick={() => handleDateSort("asc")} 

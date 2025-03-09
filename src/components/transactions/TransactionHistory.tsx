@@ -1,4 +1,4 @@
-import { Transaction } from "@/interfaces/transactionInterface";
+// import Transaction supprimé car non utilisé
 import { useTransactionHistory } from "@/hooks/useTransactions";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import { ScrollArea, ScrollBar } from "../ui/ScrollArea";

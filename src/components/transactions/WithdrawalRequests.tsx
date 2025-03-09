@@ -19,9 +19,7 @@ const WithdrawalRequests = () => {
 		refetch,
 		loading: withdrawalsLoading,
 		searchQuery,
-		setSearchQuery,
-		page,
-		setPage,
+		setSearchQuery
 	} = useWithdrawalRequests();
 
 	const handleWithdrawalClick = (withdrawal: Transaction) => {

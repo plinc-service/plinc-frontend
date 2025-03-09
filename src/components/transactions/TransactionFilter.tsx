@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { SortOrder, TransactionSortField } from "@/hooks/useTransactions";
 import { cn } from "@/lib/utils";
-import { AlignCenter, Check, ChevronDown, ChevronsUpDown, Search } from "lucide-react";
+import { AlignCenter, Check, ChevronDown, Search } from "lucide-react";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
