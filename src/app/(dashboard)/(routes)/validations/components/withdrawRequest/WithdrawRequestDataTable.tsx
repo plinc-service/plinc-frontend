@@ -14,8 +14,7 @@ import {
 	TableRow
 } from "@/components/ui/Table";
 
-import { Button } from "@/components/ui/Button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+// Importations non utilisées supprimées
 import WithdrawRequestTableBody from "./WithdrawRequestTableBody";
 
 interface WithdrawalRequestsDataTableProps<TData extends object, TValue> {

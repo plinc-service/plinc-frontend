@@ -1,8 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { SortOrder } from "@/hooks/useTransactions";
 import { Search } from "lucide-react";
 
 interface WithdrawalFilterProps {

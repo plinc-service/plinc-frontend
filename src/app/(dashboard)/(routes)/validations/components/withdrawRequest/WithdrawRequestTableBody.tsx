@@ -1,15 +1,15 @@
 import { TableBody, TableCell, TableRow } from "@/components/ui/Table";
 import { flexRender, Table } from "@tanstack/react-table";
 
-interface WithdrawtTableBodyProps<TData, TValue> {
+interface WithdrawtTableBodyProps<TData> {
 	table: Table<TData>;
 	onRowClick: (item: TData) => void;
 }
 
-const WithdrawRequestTableBody = <TData, TValue>({
+const WithdrawRequestTableBody = <TData extends object>({
 	table,
 	onRowClick,
-}: WithdrawtTableBodyProps<TData, TValue>) => {
+}: WithdrawtTableBodyProps<TData>) => {
 	return (
 		<TableBody>
 			{table.getRowModel().rows?.length ? (

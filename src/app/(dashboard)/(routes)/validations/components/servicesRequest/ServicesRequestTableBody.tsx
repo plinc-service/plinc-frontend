@@ -1,15 +1,15 @@
 import { TableBody, TableCell, TableRow } from "@/components/ui/Table";
 import { flexRender, Table } from "@tanstack/react-table";
 
-interface ServicesTableBodyProps<TData, TValue> {
+interface ServicesTableBodyProps<TData> {
 	table: Table<TData>;
 	onRowClick: (item: TData) => void;
 }
 
-const ServicesRequestTableBody = <TData, TValue>({
+const ServicesRequestTableBody = <TData extends object>({
 	table,
 	onRowClick,
-}: ServicesTableBodyProps<TData, TValue>) => {
+}: ServicesTableBodyProps<TData>) => {
 	return (
 		<TableBody>
 			{table.getRowModel().rows?.length ? (

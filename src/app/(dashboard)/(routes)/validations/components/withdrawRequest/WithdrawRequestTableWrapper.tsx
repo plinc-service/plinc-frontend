@@ -25,11 +25,7 @@ const WithdrawRequestTableWrapper = ({
 	const {
 		data: withdrawal,
 		refetch,
-		error,
-		loading,
 		setSearchQuery,
-		sortField: currentSortField,
-		sortOrder: currentSortOrder,
 		setSortField,
 		setSortOrder
 	} = useWithdrawalRequests();

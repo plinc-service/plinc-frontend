@@ -1,9 +1,7 @@
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { SortField, SortOrder } from "@/hooks/useValidations";
-import { cn } from "@/lib/utils";
-import { AlignCenter, Check, ChevronDown, ChevronsUpDown, Search } from "lucide-react";
-import { useState } from "react";
+import { Check, ChevronDown, Search } from "lucide-react";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -119,7 +117,7 @@ export function StatutDataTableFilter({
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" className="w-56">
 						{/* Options de tri par date */}
-						<DropdownMenuLabel>Date d'inscription</DropdownMenuLabel>
+						<DropdownMenuLabel>Date d&apos;inscription</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem 
 							onClick={() => handleDateSort("asc")} 

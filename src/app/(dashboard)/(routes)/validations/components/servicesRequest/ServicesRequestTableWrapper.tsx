@@ -25,11 +25,7 @@ const ServicesRequestTableWrapper = ({
 	const {
 		data: services,
 		refetch,
-		error,
-		loading,
 		setSearchQuery,
-		sortField: currentSortField,
-		sortOrder: currentSortOrder,
 		setSortField,
 		setSortOrder
 	} = useServicesRequests();
