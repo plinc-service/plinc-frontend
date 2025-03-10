@@ -51,7 +51,7 @@ export const sidebarItems = [
   {
     title: "Gestion du contenu",
     icon: FileText,
-    href: "/content",
+    href: "/content-management",
   },
   {
     title: "Support et litiges",
