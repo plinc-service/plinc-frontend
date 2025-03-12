@@ -1,10 +1,14 @@
 "use client";
 
+import TopBar from "@/components/layout/TopBar";
+
 export default function DashboardPage() {
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold">Tableau de bord</h1>
-      {/* Ajoutez votre contenu ici */}
+    <div className="px-5 pt-5 flex flex-col h-full w-full">
+      <TopBar pageName="Tableau de bord" />
+      <div className="w-full h-full mt-4">
+
+      </div>
     </div>
   );
 }

@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { TableBody, TableCell, TableRow } from "@/components/ui/Table";
 import { ColumnDef, flexRender, Table } from "@tanstack/react-table";
 
-interface WithdrawtTableBodyProps<TData, TValue> {
+interface CategoryTableBodyProps<TData, TValue> {
 	table: Table<TData>;
 	columns: ColumnDef<TData, TValue>[];
 	isLoading: boolean;
@@ -10,13 +10,13 @@ interface WithdrawtTableBodyProps<TData, TValue> {
 	onClick: (item: TData) => void;
 }
 
-const WithdrawRequestTableBody = <TData, TValue>({
+const CategoryDataTableBody = <TData, TValue>({
 	table,
 	columns,
 	isLoading,
 	error,
 	onClick,
-}: WithdrawtTableBodyProps<TData, TValue>) => {
+}: CategoryTableBodyProps<TData, TValue>) => {
 	if (isLoading) {
 		return (
 			<TableBody>
@@ -81,4 +81,4 @@ const WithdrawRequestTableBody = <TData, TValue>({
 	);
 };
 
-export default WithdrawRequestTableBody;
+export default CategoryDataTableBody;

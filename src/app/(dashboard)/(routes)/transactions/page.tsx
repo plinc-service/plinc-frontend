@@ -28,10 +28,9 @@ const TransactionPage = () => {
 						<h3 className="text-sm font-semibold text-neutral-high">
 							Historique des transactions
 						</h3>
-						
-						{/* LISTE DES TRANSACTIONS avec filtres intégrés */}
+
 						<div className="mt-5">
-							<TransactionHistory showFilter={true} />
+							<TransactionHistory />
 						</div>
 					</div>
 				</div>

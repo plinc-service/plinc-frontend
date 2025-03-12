@@ -7,17 +7,14 @@ export type SortField = "created_at" | "number_of_sells";
 export type SortOrder = "asc" | "desc";
 
 export const useServicesRequests = () => {
-  // États pour la pagination
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
 
-  // États pour la recherche et le filtrage
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState<number | undefined>(
     undefined
   );
 
-  // Déclaration de la requête avec tous les paramètres dans la queryKey pour refetch automatique
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["fetchRequestServices", page, searchQuery, selectedStatus],
     queryFn: () => {

@@ -7,13 +7,11 @@ import {
 } from "@/components/ui/DropdownMenu";
 import { ChevronDown } from "lucide-react";
 
-interface WithdrawalFilterProps {
-  refetch: () => void;
-}
+// interface WithdrawalFilterProps {
+//   refetch: () => void;
+// }
 
-export function WithdrawalFilter({
-  refetch,
-}: WithdrawalFilterProps) {
+export function WithdrawalFilter() {
 
   return (
     <div className="flex items-center gap-2">
@@ -56,13 +54,11 @@ export function WithdrawalFilter({
   );
 }
 
-interface ServiceFilterProps {
-  refetch: () => void;
-}
+// interface ServiceFilterProps {
+//   refetch: () => void;
+// }
 
-export function ServiceFilter({
-  refetch,
-}: ServiceFilterProps) {
+export function ServiceFilter() {
 
   return (
     <div className="flex items-center gap-2">

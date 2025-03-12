@@ -1,3 +1,5 @@
+"use client";
+
 import React, { memo } from "react";
 
 interface FormattedDateProps {
@@ -23,3 +25,5 @@ export const FormattedDate: React.FC<FormattedDateProps> = memo(
     return <>{`${formattedDate} à ${time}`}</>;
   }
 );
+
+FormattedDate.displayName = "FormattedDate";

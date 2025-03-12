@@ -2,8 +2,6 @@
 import TopBar from "@/components/layout/TopBar";
 import { Input } from "@/components/ui/Input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
-import { useWithdrawalRequests } from "@/hooks/useTransactions";
-import { useServicesRequests } from "@/hooks/useValidations";
 import { Search } from "lucide-react";
 import { useState } from "react";
 import { ServiceFilter, WithdrawalFilter } from "./components/FilterComponents";
@@ -16,27 +14,30 @@ const ValidationPage = () => {
 	const [withdrawalSearch, setWithdrawalSearch] = useState("");
 	const [serviceSearch, setServiceSearch] = useState("");
 
-	const {
-		refetch: refetchWithdrawals
-	} = useWithdrawalRequests();
+	const [triggerWithdrawalSearch, setTriggerWithdrawalSearch] = useState(false);
+	const [triggerServiceSearch, setTriggerServiceSearch] = useState(false);
 
-	const {
-		refetch: refetchServices
-	} = useServicesRequests();
+	// const {
+	// 	refetch: refetchWithdrawals
+	// } = useWithdrawalRequests();
+
+	// const {
+	// 	refetch: refetchServices
+	// } = useServicesRequests();
 
 	const handleTabChange = (value: string) => {
 		setActiveTab(value);
 	};
 
-	// const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, tabType: string) => {
-	// 	if (e.key === 'Enter') {
-	// 		if (tabType === 'withdrawal') {
-	// 			setTriggerWithdrawalSearch(prev => !prev);
-	// 		} else if (tabType === 'service') {
-	// 			setTriggerServiceSearch(prev => !prev);
-	// 		}
-	// 	}
-	// };
+	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, tabType: string) => {
+		if (e.key === 'Enter') {
+			if (tabType === 'withdrawal') {
+				setTriggerWithdrawalSearch(prev => !prev);
+			} else if (tabType === 'service') {
+				setTriggerServiceSearch(prev => !prev);
+			}
+		}
+	};
 
 	const renderSearch = () => {
 		if (activeTab === "WithdrawalRequests") {
@@ -48,7 +49,7 @@ const ValidationPage = () => {
 						className="pl-9 h-10"
 						value={withdrawalSearch}
 						onChange={(e) => setWithdrawalSearch(e.target.value)}
-					// onKeyDown={(e) => handleKeyDown(e, 'withdrawal')}
+						onKeyDown={(e) => handleKeyDown(e, 'withdrawal')}
 					/>
 				</div>
 			);
@@ -61,7 +62,7 @@ const ValidationPage = () => {
 						className="pl-9 h-10"
 						value={serviceSearch}
 						onChange={(e) => setServiceSearch(e.target.value)}
-					// onKeyDown={(e) => handleKeyDown(e, 'service')}
+						onKeyDown={(e) => handleKeyDown(e, 'service')}
 					/>
 				</div>
 			);
@@ -96,12 +97,12 @@ const ValidationPage = () => {
 							{renderSearch()}
 							{activeTab === "WithdrawalRequests" && (
 								<WithdrawalFilter
-									refetch={refetchWithdrawals}
+								//refetch={refetchWithdrawals}
 								/>
 							)}
 							{activeTab === "Services" && (
 								<ServiceFilter
-									refetch={refetchServices}
+								// refetch={refetchServices}
 								/>
 							)}
 						</div>
@@ -111,6 +112,7 @@ const ValidationPage = () => {
 						<WithdrawalRequestsContent
 							key="withdrawals"
 							searchQuery={withdrawalSearch}
+							triggerSearch={triggerWithdrawalSearch}
 						/>
 					)}
 
@@ -118,6 +120,7 @@ const ValidationPage = () => {
 						<ServicesContent
 							key="services"
 							searchQuery={serviceSearch}
+							triggerSearch={triggerServiceSearch}
 						/>
 					)}
 				</Tabs>
@@ -128,19 +131,23 @@ const ValidationPage = () => {
 
 interface WithdrawalContentProps {
 	searchQuery: string;
+	triggerSearch: boolean;
 }
 
 interface ServiceContentProps {
 	searchQuery: string;
+	triggerSearch: boolean;
 }
 
 const WithdrawalRequestsContent = ({
 	searchQuery,
+	triggerSearch,
 }: WithdrawalContentProps) => {
 	return (
 		<div className="w-full mt-6">
 			<WithdrawRequestTableWrapper
 				searchQuery={searchQuery}
+				triggerSearch={triggerSearch}
 			/>
 		</div>
 	);
@@ -148,11 +155,13 @@ const WithdrawalRequestsContent = ({
 
 const ServicesContent = ({
 	searchQuery,
+	triggerSearch,
 }: ServiceContentProps) => {
 	return (
 		<div className="w-full mt-6">
 			<ServicesRequestTableWrapper
 				searchQuery={searchQuery}
+				triggerSearch={triggerSearch}
 			/>
 		</div>
 	);

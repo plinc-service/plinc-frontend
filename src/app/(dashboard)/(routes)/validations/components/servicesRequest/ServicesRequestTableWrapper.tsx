@@ -7,10 +7,12 @@ import { ServicesRequestsDataTable } from "./ServicesRequestDataTable";
 
 interface ServicesRequestTableWrapperProps {
 	searchQuery: string;
+	triggerSearch: boolean;
 }
 
 const ServicesRequestTableWrapper = ({
 	searchQuery,
+	triggerSearch
 }: ServicesRequestTableWrapperProps) => {
 	const [selectedService, setSelectedService] = useState<Service | null>(null);
 	const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -18,7 +20,9 @@ const ServicesRequestTableWrapper = ({
 	const {
 		data: services,
 		refetch,
-		setSearchQuery,
+		error,
+		loading,
+		setSearchQuery
 	} = useServicesRequests();
 
 	useEffect(() => {
@@ -29,7 +33,7 @@ const ServicesRequestTableWrapper = ({
 		if (searchQuery.trim() !== '') {
 			refetch();
 		}
-	}, [refetch, searchQuery]);
+	}, [triggerSearch, refetch, searchQuery]);
 
 	const handleServiceClick = (service: Service) => {
 		setSelectedService(service);
@@ -45,18 +49,18 @@ const ServicesRequestTableWrapper = ({
 			<ServicesRequestsDataTable
 				columns={ServiceRequestColumns}
 				data={services}
-				onRowClick={handleServiceClick}
+				onClick={(item: Service) => handleServiceClick(item)}
+				error={error}
+				isLoading={loading}
 			/>
-			{selectedService && (
-				<ServicesRequestsPopup
-					open={isPopupOpen}
-					onClose={handleClosePopup}
-					servicesDetails={selectedService}
-					refetchList={refetch}
-				/>
-			)}
+			<ServicesRequestsPopup
+				open={isPopupOpen}
+				onClose={handleClosePopup}
+				refetchList={refetch}
+				servicesDetails={selectedService}
+			/>
 		</>
-	);
-};
+	)
+}
 
-export default ServicesRequestTableWrapper;
+export default ServicesRequestTableWrapper

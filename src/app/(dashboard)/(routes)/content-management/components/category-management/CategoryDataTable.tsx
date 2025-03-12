@@ -16,9 +16,9 @@ import {
 
 import { Button } from "@/components/ui/Button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import ServicesRequestTableBody from "./ServicesRequestTableBody";
+import CategoryDataTableBody from "./CategoryDataTableBody";
 
-interface ServicesRequestsDataTableProps<TData extends object, TValue> {
+interface CategoryDataTableProps<TData extends object, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
 	onClick: (item: TData) => void;
@@ -26,13 +26,13 @@ interface ServicesRequestsDataTableProps<TData extends object, TValue> {
 	error: string | null;
 }
 
-export function ServicesRequestsDataTable<TData extends object, TValue>({
+export function CategoryDataTable<TData extends object, TValue>({
 	columns,
 	data,
 	onClick,
 	isLoading,
 	error,
-}: ServicesRequestsDataTableProps<TData, TValue>) {
+}: CategoryDataTableProps<TData, TValue>) {
 	const table = useReactTable({
 		data,
 		columns,
@@ -66,7 +66,7 @@ export function ServicesRequestsDataTable<TData extends object, TValue>({
 								</TableRow>
 							))}
 						</TableHeader>
-						<ServicesRequestTableBody
+						<CategoryDataTableBody
 							table={table}
 							columns={columns}
 							isLoading={isLoading}

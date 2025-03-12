@@ -1,25 +1,20 @@
 import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { SortField, SortOrder } from "@/hooks/useValidations";
-import { Check, ChevronDown, Search } from "lucide-react";
 import {
 	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
+	DropdownMenuTrigger
 } from "@/components/ui/DropdownMenu";
+import { Input } from "@/components/ui/Input";
+import { ChevronDown, Search } from "lucide-react";
 
 interface StatutDataTableFilterProps {
 	selectedStatus: number | undefined;
 	setSelectedStatus: (isActive?: number) => void;
 	searchQuery: string;
 	setSearchQuery: (query: string) => void;
-	sortField: SortField;
-	setSortField: (field: SortField) => void;
-	sortOrder: SortOrder;
-	setSortOrder: (order: SortOrder) => void;
+	// sortField: SortField;
+	// setSortField: (field: SortField) => void;
+	// sortOrder: SortOrder;
+	// setSortOrder: (order: SortOrder) => void;
 	refetch: () => void;
 }
 
@@ -28,10 +23,10 @@ export function StatutDataTableFilter({
 	setSelectedStatus,
 	searchQuery,
 	setSearchQuery,
-	sortField,
-	setSortField,
-	sortOrder,
-	setSortOrder,
+	// sortField,
+	// setSortField,
+	// sortOrder,
+	// setSortOrder,
 	refetch,
 }: StatutDataTableFilterProps) {
 	const options = [
@@ -50,29 +45,29 @@ export function StatutDataTableFilter({
 		setSearchQuery(e.target.value);
 	};
 
-	// Gestion du tri par date
-	const handleDateSort = (order: SortOrder) => {
-		// Mise à jour des états de tri
-		setSortField("created_at");
-		setSortOrder(order);
-		
-		// Force le refetch après la mise à jour de l'état
-		setTimeout(() => {
-			refetch();
-		}, 10);
-	};
+	// // Gestion du tri par date
+	// const handleDateSort = (order: SortOrder) => {
+	// 	// Mise à jour des états de tri
+	// 	setSortField("created_at");
+	// 	setSortOrder(order);
 
-	// Gestion du tri par ventes
-	const handleSalesSort = (order: SortOrder) => {
-		// Mise à jour des états de tri
-		setSortField("number_of_sells");
-		setSortOrder(order);
-		
-		// Force le refetch après la mise à jour de l'état
-		setTimeout(() => {
-			refetch();
-		}, 10);
-	};
+	// 	// Force le refetch après la mise à jour de l'état
+	// 	setTimeout(() => {
+	// 		refetch();
+	// 	}, 10);
+	// };
+
+	// // Gestion du tri par ventes
+	// const handleSalesSort = (order: SortOrder) => {
+	// 	// Mise à jour des états de tri
+	// 	setSortField("number_of_sells");
+	// 	setSortOrder(order);
+
+	// 	// Force le refetch après la mise à jour de l'état
+	// 	setTimeout(() => {
+	// 		refetch();
+	// 	}, 10);
+	// };
 
 	return (
 		<div className="flex justify-between items-center w-full mb-5">
@@ -107,16 +102,15 @@ export function StatutDataTableFilter({
 				{/* Menu déroulant pour le tri */}
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<Button 
-							variant="outline" 
+						<Button
+							variant="outline"
 							className="h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full"
 						>
 							<span>Trier par</span>
 							<ChevronDown className="h-4 w-4" />
 						</Button>
 					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end" className="w-56">
-						{/* Options de tri par date */}
+					{/* <DropdownMenuContent align="end" className="w-56">
 						<DropdownMenuLabel>Date d&apos;inscription</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem 
@@ -138,7 +132,6 @@ export function StatutDataTableFilter({
 							)}
 						</DropdownMenuItem>
 
-						{/* Options de tri par ventes */}
 						<DropdownMenuLabel className="mt-2">Nombre de ventes</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem 
@@ -159,7 +152,7 @@ export function StatutDataTableFilter({
 								<Check className="h-4 w-4 ml-2 text-blue" />
 							)}
 						</DropdownMenuItem>
-					</DropdownMenuContent>
+					</DropdownMenuContent> */}
 				</DropdownMenu>
 			</div>
 		</div>

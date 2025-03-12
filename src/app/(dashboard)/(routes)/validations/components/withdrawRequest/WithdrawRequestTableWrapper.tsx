@@ -7,10 +7,12 @@ import { WithdrawalRequestsDataTable } from "./WithdrawRequestDataTable";
 
 interface WithdrawRequestTableWrapperProps {
 	searchQuery: string;
+	triggerSearch: boolean;
 }
 
 const WithdrawRequestTableWrapper = ({
 	searchQuery,
+	triggerSearch
 }: WithdrawRequestTableWrapperProps) => {
 	const [selectedWithdrawal, setSelectedWithdrawal] = useState<Transaction | null>(null);
 	const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -18,7 +20,9 @@ const WithdrawRequestTableWrapper = ({
 	const {
 		data: withdrawal,
 		refetch,
-		setSearchQuery,
+		error,
+		loading,
+		setSearchQuery
 	} = useWithdrawalRequests();
 
 	useEffect(() => {
@@ -29,7 +33,7 @@ const WithdrawRequestTableWrapper = ({
 		if (searchQuery.trim() !== '') {
 			refetch();
 		}
-	}, [refetch, searchQuery]);
+	}, [triggerSearch, refetch, searchQuery]);
 
 	const handleWithdrawalClick = (withdrawal: Transaction) => {
 		setSelectedWithdrawal(withdrawal);
@@ -45,18 +49,19 @@ const WithdrawRequestTableWrapper = ({
 			<WithdrawalRequestsDataTable
 				columns={columns}
 				data={withdrawal}
-				onRowClick={handleWithdrawalClick}
+				onClick={(item: Transaction) => handleWithdrawalClick(item)}
+				error={error}
+				isLoading={loading}
 			/>
-			{selectedWithdrawal && (
-				<WithdrawalRequestsPopup
-					open={isPopupOpen}
-					onClose={handleClosePopup}
-					transactionDetails={selectedWithdrawal}
-					refetchList={refetch}
-				/>
-			)}
-		</>
-	);
-};
 
-export default WithdrawRequestTableWrapper;
+			<WithdrawalRequestsPopup
+				open={isPopupOpen}
+				onClose={handleClosePopup}
+				refetchList={refetch}
+				transactionDetails={selectedWithdrawal}
+			/>
+		</>
+	)
+}
+
+export default WithdrawRequestTableWrapper

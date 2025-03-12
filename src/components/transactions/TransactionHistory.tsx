@@ -5,9 +5,7 @@ import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import { memo } from "react";
 import { ScrollArea, ScrollBar } from "../ui/ScrollArea";
 import Spinner from "../ui/Spinner";
-import { TransactionFilter, TransactionFilterProps } from "./TransactionFilter";
-
-interface LoadingStateProps extends TransactionFilterProps { }
+import { TransactionFilter } from "./TransactionFilter";
 
 interface ErrorStateProps {
 	error: string;
@@ -76,6 +74,7 @@ const TransactionItem: React.FC<TransactionItemProps> = memo(({ transaction }) =
 	);
 });
 
+TransactionItem.displayName = "TransactionItem";
 const TransactionHistory: React.FC = () => {
 	const {
 		transactions,
@@ -118,5 +117,7 @@ const TransactionHistory: React.FC = () => {
 		</div>
 	);
 };
+
+TransactionHistory.displayName = "TransactionHistory";
 
 export default TransactionHistory;

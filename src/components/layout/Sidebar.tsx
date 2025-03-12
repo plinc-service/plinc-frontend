@@ -39,7 +39,8 @@ export function Sidebar() {
                 "flex items-center gap-3 px-4 py-2 min-h-[50px] border-l-3 text-base transition-colors text-neutral-high",
                 active
                   ? "bg-white border-blue"
-                  : "text-muted-foreground border-transparent"
+                  : "text-muted-foreground border-transparent",
+                item.active === false && "cursor-not-allowed opacity-50 pointer-events-none"
               )}
             >
               {item.icon && (
