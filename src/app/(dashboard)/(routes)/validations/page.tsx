@@ -4,11 +4,9 @@ import { Input } from "@/components/ui/Input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Search } from "lucide-react";
 import { useState } from "react";
+import { ServiceFilter, WithdrawalFilter } from "./components/FilterComponents";
 import ServicesRequestTableWrapper from "./components/servicesRequest/ServicesRequestTableWrapper";
 import WithdrawRequestTableWrapper from "./components/withdrawRequest/WithdrawRequestTableWrapper";
-import { ServiceFilter, WithdrawalFilter } from "./components/FilterComponents";
-import { useServicesRequests, SortField } from "@/hooks/useValidations";
-import { useWithdrawalRequests, TransactionSortField, SortOrder } from "@/hooks/useTransactions";
 
 const ValidationPage = () => {
 	const [activeTab, setActiveTab] = useState("WithdrawalRequests");
@@ -19,22 +17,13 @@ const ValidationPage = () => {
 	const [triggerWithdrawalSearch, setTriggerWithdrawalSearch] = useState(false);
 	const [triggerServiceSearch, setTriggerServiceSearch] = useState(false);
 
-	// Hooks pour la gestion du tri
-	const {
-		sortField: withdrawalSortField,
-		setSortField: setWithdrawalSortField,
-		sortOrder: withdrawalSortOrder,
-		setSortOrder: setWithdrawalSortOrder,
-		refetch: refetchWithdrawals
-	} = useWithdrawalRequests();
+	// const {
+	// 	refetch: refetchWithdrawals
+	// } = useWithdrawalRequests();
 
-	const {
-		sortField: serviceSortField,
-		setSortField: setServiceSortField,
-		sortOrder: serviceSortOrder,
-		setSortOrder: setServiceSortOrder,
-		refetch: refetchServices
-	} = useServicesRequests();
+	// const {
+	// 	refetch: refetchServices
+	// } = useServicesRequests();
 
 	const handleTabChange = (value: string) => {
 		setActiveTab(value);
@@ -107,21 +96,13 @@ const ValidationPage = () => {
 						<div className="inline-flex items-center gap-2">
 							{renderSearch()}
 							{activeTab === "WithdrawalRequests" && (
-								<WithdrawalFilter 
-									sortField={withdrawalSortField}
-									setSortField={setWithdrawalSortField}
-									sortOrder={withdrawalSortOrder}
-									setSortOrder={setWithdrawalSortOrder}
-									refetch={refetchWithdrawals}
+								<WithdrawalFilter
+								//refetch={refetchWithdrawals}
 								/>
 							)}
 							{activeTab === "Services" && (
-								<ServiceFilter 
-									sortField={serviceSortField}
-									setSortField={setServiceSortField}
-									sortOrder={serviceSortOrder}
-									setSortOrder={setServiceSortOrder}
-									refetch={refetchServices}
+								<ServiceFilter
+								// refetch={refetchServices}
 								/>
 							)}
 						</div>
@@ -132,8 +113,6 @@ const ValidationPage = () => {
 							key="withdrawals"
 							searchQuery={withdrawalSearch}
 							triggerSearch={triggerWithdrawalSearch}
-							sortField={withdrawalSortField}
-							sortOrder={withdrawalSortOrder}
 						/>
 					)}
 
@@ -142,8 +121,6 @@ const ValidationPage = () => {
 							key="services"
 							searchQuery={serviceSearch}
 							triggerSearch={triggerServiceSearch}
-							sortField={serviceSortField}
-							sortOrder={serviceSortOrder}
 						/>
 					)}
 				</Tabs>
@@ -152,34 +129,25 @@ const ValidationPage = () => {
 	);
 };
 
-interface ContentProps {
+interface WithdrawalContentProps {
 	searchQuery: string;
 	triggerSearch: boolean;
 }
 
-interface WithdrawalContentProps extends ContentProps {
-	sortField: TransactionSortField;
-	sortOrder: SortOrder;
-}
-
-interface ServiceContentProps extends ContentProps {
-	sortField: SortField;
-	sortOrder: SortOrder;
+interface ServiceContentProps {
+	searchQuery: string;
+	triggerSearch: boolean;
 }
 
 const WithdrawalRequestsContent = ({
 	searchQuery,
 	triggerSearch,
-	sortField,
-	sortOrder
 }: WithdrawalContentProps) => {
 	return (
 		<div className="w-full mt-6">
 			<WithdrawRequestTableWrapper
 				searchQuery={searchQuery}
 				triggerSearch={triggerSearch}
-				sortField={sortField}
-				sortOrder={sortOrder}
 			/>
 		</div>
 	);
@@ -188,16 +156,12 @@ const WithdrawalRequestsContent = ({
 const ServicesContent = ({
 	searchQuery,
 	triggerSearch,
-	sortField,
-	sortOrder
 }: ServiceContentProps) => {
 	return (
 		<div className="w-full mt-6">
 			<ServicesRequestTableWrapper
 				searchQuery={searchQuery}
 				triggerSearch={triggerSearch}
-				sortField={sortField}
-				sortOrder={sortOrder}
 			/>
 		</div>
 	);

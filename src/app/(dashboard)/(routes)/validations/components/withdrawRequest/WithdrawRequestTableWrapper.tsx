@@ -1,5 +1,5 @@
 import WithdrawalRequestsPopup from "@/components/transactions/WithdrawalRequestsPopup";
-import { useWithdrawalRequests, TransactionSortField, SortOrder } from "@/hooks/useTransactions";
+import { useWithdrawalRequests } from "@/hooks/useTransactions";
 import { Transaction } from "@/interfaces/transactionInterface";
 import { useEffect, useState } from "react";
 import { columns } from "./columns";
@@ -8,16 +8,11 @@ import { WithdrawalRequestsDataTable } from "./WithdrawRequestDataTable";
 interface WithdrawRequestTableWrapperProps {
 	searchQuery: string;
 	triggerSearch: boolean;
-	// Ajout des props de tri avec types corrects
-	sortField?: TransactionSortField;
-	sortOrder?: SortOrder;
 }
 
 const WithdrawRequestTableWrapper = ({
 	searchQuery,
-	triggerSearch,
-	sortField,
-	sortOrder
+	triggerSearch
 }: WithdrawRequestTableWrapperProps) => {
 	const [selectedWithdrawal, setSelectedWithdrawal] = useState<Transaction | null>(null);
 	const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -25,27 +20,14 @@ const WithdrawRequestTableWrapper = ({
 	const {
 		data: withdrawal,
 		refetch,
-		setSearchQuery,
-		setSortField,
-		setSortOrder
+		error,
+		loading,
+		setSearchQuery
 	} = useWithdrawalRequests();
 
 	useEffect(() => {
 		setSearchQuery(searchQuery);
 	}, [searchQuery, setSearchQuery]);
-
-	// Appliquer les changements de tri lorsque les props changent
-	useEffect(() => {
-		if (sortField && sortOrder) {
-			console.log('Updating sort in WithdrawRequestTableWrapper:', { sortField, sortOrder });
-			setSortField(sortField);
-			setSortOrder(sortOrder);
-			// Petite pause pour s'assurer que le state est mis à jour
-			setTimeout(() => {
-				refetch();
-			}, 0);
-		}
-	}, [sortField, sortOrder, setSortField, setSortOrder, refetch]);
 
 	useEffect(() => {
 		if (searchQuery.trim() !== '') {
@@ -67,18 +49,19 @@ const WithdrawRequestTableWrapper = ({
 			<WithdrawalRequestsDataTable
 				columns={columns}
 				data={withdrawal}
-				onRowClick={handleWithdrawalClick}
+				onClick={(item: Transaction) => handleWithdrawalClick(item)}
+				error={error}
+				isLoading={loading}
 			/>
-			{selectedWithdrawal && (
-				<WithdrawalRequestsPopup
-					open={isPopupOpen}
-					onClose={handleClosePopup}
-					transactionDetails={selectedWithdrawal}
-					refetchList={refetch}
-				/>
-			)}
-		</>
-	);
-};
 
-export default WithdrawRequestTableWrapper;
+			<WithdrawalRequestsPopup
+				open={isPopupOpen}
+				onClose={handleClosePopup}
+				refetchList={refetch}
+				transactionDetails={selectedWithdrawal}
+			/>
+		</>
+	)
+}
+
+export default WithdrawRequestTableWrapper
