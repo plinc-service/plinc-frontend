@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/Button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/Dialog";
 import { Separator } from "@/components/ui/Separator";
 import Spinner from "@/components/ui/Spinner";
-import { useCategoryRequests, useUpdateCategory } from "@/hooks/useCategory";
+import { useCategoryRequests } from "@/hooks/useCategory";
 import { Category } from "@/interfaces/categoryInterface";
 import { Plus, X } from "lucide-react";
 import { useRef, useState } from "react";
@@ -19,17 +19,15 @@ const UpdateCategoryPopup: React.FC<UpdateCategoryPopupProps> = ({
 	onClose,
 	category,
 }) => {
-	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	const [isFormSubmitting, setIsFormSubmitting] = useState(false);
 	const formRef = useRef<{ submit: () => void }>(null);
 	const { refetch: refetchCategories } = useCategoryRequests();
-	const { isPending: isPendingUpdateCategory, error: errorUpdateCategory } = useUpdateCategory();
 
 	const handleSubmit = () => {
 		formRef.current?.submit();
 	};
 
 	const handleClose = () => {
-		setErrorMessage(null);
 		onClose();
 	};
 
@@ -38,19 +36,13 @@ const UpdateCategoryPopup: React.FC<UpdateCategoryPopupProps> = ({
 	return (
 		<Dialog open={open} onOpenChange={handleClose}>
 			<DialogContent className="max-w-[700px] w-fulll">
-				{errorMessage && (
-					<div className="bg-red-50 text-red-600 p-3 rounded-md mb-4">
-						{errorUpdateCategory}
-					</div>
-				)}
-
 				<div className="flex justify-between items-center">
 					<DialogTitle className="text-lg text-neutral-high font-medium">
 						Modifier la catégorie
 					</DialogTitle>
 					<div className="flex gap-4">
-						<Button size={"sm"} onClick={handleSubmit} disabled={isPendingUpdateCategory}>
-							{isPendingUpdateCategory ? <Spinner /> : "Enregistrer"}
+						<Button size={"sm"} onClick={handleSubmit} disabled={isFormSubmitting}>
+							{isFormSubmitting && <Spinner className="text-white" />} Enregistrer
 						</Button>
 						<button className="hover:text-[#94A3B8] cursor-pointer" onClick={handleClose}>
 							<X />
@@ -65,6 +57,7 @@ const UpdateCategoryPopup: React.FC<UpdateCategoryPopupProps> = ({
 					name={category.name}
 					color={category.color}
 					categoryId={category.id.toString()}
+					onLoadingChange={setIsFormSubmitting}
 				/>
 
 

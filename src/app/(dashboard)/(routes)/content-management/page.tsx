@@ -92,10 +92,10 @@ const ContentManagementPage = () => {
 	return (
 		<div className="px-5 pt-5 flex flex-col h-full w-full">
 			<TopBar pageName="Gestion des contenu" />
-			<div className="w-full h-full mt-4">
+			<div className="w-full flex-1 mt-4">
 				<Tabs
 					defaultValue="Category"
-					className="w-full"
+					className="w-full h-full mb-4"
 					onValueChange={handleTabChange}
 					value={activeTab}
 				>
@@ -150,25 +150,23 @@ const CategoryContent = ({
 	triggerSearch: boolean
 }) => {
 	return (
-		<div className="mt-4">
-			<CategoryTableWrapper searchQuery={searchQuery} triggerSearch={triggerSearch} />
-		</div>
+		<CategoryTableWrapper searchQuery={searchQuery} triggerSearch={triggerSearch} />
 	);
 };
 
 const NotificationContent = () => {
 	return (
-		<div className="mt-4">
+		<>
 			Notification
-		</div>
+		</>
 	);
 };
 
 const AnnouncementContent = () => {
 	return (
-		<div className="mt-4">
+		<>
 			Annonces
-		</div>
+		</>
 	);
 };
 

@@ -15,22 +15,30 @@ import { useUpdateCategory } from "@/hooks/useCategory";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { forwardRef, useEffect, useImperativeHandle } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
-
 interface UpdateCategoryFormProps {
 	onClose: () => void;
 	refetchList: () => void;
 	name: string;
 	color: string;
 	categoryId: string;
+	onLoadingChange?: (isLoading: boolean) => void;
 }
 
 const UpdateCategoryForm = forwardRef<{ submit: () => void }, UpdateCategoryFormProps>(
-	({ onClose, refetchList, name, color, categoryId }, ref) => {
+	({ onClose, refetchList, name, color, categoryId, onLoadingChange }, ref) => {
 
 		const {
+			isPending,
 			mutate,
 		} = useUpdateCategory();
+
+		useEffect(() => {
+			if (onLoadingChange) {
+				onLoadingChange(isPending);
+			}
+		}, [isPending, onLoadingChange]);
 
 		type FormValues = z.infer<typeof UpdateCategoryFormSchema>;
 
@@ -56,10 +64,14 @@ const UpdateCategoryForm = forwardRef<{ submit: () => void }, UpdateCategoryForm
 		function onSubmit(values: FormValues) {
 			mutate({ id: categoryId, data: values }, {
 				onSuccess: () => {
+					toast.success("Catégorie mise à jour avec succès");
 					form.reset();
 					onClose();
 					refetchList();
 				},
+				onError: () => {
+					toast.error("Une erreur est survenue lors de la mise à jour de la catégorie");
+				}
 			});
 		}
 

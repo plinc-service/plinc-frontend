@@ -1,4 +1,8 @@
-import { Category, CategoryFormType } from "@/interfaces/categoryInterface";
+import {
+  Category,
+  CategoryFormType,
+  GetCategoriesResponse,
+} from "@/interfaces/categoryInterface";
 import Axios from "@/utils/config-axios";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -6,13 +10,13 @@ import Cookies from "js-cookie";
 export const CategoryService = {
   getCategories: async ({
     page = 1,
-    page_size = 10,
+    page_size = 8,
     query = "",
   }: {
     page?: number;
     page_size?: number;
     query?: string;
-  }): Promise<Category[]> => {
+  }): Promise<GetCategoriesResponse> => {
     try {
       const response = await Axios.get("/categories", {
         params: {
@@ -21,7 +25,7 @@ export const CategoryService = {
           query,
         },
       });
-      return response.data.data as Category[];
+      return response.data as GetCategoriesResponse;
     } catch (error) {
       throw error;
     }

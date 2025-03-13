@@ -1,29 +1,64 @@
 "use client";
-import { CategoryFormType } from "@/interfaces/categoryInterface";
+import { Category, CategoryFormType } from "@/interfaces/categoryInterface";
 import { CategoryService } from "@/services/CategoryService";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const useCategoryRequests = () => {
   const [page, setPage] = useState(1);
-  const [pageSize] = useState(10);
+  const [pageSize] = useState(8);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState<number | undefined>(
     undefined
   );
+  const [totalPages, setTotalPages] = useState(1);
+  const [nextPage, setNextPage] = useState<string | null>(null);
+  const [previousPage, setPreviousPage] = useState<string | null>(null);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["fetchCategories", page, searchQuery, selectedStatus],
-    queryFn: () =>
-      CategoryService.getCategories({
+    queryFn: async () => {
+      const response = await CategoryService.getCategories({
         page,
         page_size: pageSize,
         query: searchQuery,
-      }),
+      });
+      return response;
+    },
   });
 
+  // Mettre à jour les états de pagination quand les données changent
+  useEffect(() => {
+    if (data) {
+      setTotalPages(data.total_pages);
+      setNextPage(data.next);
+      setPreviousPage(data.previous);
+    }
+  }, [data]);
+
+  const goToNextPage = () => {
+    if (nextPage && page < totalPages) {
+      setPage(page + 1);
+    }
+  };
+
+  const goToPreviousPage = () => {
+    if (previousPage && page > 1) {
+      setPage(page - 1);
+    }
+  };
+
+  const goToPage = (pageNumber: number) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setPage(pageNumber);
+    }
+  };
+
+  // S'assurer que data.data est toujours un tableau
+  const categories: Category[] = data?.data || [];
+
   return {
-    data: data || [],
+    data: categories, // Retourne un tableau explicitement typé Category[]
     loading: isLoading,
     error: error
       ? "Une erreur est survenue lors du chargement des services."
@@ -31,6 +66,12 @@ export const useCategoryRequests = () => {
     refetch,
     page,
     setPage,
+    totalPages,
+    nextPage,
+    previousPage,
+    goToNextPage,
+    goToPreviousPage,
+    goToPage,
     searchQuery,
     setSearchQuery,
     selectedStatus,
