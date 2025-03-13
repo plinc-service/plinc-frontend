@@ -11,8 +11,8 @@ import {
 	X
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import UpdateCategoryPopup from "./UpdateCategoryPopup";
-
 const CategoryDetailsPopup: React.FC<CategoryDetailsPopupProps> = ({
 	open,
 	onClose,
@@ -42,9 +42,13 @@ const CategoryDetailsPopup: React.FC<CategoryDetailsPopupProps> = ({
 		if (categoryDetails?.id) {
 			deleteCategory(categoryDetails.id.toString(), {
 				onSuccess: () => {
+					toast.success("Catégorie supprimée avec succès");
 					handleClose();
 					refetchCategories();
 				},
+				onError: () => {
+					toast.error("Une erreur est survenue lors de la suppression de la catégorie");
+				}
 			});
 		}
 	};

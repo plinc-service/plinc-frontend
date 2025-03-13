@@ -14,7 +14,7 @@ export interface CategoryFormType {
 
 export interface GetCategoriesResponse {
   success: boolean;
-  data: Category;
+  data: Category[];
   previous: string | null;
   next: string | null;
   total_pages: number;

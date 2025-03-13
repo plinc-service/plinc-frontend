@@ -13,16 +13,29 @@ import { CreateCategoryFormSchema } from "@/schemas/CategoryFormSchemas";
 
 import { useCreateCategory } from "@/hooks/useCategory";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { forwardRef, useImperativeHandle } from "react";
+import { forwardRef, useEffect, useImperativeHandle } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
+interface CreateCategoryFormProps {
+	onClose: () => void;
+	refetchList: () => void;
+	onLoadingChange?: (isLoading: boolean) => void;
+}
 
-const CreateCategoryForm = forwardRef(({ onClose, refetchList }: { onClose: () => void, refetchList: () => void }, ref) => {
+const CreateCategoryForm = forwardRef<{ submit: () => void }, CreateCategoryFormProps>(({ onClose, refetchList, onLoadingChange }, ref) => {
 
 	const {
 		mutate,
+		isPending,
 	} = useCreateCategory();
+
+	useEffect(() => {
+		if (onLoadingChange) {
+			onLoadingChange(isPending);
+		}
+	}, [isPending, onLoadingChange]);
 
 	type FormValues = z.infer<typeof CreateCategoryFormSchema>;
 
@@ -41,10 +54,14 @@ const CreateCategoryForm = forwardRef(({ onClose, refetchList }: { onClose: () =
 	function onSubmit(values: FormValues) {
 		mutate(values, {
 			onSuccess: () => {
+				toast.success("Catégorie créée avec succès");
 				form.reset();
 				onClose();
 				refetchList();
 			},
+			onError: () => {
+				toast.error("Une erreur est survenue lors de la création de la catégorie");
+			}
 		});
 	}
 

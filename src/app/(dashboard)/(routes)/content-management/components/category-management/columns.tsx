@@ -8,7 +8,7 @@ export const CategoryColumns: ColumnDef<Category>[] = [
 		header: "ID",
 	},
 	{
-		accessorKey: "category",
+		accessorKey: "name",
 		header: "Catégories",
 		cell: ({ row }) => {
 			const category = row.original;

@@ -22,7 +22,12 @@ const CategoryTableWrapper = ({
 		refetch,
 		error,
 		loading,
-		setSearchQuery
+		setSearchQuery,
+		page,
+		totalPages,
+		goToNextPage,
+		goToPreviousPage,
+		goToPage
 	} = useCategoryRequests();
 
 	useEffect(() => {
@@ -52,6 +57,11 @@ const CategoryTableWrapper = ({
 				onClick={(item: Category) => handleServiceClick(item)}
 				error={error}
 				isLoading={loading}
+				page={page}
+				totalPages={totalPages}
+				onNextPage={goToNextPage}
+				onPreviousPage={goToPreviousPage}
+				onPageChange={goToPage}
 			/>
 			<CategoryDetailsPopup
 				open={isPopupOpen}
@@ -60,7 +70,7 @@ const CategoryTableWrapper = ({
 				categoryDetails={selectedCategory}
 			/>
 		</>
-	)
-}
+	);
+};
 
-export default CategoryTableWrapper
+export default CategoryTableWrapper;

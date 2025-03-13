@@ -2,12 +2,12 @@ import { Button } from "@/components/ui/Button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/Dialog";
 import { Separator } from "@/components/ui/Separator";
 import Spinner from "@/components/ui/Spinner";
-import { useCategoryRequests, useCreateCategory } from "@/hooks/useCategory";
+import { useCategoryRequests } from "@/hooks/useCategory";
 import {
 	Plus,
 	X
 } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import CreateCategoryForm from "./CreateCategoryForm";
 
 const CreateCategoryPopup = ({
@@ -18,11 +18,7 @@ const CreateCategoryPopup = ({
 	onClose: () => void;
 }) => {
 
-	const {
-		isPending: isPendingCreateCategory,
-		error: errorCreateCategory,
-	} = useCreateCategory();
-
+	const [isFormSubmitting, setIsFormSubmitting] = useState(false)
 	const { refetch: refetchCategories } = useCategoryRequests();
 
 	const formRef = useRef<{ submit: () => void }>(null);
@@ -41,11 +37,6 @@ const CreateCategoryPopup = ({
 		<>
 			<Dialog open={open} onOpenChange={handleClose}>
 				<DialogContent className="max-w-[700px] w-full">
-					{errorCreateCategory && (
-						<div className="bg-red-50 text-red-600 p-3 rounded-md mb-4">
-							{errorCreateCategory}
-						</div>
-					)}
 
 					{/* HEADER */}
 					<div className="flex justify-between items-center">
@@ -53,15 +44,16 @@ const CreateCategoryPopup = ({
 							Nouvelle catégorie
 						</DialogTitle>
 						<div className="flex gap-4">
-							<Button size={"sm"} onClick={handleSave} disabled={isPendingCreateCategory}>
-								{isPendingCreateCategory ? <Spinner /> : "Enregistrer"}
+							<Button size={"sm"} onClick={handleSave} disabled={isFormSubmitting}>
+								{isFormSubmitting && <Spinner className="text-white" />}
+								{" "}Enregistrer
 							</Button>
 							<button className="hover:text-[#94A3B8] cursor-pointer" onClick={onClose}>
 								<X />
 							</button>
 						</div>
 					</div>
-					<CreateCategoryForm ref={formRef} onClose={handleClose} refetchList={refetchCategories} />
+					<CreateCategoryForm ref={formRef} onClose={handleClose} refetchList={refetchCategories} onLoadingChange={setIsFormSubmitting} />
 
 					<Separator />
 
