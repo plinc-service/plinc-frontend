@@ -21,6 +21,11 @@ const ServicesTableWrapper = () => {
 		setSelectedStatus,
 		searchQuery,
 		setSearchQuery,
+		goToNextPage,
+		goToPreviousPage,
+		goToPage,
+		page,
+		totalPages,
 	} = useServicesRequests();
 
 	const handleServiceClick = (service: Service) => {
@@ -44,14 +49,24 @@ const ServicesTableWrapper = () => {
 				refetch={refetch} />
 
 			{/* Services Data Table */}
-			<ServicesDataTable columns={ServicesColumns} data={services} onClick={(item: Service) => handleServiceClick(item)} error={error} isLoading={loading} />
+			<ServicesDataTable
+				columns={ServicesColumns}
+				data={services}
+				onClick={(item: Service) => handleServiceClick(item)}
+				error={error}
+				isLoading={loading}
+				page={page}
+				totalPages={totalPages}
+				onNextPage={goToNextPage}
+				onPreviousPage={goToPreviousPage}
+				onPageChange={goToPage} />
 
 			{/* Services Popup */}
 			<ServicesDetailsPopup
 				open={isPopupOpen}
 				onClose={handleClosePopup}
 				refetchList={refetch}
-				servicesDetails={selectedService}
+				service_id={selectedService?.id || 0}
 			/>
 		</>
 	)

@@ -49,6 +49,8 @@ export interface Service {
   hour_service: number;
   hour_price: number;
   description: string;
+  reject_reason: string;
+  statut: number;
   home_service: boolean;
   is_active: boolean;
   created_at: string;
@@ -60,9 +62,17 @@ export interface Service {
   username?: string;
 }
 
-export interface ApiResponse {
+export interface ServicesResponse {
   success: boolean;
   data: Service[];
+  previous: string | null;
+  next: string | null;
+  total_pages: number;
+}
+
+export interface ServiceDetailsResponse {
+  success: boolean;
+  data: Service;
   previous: string | null;
   next: string | null;
   total_pages: number;
@@ -72,5 +82,6 @@ export interface ServicesRequestDetailsPopupProps {
   open: boolean;
   onClose: () => void;
   refetchList: () => void;
-  servicesDetails?: Service | null;
+  service_id?: number;
+  servicesDetails?: Service;
 }

@@ -27,7 +27,6 @@ export const useCategoryRequests = () => {
     },
   });
 
-  // Mettre à jour les états de pagination quand les données changent
   useEffect(() => {
     if (data) {
       setTotalPages(data.total_pages);
@@ -54,11 +53,10 @@ export const useCategoryRequests = () => {
     }
   };
 
-  // S'assurer que data.data est toujours un tableau
   const categories: Category[] = data?.data || [];
 
   return {
-    data: categories, // Retourne un tableau explicitement typé Category[]
+    data: categories,
     loading: isLoading,
     error: error
       ? "Une erreur est survenue lors du chargement des services."

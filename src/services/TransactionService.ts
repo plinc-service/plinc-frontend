@@ -76,7 +76,7 @@ export const TransactionsServices = {
   ): Promise<void> => {
     try {
       const baseUrl = "https://api-plinc.gini-africa.com";
-      await axios.put(`${baseUrl}/wallet/transaction/activation/${id}`, {
+      await axios.put(`${baseUrl}/wallet/activation/${id}`, {
         status,
       });
     } catch (error) {
@@ -84,6 +84,29 @@ export const TransactionsServices = {
         "Erreur lors de la validation ou du rejet du retrait :",
         error
       );
+      throw error;
+    }
+  },
+  validateService: async (id: string) => {
+    try {
+      await Axios.put(`/service/activation/${id}`, {
+        status: 1,
+      });
+    } catch (error) {
+      console.error(
+        "Erreur lors de la validation ou du rejet du service :",
+        error
+      );
+      throw error;
+    }
+  },
+  rejectService: async (id: string) => {
+    try {
+      await Axios.put(`/service/activation/${id}`, {
+        status: 0,
+      });
+    } catch (error) {
+      console.error("Erreur lors de la rejet du service :", error);
       throw error;
     }
   },

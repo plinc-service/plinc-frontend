@@ -1,66 +1,60 @@
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/Dialog";
 import Spinner from "@/components/ui/Spinner";
-import { useValidateOrRejectWithdrawal } from "@/hooks/useTransactions";
+import { useRejectService, useValidateService } from "@/hooks/useTransactions";
+import { useServiceDetails } from "@/hooks/useValidations";
 import { ServicesRequestDetailsPopupProps } from "@/interfaces/serviceInterface";
 import {
 	X
 } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ValidateOrRejectButtons from "../../services/components/ValidateOrRejectButtons";
 import UserProfilePopup from "./UserProfilePopup";
 
 const ServicesRequestsPopup: React.FC<ServicesRequestDetailsPopupProps> = ({
 	open,
 	onClose,
-	servicesDetails,
-	refetchList
+	refetchList,
+	service_id
 }) => {
 
-	const [localError, setLocalError] = useState<string | null>(null);
 	const [isUserProfileOpen, setIsUserProfileOpen] = useState(false);
 
 	const {
-		validateOrRejectWithdrawal,
-		loading,
-		error,
-	} = useValidateOrRejectWithdrawal(() => {
+		validateService,
+		validateLoading,
+	} = useValidateService(() => {
 		refetchList();
 		onClose();
 	});
 
-	useEffect(() => {
-		if (error) {
-			setLocalError(error);
-		}
-	}, [error]);
+	const {
+		rejectService,
+		rejectLoading,
+	} = useRejectService(() => {
+		refetchList();
+		onClose();
+	});
 
-	useEffect(() => {
-		if (!open) {
-			setLocalError(null);
-		}
-	}, [open]);
+	const {
+		data: servicesDetails,
+		// isLoading: isServiceDetailsLoading,
+		// refetch: refetchServiceDetails
+	} = useServiceDetails(service_id?.toString() || "");
 
 	const handleValidate = () => {
 		if (servicesDetails?.id) {
-			validateOrRejectWithdrawal({
-				id: servicesDetails.id.toString(),
-				status: 1
-			});
+			validateService({ id: servicesDetails.id.toString() });
 		}
 	};
 
 	const handleReject = () => {
 		if (servicesDetails?.id) {
-			validateOrRejectWithdrawal({
-				id: servicesDetails.id.toString(),
-				status: 2
-			});
+			rejectService({ id: servicesDetails.id.toString() });
 		}
 	};
 
 	const handleClose = () => {
-		setLocalError(null);
 		onClose();
 	};
 
@@ -76,24 +70,21 @@ const ServicesRequestsPopup: React.FC<ServicesRequestDetailsPopupProps> = ({
 		<>
 			<Dialog open={open} onOpenChange={handleClose}>
 				<DialogContent className="max-w-[700px] w-full">
-					{localError && (
-						<div className="bg-red-50 text-red-600 p-3 rounded-md">
-							{error}
-						</div>
-					)}
 
 					<div className="space-y-3">
 						{/* HEADER */}
+
+						<div className="flex justify-between items-center">
+							<DialogTitle className="text-lg text-neutral-high font-medium">
+								{servicesDetails ? `Services ${servicesDetails.id}` : "Chargement..."}
+							</DialogTitle>
+							<button className="hover:text-[#94A3B8] cursor-pointer" onClick={onClose}>
+								<X />
+							</button>
+						</div>
+
 						{servicesDetails ? (
 							<>
-								<div className="flex justify-between items-center">
-									<DialogTitle className="text-lg text-neutral-high font-medium">
-										Services {servicesDetails.id}
-									</DialogTitle>
-									<button className="hover:text-[#94A3B8] cursor-pointer" onClick={onClose}>
-										<X />
-									</button>
-								</div>
 								<div>
 									<div className="flex justify-between items-center">
 										<span className="font-semibold block text-primary text-xl">{servicesDetails.name}</span>
@@ -115,7 +106,8 @@ const ServicesRequestsPopup: React.FC<ServicesRequestDetailsPopupProps> = ({
 									<ValidateOrRejectButtons
 										onValidate={handleValidate}
 										onReject={handleReject}
-										loading={loading}
+										validateLoading={validateLoading}
+										rejectLoading={rejectLoading}
 									/>
 
 									<div className="space-y-2.5 mt-6">

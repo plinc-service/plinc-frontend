@@ -1,8 +1,8 @@
 import { User } from "@/interfaces/userInterface";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { AuthService } from "../services/AuthService";
-
 interface LoginCredentials {
   email: string;
   password: string;
@@ -21,6 +21,7 @@ export const useAuth = () => {
     mutationFn: (credentials: LoginCredentials) =>
       AuthService.login(credentials.email, credentials.password),
     onSuccess: (response) => {
+      toast.success("Connexion réussie");
       queryClient.invalidateQueries({ queryKey: ["user"] });
 
       const redirectTo = "/dashboard";
@@ -29,6 +30,7 @@ export const useAuth = () => {
       return response.data.user;
     },
     onError: (error) => {
+      toast.error("Une erreur est survenue lors de la connexion");
       throw error;
     },
   });

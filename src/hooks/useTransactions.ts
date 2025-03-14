@@ -1,6 +1,7 @@
 import { TransactionsServices } from "@/services/TransactionService";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export type Statut = 0 | 1;
 
@@ -102,12 +103,66 @@ export const useValidateOrRejectWithdrawal = (
       if (onSuccessCallback) {
         onSuccessCallback();
       }
+      toast.success("Retrait validé avec succès");
+    },
+    onError: () => {
+      toast.error("Une erreur est survenue lors du traitement de la demande.");
     },
   });
 
   return {
     validateOrRejectWithdrawal: mutation.mutate,
     loading: mutation.isPending,
+    error: mutation.error
+      ? "Une erreur est survenue lors du traitement de la demande."
+      : null,
+    success: mutation.isSuccess,
+  };
+};
+
+export const useValidateService = (onSuccessCallback?: () => void) => {
+  const mutation = useMutation({
+    mutationFn: ({ id }: { id: string }) =>
+      TransactionsServices.validateService(id),
+    onSuccess: () => {
+      if (onSuccessCallback) {
+        onSuccessCallback();
+      }
+      toast.success("Service validé avec succès");
+    },
+    onError: () => {
+      toast.error("Une erreur est survenue lors du traitement de la demande.");
+    },
+  });
+
+  return {
+    validateService: mutation.mutate,
+    validateLoading: mutation.isPending,
+    error: mutation.error
+      ? "Une erreur est survenue lors du traitement de la demande."
+      : null,
+    success: mutation.isSuccess,
+  };
+};
+
+export const useRejectService = (onSuccessCallback?: () => void) => {
+  const mutation = useMutation({
+    mutationFn: ({ id }: { id: string }) =>
+      TransactionsServices.rejectService(id),
+    onSuccess: () => {
+      if (onSuccessCallback) {
+        onSuccessCallback();
+      }
+      toast.success("Service rejeté avec succès");
+    },
+    onError: () => {
+      toast.error("Une erreur est survenue lors du traitement de la demande.");
+    },
+  });
+
+  return {
+    rejectService: mutation.mutate,
+    rejectLoading: mutation.isPending,
     error: mutation.error
       ? "Une erreur est survenue lors du traitement de la demande."
       : null,

@@ -1,4 +1,7 @@
-import { Service } from "@/interfaces/serviceInterface";
+import {
+  ServiceDetailsResponse,
+  ServicesResponse,
+} from "@/interfaces/serviceInterface";
 import Axios from "@/utils/config-axios";
 
 export const ValidationServices = {
@@ -8,7 +11,7 @@ export const ValidationServices = {
     sort_field = "created_at",
     sort_order = "desc",
     query = "",
-    is_active,
+    is_active = "0",
     user_id,
   }: {
     page?: number;
@@ -18,7 +21,7 @@ export const ValidationServices = {
     sort_order?: string;
     is_active?: string;
     user_id?: string;
-  }): Promise<Service[]> => {
+  }): Promise<ServicesResponse> => {
     try {
       const response = await Axios.get("/services", {
         params: {
@@ -32,7 +35,35 @@ export const ValidationServices = {
         },
       });
 
-      return response.data.data;
+      return response.data as ServicesResponse;
+    } catch (error) {
+      throw error;
+    }
+  },
+  fetchServiceDetails: async (service_id: string) => {
+    try {
+      const response = await Axios.get(`/service/${service_id}`);
+      return response.data as ServiceDetailsResponse;
+    } catch (error) {
+      throw error;
+    }
+  },
+  activateService: async (service_id: string) => {
+    try {
+      const response = await Axios.put(`/service/activation/${service_id}`, {
+        is_active: true,
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+  desactivateService: async (service_id: string) => {
+    try {
+      const response = await Axios.put(`/service/activation/${service_id}`, {
+        is_active: false,
+      });
+      return response.data;
     } catch (error) {
       throw error;
     }
