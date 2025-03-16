@@ -46,9 +46,6 @@ const LoginForm = () => {
       {
         onSuccess: () => {
           form.reset();
-        },
-        onError: (error: unknown) => {
-          console.error("Erreur lors de la connexion :", error);
         }
       }
     );

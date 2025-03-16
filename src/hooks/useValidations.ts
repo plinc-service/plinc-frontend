@@ -1,7 +1,9 @@
 "use client";
+import { Service } from "@/interfaces/serviceInterface";
 import { ValidationServices } from "@/services/ValidationServices";
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export type SortField = "created_at" | "number_of_sells";
 export type SortOrder = "asc" | "desc";
@@ -14,56 +16,136 @@ export const useServicesRequests = () => {
   const [selectedStatus, setSelectedStatus] = useState<number | undefined>(
     undefined
   );
+  const [totalPages, setTotalPages] = useState(1);
+  const [nextPage, setNextPage] = useState<string | null>(null);
+  const [previousPage, setPreviousPage] = useState<string | null>(null);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["fetchRequestServices", page, searchQuery, selectedStatus],
-    queryFn: () => {
-      return ValidationServices.fetchRequestServices({
+    queryFn: async () => {
+      const response = await ValidationServices.fetchRequestServices({
         page,
         page_size: pageSize,
-        // sort_field: sortField,
-        // sort_order: sortOrder,
         query: searchQuery,
         is_active: selectedStatus?.toString(),
       });
+      return response;
     },
-    enabled: true,
-    refetchOnWindowFocus: false,
   });
 
-  // Fonction wrapper pour setSortField qui inclut un refetch
-  // const updateSortField = (field: SortField) => {
-  //   setSortField(field);
-  // };
+  useEffect(() => {
+    if (data) {
+      setTotalPages(data.total_pages);
+      setNextPage(data.next);
+      setPreviousPage(data.previous);
+    }
+  }, [data]);
 
-  // // Fonction wrapper pour setSortOrder qui inclut un refetch
-  // const updateSortOrder = (order: SortOrder) => {
-  //   setSortOrder(order);
-  // };
+  const goToNextPage = () => {
+    if (nextPage && page < totalPages) {
+      setPage(page + 1);
+    }
+  };
+
+  const goToPreviousPage = () => {
+    if (previousPage && page > 1) {
+      setPage(page - 1);
+    }
+  };
+
+  const goToPage = (pageNumber: number) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setPage(pageNumber);
+    }
+  };
+
+  const services: Service[] = data?.data || [];
 
   return {
-    // Données et statut de chargement
-    data: data || [],
+    data: services,
     loading: isLoading,
     error: error
       ? "Une erreur est survenue lors du chargement des services."
       : null,
     refetch,
-
-    // États de pagination
     page,
     setPage,
-
-    // États de recherche et filtrage
+    totalPages,
+    nextPage,
+    previousPage,
+    goToNextPage,
+    goToPreviousPage,
+    goToPage,
     searchQuery,
     setSearchQuery,
     selectedStatus,
     setSelectedStatus,
+  };
+};
 
-    // // États de tri avec les fonctions optimisées
-    // sortField,
-    // setSortField: updateSortField,
-    // sortOrder,
-    // setSortOrder: updateSortOrder,
+export const useServiceDetails = (service_id: string) => {
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["fetchServiceDetails", service_id],
+    queryFn: async () => {
+      const response = await ValidationServices.fetchServiceDetails(service_id);
+      return response;
+    },
+    enabled: !!service_id,
+  });
+
+  const serviceDetails = data?.data || null;
+
+  return {
+    data: serviceDetails,
+    isLoading,
+    error,
+    refetch,
+  };
+};
+
+export const useActivateService = () => {
+  const queryClient = useQueryClient();
+
+  const { mutate: activateService, isPending: isActivating } = useMutation({
+    mutationFn: ValidationServices.activateService,
+    onSuccess: (_, service_id) => {
+      queryClient.invalidateQueries({
+        queryKey: ["fetchServiceDetails", service_id],
+      });
+      toast.success("Service activé avec succès");
+    },
+    onError: () => {
+      toast.error("Une erreur est survenue lors de l'activation du service");
+    },
+  });
+
+  return {
+    activateService,
+    isActivating,
+  };
+};
+
+export const useDesactivateService = () => {
+  const queryClient = useQueryClient();
+
+  const { mutate: desactivateService, isPending: isDesactivating } =
+    useMutation({
+      mutationFn: ValidationServices.desactivateService,
+      onSuccess: (_, service_id) => {
+        queryClient.invalidateQueries({
+          queryKey: ["fetchServiceDetails", service_id],
+        });
+        toast.success("Service désactivé avec succès");
+      },
+      onError: () => {
+        toast.error(
+          "Une erreur est survenue lors de la désactivation du service"
+        );
+      },
+    });
+
+  return {
+    desactivateService,
+    isDesactivating,
   };
 };

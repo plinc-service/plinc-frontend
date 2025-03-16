@@ -57,7 +57,7 @@ const ServicesRequestTableWrapper = ({
 				open={isPopupOpen}
 				onClose={handleClosePopup}
 				refetchList={refetch}
-				servicesDetails={selectedService}
+				service_id={selectedService?.id}
 			/>
 		</>
 	)
