@@ -19,6 +19,7 @@ export const useServicesRequests = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [nextPage, setNextPage] = useState<string | null>(null);
   const [previousPage, setPreviousPage] = useState<string | null>(null);
+  const [status, setStatus] = useState<string | undefined>(undefined);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["fetchRequestServices", page, searchQuery, selectedStatus],
@@ -27,7 +28,8 @@ export const useServicesRequests = () => {
         page,
         page_size: pageSize,
         query: searchQuery,
-        is_active: selectedStatus?.toString(),
+        // is_active: selectedStatus?.toString(),
+        status: status,
       });
       return response;
     },
@@ -80,6 +82,8 @@ export const useServicesRequests = () => {
     setSearchQuery,
     selectedStatus,
     setSelectedStatus,
+    status,
+    setStatus,
   };
 };
 

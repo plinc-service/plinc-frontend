@@ -11,7 +11,8 @@ export const ValidationServices = {
     sort_field = "created_at",
     sort_order = "desc",
     query = "",
-    is_active = "0",
+    // is_active = "0",
+    status = "0",
     user_id,
   }: {
     page?: number;
@@ -19,7 +20,7 @@ export const ValidationServices = {
     query?: string;
     sort_field?: string;
     sort_order?: string;
-    is_active?: string;
+    status?: string;
     user_id?: string;
   }): Promise<ServicesResponse> => {
     try {
@@ -30,7 +31,7 @@ export const ValidationServices = {
           query,
           sort_field,
           sort_order,
-          is_active,
+          status,
           user_id,
         },
       });
@@ -51,7 +52,7 @@ export const ValidationServices = {
   activateService: async (service_id: string) => {
     try {
       const response = await Axios.put(`/service/activation/${service_id}`, {
-        is_active: true,
+        status: true,
       });
       return response.data;
     } catch (error) {

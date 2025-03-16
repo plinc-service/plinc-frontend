@@ -103,7 +103,7 @@ export const TransactionsServices = {
   rejectService: async (id: string) => {
     try {
       await Axios.put(`/service/activation/${id}`, {
-        status: 0,
+        status: 2,
       });
     } catch (error) {
       console.error("Erreur lors de la rejet du service :", error);
