@@ -73,7 +73,7 @@ export default function PlinCPage() {
     const plinc = filteredData.find(item => item.id === id);
     if (plinc) {
       setStatus(Number(plinc.status));
-      setSelectedPlincId(String(id)); // Assurez-vous que l'ID est converti en chaîne
+      setSelectedPlincId(String(id)); 
       setIsModalOpen(true);
     }
   };
@@ -89,12 +89,10 @@ export default function PlinCPage() {
 
     let result = [...plincsData.data];
 
-    // Filtrage par statut
     if (activeFilter !== "all") {
       result = result.filter(plinc => plinc.status === getStatusNumber(activeFilter));
     }
 
-    // Filtrage par recherche si nécessaire
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       result = result.filter(

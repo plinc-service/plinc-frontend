@@ -12,7 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
-import { useUsers } from "@/hooks/useUsers";
+import { useUsers } from "@/hooks/useUsersList";
 
 export type SortField = "username" | "email" | "date_joined";
 export type SortOrder = "asc" | "desc";

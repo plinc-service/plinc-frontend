@@ -1,49 +1,36 @@
 import { Transaction } from "@/interfaces/transactionInterface";
 import { fetchUserTransactionsHistory } from "@/services/UserService";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
 
 interface UseUserTransactionsParams {
   userId: string;
 }
 
 export const useUserTransactions = ({ userId }: UseUserTransactionsParams) => {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [sortField, setSortField] = useState<"created_at" | "amount">("created_at");
 
-  const fetchTransactions = async () => {
-    setIsLoading(true);
-    try {
-      if (!userId) return;
-      const data = await fetchUserTransactionsHistory(userId);
-      setTransactions(data);
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Erreur lors de la récupération des transactions :", error);
-      setError("Erreur lors de la récupération des transactions.");
-      setIsLoading(false);
-    }
-  };
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["userTransactions", userId],
+    queryFn: () => fetchUserTransactionsHistory(userId),
+    enabled: !!userId,
+    refetchOnWindowFocus: false,
+  });
 
-  useEffect(() => {
-    if (transactions.length === 0) return;
-
-    let result = [...transactions];
+  const transactions = useMemo(() => {
+    if (!data || data.length === 0) return [];
+    
+    let result = [...data];
 
     if (selectedFilter) {
       if (selectedFilter === "paiement") {
-        // Si on filtre par paiement, afficher tout ce qui n'est pas un retrait
         result = result.filter(transaction => 
           transaction.type.toLowerCase() !== "retrait"
         );
       } else {
-        // Sinon, filtrer normalement
         result = result.filter(transaction => 
           transaction.type.toLowerCase() === selectedFilter.toLowerCase()
         );
@@ -59,7 +46,6 @@ export const useUserTransactions = ({ userId }: UseUserTransactionsParams) => {
       );
     }
 
-    // Tri
     result.sort((a, b) => {
       if (sortField === "created_at") {
         return sortOrder === "asc" 
@@ -72,19 +58,13 @@ export const useUserTransactions = ({ userId }: UseUserTransactionsParams) => {
       }
     });
 
-    setFilteredTransactions(result);
-  }, [transactions, searchQuery, selectedFilter, sortOrder, sortField]);
-
-  useEffect(() => {
-    if (userId) {
-      fetchTransactions();
-    }
-  }, [userId]);
+    return result;
+  }, [data, searchQuery, selectedFilter, sortOrder, sortField]);
 
   return {
-    transactions: filteredTransactions,
+    transactions,
     isLoading,
-    error,
+    error: error ? "Erreur lors de la récupération des transactions." : null,
     searchQuery,
     setSearchQuery,
     selectedFilter,
@@ -93,6 +73,6 @@ export const useUserTransactions = ({ userId }: UseUserTransactionsParams) => {
     setSortOrder,
     sortField,
     setSortField,
-    refetch: fetchTransactions
+    refetch
   };
 };

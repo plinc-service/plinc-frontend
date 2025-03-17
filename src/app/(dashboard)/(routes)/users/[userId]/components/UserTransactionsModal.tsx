@@ -1,6 +1,7 @@
 "use client";
 
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/Dialog";
+import { useUserTransactions } from "@/hooks/useUserTransactions";
 import { Transaction } from "@/interfaces/transactionInterface";
 import {
   ArrowDownUp,
@@ -11,7 +12,11 @@ import {
   Search,
   X,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { memo } from "react";
+import { useParams } from "next/navigation";
+import { ScrollArea, ScrollBar } from "@/components/ui/ScrollArea";
+import Spinner from "@/components/ui/Spinner";
+import { FormattedDate } from "@/utils/formatDate";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,116 +27,94 @@ import {
 interface UserTransactionsModalProps {
   open: boolean;
   onClose: () => void;
-  transactions: Transaction[];
 }
+
+interface UserTransactionItemProps {
+  transaction: Transaction;
+}
+
+const LoadingState = () => (
+  <div className="flex-1 flex justify-center items-center">
+    <Spinner />
+  </div>
+);
+
+const ErrorState = ({ error }: { error: string }) => (
+  <p className="text-sm text-danger">{error}</p>
+);
+
+const EmptyState = () => (
+  <div className="flex-1 flex justify-center items-center">
+    <p className="text-sm text-neutral-medium">Aucune donnée pour le moment.</p>
+  </div>
+);
+
+const UserTransactionItem: React.FC<UserTransactionItemProps> = memo(({ transaction }) => {
+  const isWithdrawal = transaction.type.toLowerCase() === "retrait";
+  const iconColorClass = isWithdrawal
+    ? "bg-danger-background border-danger-border"
+    : "bg-success-background border-success-border";
+  const amountColorClass = isWithdrawal ? "text-danger" : "text-success";
+
+  return (
+    <div
+      className="flex flex-col items-start justify-between gap-2.5 h-[85px] border-b border-neutral-low pb-[18px] mb-[18px]"
+    >
+      <div className="flex items-center w-full justify-between">
+        <div className="flex items-center gap-2">
+          <span
+            className={`${iconColorClass} border rounded-full w-7 h-7 flex items-center justify-center`}
+          >
+            {isWithdrawal ? (
+              <MoveUpRight className="text-danger" size={16} />
+            ) : (
+              <MoveDownRight className="text-success" size={16} />
+            )}
+          </span>
+          <div className="text-left min-w-0 flex-1">
+            <h5 className="text-base font-semibold text-neutral-high">
+              {isWithdrawal ? "Retrait" : "Paiement"}
+            </h5>
+            <p className="text-sm text-neutral-high truncate max-w-[600px]">
+              {transaction.description || "Aucune description"}
+            </p>
+          </div>
+        </div>
+        <span className={`${amountColorClass} block text-base`}>
+          {isWithdrawal ? "-" : "+"}
+          {transaction.amount}€
+        </span>
+      </div>
+      <span className="text-neutral-high text-sm">
+        <FormattedDate dateString={transaction.created_at} />
+      </span>
+    </div>
+  );
+});
+
+UserTransactionItem.displayName = "UserTransactionItem";
 
 const UserTransactionsModal: React.FC<UserTransactionsModalProps> = ({
   open,
   onClose,
-  transactions,
 }) => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredTransactions, setFilteredTransactions] =
-    useState<Transaction[]>(transactions);
-  const [sortField, setSortField] = useState<"created_at" | "amount">(
-    "created_at"
-  );
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-  const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (open) {
-      setFilteredTransactions(transactions);
-      setSearchQuery("");
-      setSortField("created_at");
-      setSortOrder("desc");
-      setSelectedFilter(null);
-    }
-  }, [open, transactions]);
-
-  useEffect(() => {
-    if (!open) return;
-
-    let result = [...transactions];
-
-    // console.log('Filtrage :', {
-    //   selectedFilter,
-    //   transactionTypes: result.map(t => t.type)
-    // });
-
-    if (selectedFilter) {
-      if (selectedFilter === "paiement") {
-        result = result.filter(
-          (transaction) => transaction.type.toLowerCase() !== "retrait"
-        );
-      } else {
-        result = result.filter(
-          (transaction) =>
-            transaction.type.toLowerCase() === selectedFilter.toLowerCase()
-        );
-      }
-    }
-
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      result = result.filter(
-        (transaction) =>
-          transaction.description?.toLowerCase().includes(query) ||
-          transaction.type.toLowerCase().includes(query) ||
-          transaction.amount.toString().includes(query)
-      );
-    }
-
-    result.sort((a, b) => {
-      if (sortField === "created_at") {
-        return sortOrder === "asc"
-          ? new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-          : new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-      } else {
-        return sortOrder === "asc" ? a.amount - b.amount : b.amount - a.amount;
-      }
-    });
-
-    setFilteredTransactions(result);
-  }, [open, transactions, searchQuery, selectedFilter, sortField, sortOrder]);
+  const { userId } = useParams();
+  const {
+    transactions,
+    isLoading,
+    error,
+    searchQuery,
+    setSearchQuery,
+    selectedFilter,
+    setSelectedFilter,
+    sortOrder,
+    setSortOrder,
+    sortField,
+    setSortField,
+  } = useUserTransactions({ userId: userId as string });
 
   const handleClose = () => {
     onClose();
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const days = [
-      "Dimanche",
-      "Lundi",
-      "Mardi",
-      "Mercredi",
-      "Jeudi",
-      "Vendredi",
-      "Samedi",
-    ];
-    const months = [
-      "Janvier",
-      "Février",
-      "Mars",
-      "Avril",
-      "Mai",
-      "Juin",
-      "Juillet",
-      "Août",
-      "Septembre",
-      "Octobre",
-      "Novembre",
-      "Décembre",
-    ];
-
-    const dayName = days[date.getDay()];
-    const day = date.getDate();
-    const month = months[date.getMonth()];
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-
-    return `${dayName} ${day} ${month} à ${hours}:${minutes}`;
   };
 
   const handleFilterChange = (filter: string | null) => {
@@ -258,67 +241,24 @@ const UserTransactionsModal: React.FC<UserTransactionsModalProps> = ({
           </div>
 
           {/* Liste des transactions */}
-          <div className="space-y-4 max-h-[600px] overflow-y-auto">
-            {filteredTransactions.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-neutral-high text-base">
-                  {searchQuery || selectedFilter
-                    ? "Aucune transaction ne correspond à votre recherche"
-                    : "Aucune transaction pour le moment"}
-                </p>
-              </div>
-            ) : (
-              filteredTransactions.map((transaction) => (
-                <div
-                  key={transaction.id}
-                  className="border-b border-gray-100 pb-4 last:border-0"
-                >
-                  <div className="flex items-start gap-3">
-                    <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        transaction.type === "retrait"
-                          ? "bg-red-50"
-                          : "bg-green-50"
-                      }`}
-                    >
-                      {transaction.type === "retrait" ? (
-                        <MoveUpRight className="h-4 w-4 text-red-500" />
-                      ) : (
-                        <MoveDownRight className="h-4 w-4 text-green-500" />
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex justify-between">
-                        <div>
-                          <h3 className="font-medium text-gray-800">
-                            {transaction.type === "retrait"
-                              ? "Retrait"
-                              : "Paiement"}
-                          </h3>
-                          <p className="text-sm text-gray-600 mt-1">
-                            {transaction.description ||
-                              "Aucune description disponible"}
-                          </p>
-                          <p className="text-xs text-gray-500 mt-2">
-                            {formatDate(transaction.created_at)}
-                          </p>
-                        </div>
-                        <span
-                          className={`font-semibold ${
-                            transaction.type === "retrait"
-                              ? "text-red-500"
-                              : "text-green-500"
-                          }`}
-                        >
-                          {transaction.type === "retrait" ? "-" : "+"}
-                          {transaction.amount}€
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
+          <div className="mt-4 space-y-[18px] text-center">
+            <ScrollArea className="h-[600px]">
+              {isLoading ? (
+                <LoadingState />
+              ) : error ? (
+                <ErrorState error={error} />
+              ) : transactions.length === 0 ? (
+                <EmptyState />
+              ) : (
+                transactions.map((transaction) => (
+                  <UserTransactionItem
+                    key={transaction.id}
+                    transaction={transaction}
+                  />
+                ))
+              )}
+              <ScrollBar orientation="vertical" />
+            </ScrollArea>
           </div>
         </div>
       </DialogContent>
