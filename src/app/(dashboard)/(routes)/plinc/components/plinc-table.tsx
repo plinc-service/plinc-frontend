@@ -77,7 +77,7 @@ export function PlincTable<TData extends object, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  Aucun PlinC trouvé.
+                  Aucune donnée pour le moment.
                 </TableCell>
               </TableRow>
             )}
