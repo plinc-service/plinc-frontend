@@ -79,7 +79,7 @@ export const fetchUserTransactionsHistory = async (
   id: string
 ): Promise<Transaction[]> => {
   try {
-    const response = await Axios.get(`/transactions?user_id=${id}`);
+    const response = await Axios.get(`/transactions?user=${id}`);
     return response.data.data as Transaction[];
   } catch (error) {
     console.error(

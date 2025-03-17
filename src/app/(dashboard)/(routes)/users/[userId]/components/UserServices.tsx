@@ -6,10 +6,14 @@ import { Switch } from "@/components/ui/Switch";
 import { MoveDiagonal } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserById } from "@/services/UserService";
+import UserServicesModal from "./UserServicesModal";
 
 const UserServices: React.FC = () => {
   const { userId } = useParams();
   const [mounted, setMounted] = React.useState(false);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  
+  const MAX_DISPLAYED_SERVICES = 5;
 
   const { data: user, isLoading } = useQuery({
     queryKey: ["user", userId],
@@ -18,10 +22,19 @@ const UserServices: React.FC = () => {
   });
 
   const services = user?.services || [];
+  const displayedServices = services.slice(0, MAX_DISPLAYED_SERVICES);
 
   React.useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
 
   if (!mounted) {
     return null;
@@ -50,36 +63,52 @@ const UserServices: React.FC = () => {
   }
 
   return (
-    <div className="p-5 rounded-3xl border border-brand-lower">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg text-neutral-high font-semibold">Services</h2>
-        <button className="text-neutral-high hover:text-blue transition-colors">
-          <MoveDiagonal className="h-5 w-5" />
-        </button>
-      </div>
-      <div className="space-y-6">
-        {services.length === 0 ? (
-          <div className="text-center py-8">
-            <p className="text-neutral-high text-base">
-              Aucune donnée pour le moment
-            </p>
-          </div>
-        ) : (
-          services.map((service) => (
-            <div key={service.id} className="space-y-2">
-              <div className="flex items-center justify-between">
-                <h3 className="text-blue text-base font-medium">
-                  {service.description}
-                </h3>
-                <Switch
-                  checked={service.enabled}
-                />
-              </div>
+    <>
+      <div className="p-5 rounded-3xl border border-brand-lower">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg text-neutral-high font-semibold">Services</h2>
+          <button 
+            className="text-neutral-high hover:text-blue transition-colors"
+            onClick={handleOpenModal}
+            aria-label="Afficher les détails des services"
+          >
+            <MoveDiagonal className="h-5 w-5" />
+          </button>
+        </div>
+        <div className="space-y-6">
+          {services.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-neutral-high text-base">
+                Aucune donnée pour le moment
+              </p>
             </div>
-          ))
-        )}
+          ) : (
+            displayedServices.map((service) => (
+              <div key={service.id} className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex flex-col">
+                    <h3 className="text-blue text-sm font-medium">
+                      {service.name}
+                    </h3>
+                    <span className="text-neutral-medium text-xs">{service.description}</span>
+                  </div>
+                  <Switch
+                    checked={service.is_active}
+                  />
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
-    </div>
+
+      {/* Modal de détails des services */}
+      <UserServicesModal 
+        open={isModalOpen} 
+        onClose={handleCloseModal} 
+        services={services} 
+      />
+    </>
   );
 };
 
