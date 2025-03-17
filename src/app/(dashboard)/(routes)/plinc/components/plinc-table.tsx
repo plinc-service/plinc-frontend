@@ -16,16 +16,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/Table";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 interface PlincTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  loading?: boolean;
+  error?: string;
   onRowClick?: (id: string) => void;
 }
 
 export function PlincTable<TData extends object, TValue>({
   columns,
   data,
+  loading = false,
+  error,
   onRowClick,
 }: PlincTableProps<TData, TValue>) {
   const table = useReactTable({
@@ -55,11 +60,37 @@ export function PlincTable<TData extends object, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {loading ? (
+              // État de chargement
+              Array.from({ length: 8 }).map((_, index) => (
+                <TableRow
+                  key={`loading-${index}`}
+                  className="hover:bg-brand-lowest border-neutral-200 h-[65px]"
+                >
+                  {columns.map((_, colIndex) => (
+                    <TableCell key={`skeleton-${colIndex}`}>
+                      <Skeleton className="h-6 w-full" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : error ? (
+              // État d'erreur
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  {error}
+                </TableCell>
+              </TableRow>
+            ) : table.getRowModel().rows?.length ? (
+              // Données normales
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  className="hover:bg-brand-lowest cursor-pointer border-neutral-200"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -72,6 +103,7 @@ export function PlincTable<TData extends object, TValue>({
                 </TableRow>
               ))
             ) : (
+              // Aucune donnée
               <TableRow>
                 <TableCell
                   colSpan={columns.length}

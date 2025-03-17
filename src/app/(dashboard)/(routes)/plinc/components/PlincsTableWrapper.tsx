@@ -74,16 +74,6 @@ const PlincsTableWrapper = () => {
     }
   };
 
-  if (loading) {
-    console.log("[PlincsTableWrapper] Loading state");
-    return <PlinCSkeleton />;
-  }
-
-  if (error) {
-    console.error("[PlincsTableWrapper] Error:", error);
-    return <div>Une erreur est survenue lors du chargement des données.</div>;
-  }
-
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-4">
@@ -93,7 +83,6 @@ const PlincsTableWrapper = () => {
             <button
               key={filter.value}
               onClick={() => {
-                console.log("[PlincsTableWrapper] Setting status filter to:", filter.value);
                 handleStatusChange(filter.value);
               }}
               className={cn(
@@ -117,7 +106,6 @@ const PlincsTableWrapper = () => {
               className="pl-9 h-10"
               value={searchQuery}
               onChange={(e) => {
-                console.log("[PlincsTableWrapper] Search input:", e.target.value);
                 handleSearchChange(e.target.value);
               }}
             />
@@ -144,7 +132,6 @@ const PlincsTableWrapper = () => {
                     key={option.value}
                     className="w-full px-4 py-2 text-left text-sm hover:bg-neutral-50 flex items-center justify-between"
                     onClick={() => {
-                      console.log("[PlincsTableWrapper] Sort field selected:", option.value);
                       handleSort(option.value as any);
                       setShowSortMenu(false);
                     }}
@@ -167,6 +154,8 @@ const PlincsTableWrapper = () => {
       <PlincTable
         columns={enhanceColumnsWithRowClick(columns(), handleRowClick)}
         data={plincs}
+        loading={loading}
+        error={error}
       />
       <PlincTablePagination
         page={page}
