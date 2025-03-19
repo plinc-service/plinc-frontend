@@ -36,6 +36,40 @@ interface DataTableProps<TData extends object, TValue> {
   pagination?: DataTablePaginationProps;
 }
 
+const getPaginationItems = (currentPage: number, totalPages: number): (number | string)[] => {
+  const items: (number | string)[] = [];
+  const maxVisiblePages = 5;
+
+  if (totalPages <= maxVisiblePages) {
+    for (let i = 1; i <= totalPages; i++) {
+      items.push(i);
+    }
+  } else {
+    const startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+    if (startPage > 1) {
+      items.push(1);
+      if (startPage > 2) {
+        items.push('...');
+      }
+    }
+
+    for (let i = Math.max(2, startPage); i <= Math.min(totalPages - 1, endPage); i++) {
+      items.push(i);
+    }
+
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        items.push('...');
+      }
+      items.push(totalPages);
+    }
+  }
+
+  return items;
+};
+
 export function DataTable<TData extends object, TValue>({
   columns,
   data,
@@ -169,7 +203,7 @@ export function DataTable<TData extends object, TValue>({
         </div>
 
         {pagination && (
-          <div className="flex items-center justify-end space-x-4 py-4">
+          <div className="flex items-center justify-between py-4">
             <Button
               variant="ghost"
               size="sm"
@@ -177,12 +211,29 @@ export function DataTable<TData extends object, TValue>({
               disabled={!table.getCanPreviousPage() || loading}
               className="h-8 text-sm text-neutral-high"
             >
-              <ChevronLeft className="mr-2 h-4 w-4" />
+              <ChevronLeft className="mr-1 h-4 w-4 text-neutral-high" />
               Précédent
             </Button>
-            <span className="text-sm text-neutral-medium">
-              Page {pagination.currentPage} sur {pagination.totalPages}
-            </span>
+            <div className="flex items-center gap-1">
+              {getPaginationItems(pagination.currentPage, pagination.totalPages).map((item, index) => (
+                typeof item === 'number' ? (
+                  <Button
+                    key={`page-${item}`}
+                    variant={pagination.currentPage === item ? "default" : "ghost"}
+                    size="icon"
+                    className={`h-8 w-8 text-sm ${pagination.currentPage === item
+                      ? "bg-primary/10 hover:bg-primary/20 text-primary"
+                      : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    onClick={() => pagination.onPageChange(item)}
+                  >
+                    {item}
+                  </Button>
+                ) : (
+                  <span key={`ellipsis-${index}`} className="px-2">...</span>
+                )
+              ))}
+            </div>
             <Button
               variant="ghost"
               size="sm"
@@ -191,7 +242,7 @@ export function DataTable<TData extends object, TValue>({
               className="h-8 text-sm text-neutral-high"
             >
               Suivant
-              <ChevronRight className="ml-2 h-4 w-4" />
+              <ChevronRight className="ml-1 h-4 w-4 text-neutral-high" />
             </Button>
           </div>
         )}

@@ -41,15 +41,6 @@ export const TransactionsServices = {
     type?: string;
   }): Promise<Transaction[]> => {
     try {
-      console.log("Fetching transactions with params:", {
-        page,
-        page_size,
-        query,
-        sort_field,
-        sort_order,
-        user_id,
-        status,
-      });
 
       const response = await Axios.get("/transactions", {
         params: {

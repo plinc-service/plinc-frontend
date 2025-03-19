@@ -4,13 +4,11 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { SortOrder, WalletSortField } from "@/hooks/useWallets";
 import { cn } from "@/lib/utils";
-import { AlignCenter, Check, ChevronDown, Search } from "lucide-react";
+import { Check, ChevronDown, Search } from "lucide-react";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 
@@ -37,16 +35,10 @@ export function WalletFilter({
     setSearchQuery(e.target.value);
   };
 
-  // Gestion du tri par montant
   const handleAmountSort = (order: SortOrder) => {
-    // Mise à jour des états de tri
     setSortField("amount");
     setSortOrder(order);
-    
-    // Force le refetch après la mise à jour de l'état
-    setTimeout(() => {
-      refetch();
-    }, 10);
+    refetch();
   };
 
   return (
@@ -65,35 +57,19 @@ export function WalletFilter({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full">
-              <AlignCenter className="h-4 w-4" />
-              <span>Trier par montant</span>
+              <span>Trier par</span>
               <ChevronDown className="h-4 w-4 opacity-50" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-44">
-            <DropdownMenuLabel>Montant</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            
-            {/* Options de tri par montant */}
+          <DropdownMenuContent align="end" className="w-44">
             <DropdownMenuItem 
               onClick={() => handleAmountSort("asc")} 
               className={cn(
                 sortField === "amount" && sortOrder === "asc" ? "bg-accent" : ""
               )}
             >
-              <span>Croissant</span>
+              <span>Solde</span>
               {sortField === "amount" && sortOrder === "asc" && (
-                <Check className="h-4 w-4 ml-auto" />
-              )}
-            </DropdownMenuItem>
-            <DropdownMenuItem 
-              onClick={() => handleAmountSort("desc")} 
-              className={cn(
-                sortField === "amount" && sortOrder === "desc" ? "bg-accent" : ""
-              )}
-            >
-              <span>Décroissant</span>
-              {sortField === "amount" && sortOrder === "desc" && (
                 <Check className="h-4 w-4 ml-auto" />
               )}
             </DropdownMenuItem>

@@ -32,16 +32,19 @@ export const useTransactionWallet = () => {
 export const useTransactionHistory = () => {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState(""); // Recherche par description, email, etc.
+  const [transactionType, setTransactionType] = useState<string | null>(null); // Filtre par type: payment, retrait, depot
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["transactions", page, searchQuery],
+    queryKey: ["transactions", page, searchQuery, transactionType],
     queryFn: () =>
       TransactionsServices.fetchTransactions({
         page,
         page_size: pageSize,
         query: searchQuery,
+        type: transactionType || undefined,
+        sort_field: "created_at",
+        sort_order: "desc",
       }),
   });
 
@@ -54,9 +57,9 @@ export const useTransactionHistory = () => {
     page,
     setPage,
     searchQuery,
-    selectedFilter,
-    setSelectedFilter,
     setSearchQuery,
+    transactionType,
+    setTransactionType,
     refetch,
   };
 };

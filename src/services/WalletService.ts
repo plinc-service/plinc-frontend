@@ -9,7 +9,7 @@ import Axios from "@/utils/config-axios";
 export const WalletService = {
   fetchWallets: async (
     page = 1,
-    search = "",
+    query = "",
     sortField: WalletSortField = "created_at",
     sortOrder: SortOrder = "desc"
   ): Promise<WalletResponse> => {
@@ -17,9 +17,10 @@ export const WalletService = {
       const response = await Axios.get("/wallet", {
         params: {
           page,
-          search,
+          query,
           sort_field: sortField,
           sort_order: sortOrder,
+          amount_field: "revenue_total", 
         },
       });
       return response.data as WalletResponse;

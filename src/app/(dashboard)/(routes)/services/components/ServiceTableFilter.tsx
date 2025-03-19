@@ -1,9 +1,12 @@
 import { Button } from "@/components/ui/Button";
 import {
 	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
 	DropdownMenuTrigger
 } from "@/components/ui/DropdownMenu";
 import { Input } from "@/components/ui/Input";
+import { SortField } from "@/hooks/useValidations";
 import { ChevronDown, Search } from "lucide-react";
 
 interface StatutDataTableFilterProps {
@@ -11,10 +14,8 @@ interface StatutDataTableFilterProps {
 	setSelectedStatus: (isActive?: number) => void;
 	searchQuery: string;
 	setSearchQuery: (query: string) => void;
-	// sortField: SortField;
-	// setSortField: (field: SortField) => void;
-	// sortOrder: SortOrder;
-	// setSortOrder: (order: SortOrder) => void;
+	sortField: SortField | null;
+	handleSort: (field: SortField) => void;
 	refetch: () => void;
 }
 
@@ -23,10 +24,8 @@ export function StatutDataTableFilter({
 	setSelectedStatus,
 	searchQuery,
 	setSearchQuery,
-	// sortField,
-	// setSortField,
-	// sortOrder,
-	// setSortOrder,
+	sortField,
+	handleSort,
 	refetch,
 }: StatutDataTableFilterProps) {
 	const options = [
@@ -45,29 +44,6 @@ export function StatutDataTableFilter({
 		setSearchQuery(e.target.value);
 	};
 
-	// // Gestion du tri par date
-	// const handleDateSort = (order: SortOrder) => {
-	// 	// Mise à jour des états de tri
-	// 	setSortField("created_at");
-	// 	setSortOrder(order);
-
-	// 	// Force le refetch après la mise à jour de l'état
-	// 	setTimeout(() => {
-	// 		refetch();
-	// 	}, 10);
-	// };
-
-	// // Gestion du tri par ventes
-	// const handleSalesSort = (order: SortOrder) => {
-	// 	// Mise à jour des états de tri
-	// 	setSortField("number_of_sells");
-	// 	setSortOrder(order);
-
-	// 	// Force le refetch après la mise à jour de l'état
-	// 	setTimeout(() => {
-	// 		refetch();
-	// 	}, 10);
-	// };
 
 	return (
 		<div className="flex justify-between items-center w-full mb-5">
@@ -106,53 +82,22 @@ export function StatutDataTableFilter({
 							variant="outline"
 							className="h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full"
 						>
-							<span>Trier par</span>
+							<span>
+								{sortField === "created_at" 
+									? "Trié par Date" 
+									: "Trier par"}
+							</span>
 							<ChevronDown className="h-4 w-4" />
 						</Button>
 					</DropdownMenuTrigger>
-					{/* <DropdownMenuContent align="end" className="w-56">
-						<DropdownMenuLabel>Date d&apos;inscription</DropdownMenuLabel>
-						<DropdownMenuSeparator />
+					<DropdownMenuContent align="end" className="w-44">
 						<DropdownMenuItem 
-							onClick={() => handleDateSort("asc")} 
-							className={`flex items-center justify-between ${sortField === "created_at" && sortOrder === "asc" ? "bg-blue/10" : ""}`}
+							onClick={() => handleSort("created_at")} 
+							className={`flex items-center ${sortField === "created_at" ? "bg-blue/10" : ""}`}
 						>
-							<span>Du plus ancien au plus récent</span>
-							{sortField === "created_at" && sortOrder === "asc" && (
-								<Check className="h-4 w-4 ml-2 text-blue" />
-							)}
+							Trier par Date
 						</DropdownMenuItem>
-						<DropdownMenuItem 
-							onClick={() => handleDateSort("desc")} 
-							className={`flex items-center justify-between ${sortField === "created_at" && sortOrder === "desc" ? "bg-blue/10" : ""}`}
-						>
-							<span>Du plus récent au plus ancien</span>
-							{sortField === "created_at" && sortOrder === "desc" && (
-								<Check className="h-4 w-4 ml-2 text-blue" />
-							)}
-						</DropdownMenuItem>
-
-						<DropdownMenuLabel className="mt-2">Nombre de ventes</DropdownMenuLabel>
-						<DropdownMenuSeparator />
-						<DropdownMenuItem 
-							onClick={() => handleSalesSort("asc")} 
-							className={`flex items-center justify-between ${sortField === "number_of_sells" && sortOrder === "asc" ? "bg-blue/10" : ""}`}
-						>
-							<span>Ventes (croissant)</span>
-							{sortField === "number_of_sells" && sortOrder === "asc" && (
-								<Check className="h-4 w-4 ml-2 text-blue" />
-							)}
-						</DropdownMenuItem>
-						<DropdownMenuItem 
-							onClick={() => handleSalesSort("desc")} 
-							className={`flex items-center justify-between ${sortField === "number_of_sells" && sortOrder === "desc" ? "bg-blue/10" : ""}`}
-						>
-							<span>Ventes (décroissant)</span>
-							{sortField === "number_of_sells" && sortOrder === "desc" && (
-								<Check className="h-4 w-4 ml-2 text-blue" />
-							)}
-						</DropdownMenuItem>
-					</DropdownMenuContent> */}
+					</DropdownMenuContent>
 				</DropdownMenu>
 			</div>
 		</div>

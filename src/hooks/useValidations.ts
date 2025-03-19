@@ -5,31 +5,31 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-export type SortField = "created_at" | "number_of_sells";
+export type SortField = "created_at";
 export type SortOrder = "asc" | "desc";
 
 export const useServicesRequests = () => {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
-
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState<number | undefined>(
-    undefined
-  );
+  const [selectedStatus, setSelectedStatus] = useState<number | undefined>(undefined);
   const [totalPages, setTotalPages] = useState(1);
   const [nextPage, setNextPage] = useState<string | null>(null);
   const [previousPage, setPreviousPage] = useState<string | null>(null);
   const [status, setStatus] = useState<string | undefined>(undefined);
+  const [sortField, setSortField] = useState<SortField | null>(null);
+  const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["fetchRequestServices", page, searchQuery, selectedStatus],
+    queryKey: ["fetchRequestServices", page, searchQuery, selectedStatus, sortField, sortOrder],
     queryFn: async () => {
       const response = await ValidationServices.fetchRequestServices({
         page,
         page_size: pageSize,
         query: searchQuery,
-        // is_active: selectedStatus?.toString(),
         status: status,
+        sort_field: sortField || undefined,
+        sort_order: sortOrder,
       });
       return response;
     },
@@ -63,6 +63,16 @@ export const useServicesRequests = () => {
 
   const services: Service[] = data?.data || [];
 
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortField(null);
+    } else {
+      setSortField(field);
+      setSortOrder("asc");
+    }
+    setPage(1);
+  };
+
   return {
     data: services,
     loading: isLoading,
@@ -84,6 +94,9 @@ export const useServicesRequests = () => {
     setSelectedStatus,
     status,
     setStatus,
+    sortField,
+    sortOrder,
+    handleSort,
   };
 };
 

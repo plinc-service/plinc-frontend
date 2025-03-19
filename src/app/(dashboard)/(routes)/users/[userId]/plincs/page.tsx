@@ -7,6 +7,7 @@ import { ChevronRight } from "lucide-react";
 import UserPlincs from "../components/UserPlincs";
 import UserHeader from "../components/UserHeader";
 import UserHeaderSkeleton from "../components/skeletons/UserHeaderSkeleton";
+import UserPlincsSkeleton from "../components/skeletons/UserPlincsSkeleton";
 import { fetchUserById } from "@/services/UserService";
 import type { User } from "@/interfaces/userInterface";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -46,8 +47,9 @@ function Page() {
           <Skeleton className="h-4 w-[80px]" />
         </div>
 
-        <div className="bg-white rounded-2xl">
+        <div className="bg-white rounded-2xl p-4">
           <UserHeaderSkeleton />
+          <UserPlincsSkeleton />
         </div>
       </div>
     );

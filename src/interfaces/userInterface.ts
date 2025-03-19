@@ -43,4 +43,5 @@ export interface UserResponse {
   data: User[];
   previous: string | null;
   next: string | null;
+  total_pages: number;
 }

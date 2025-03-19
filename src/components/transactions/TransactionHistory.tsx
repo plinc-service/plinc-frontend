@@ -80,10 +80,11 @@ const TransactionHistory: React.FC = () => {
 		transactions,
 		loading,
 		error,
-		selectedFilter,
-		setSelectedFilter,
 		searchQuery,
 		setSearchQuery,
+		transactionType,
+		setTransactionType,
+		refetch,
 	} = useTransactionHistory();
 
 	return (
@@ -91,8 +92,9 @@ const TransactionHistory: React.FC = () => {
 			<TransactionFilter
 				searchQuery={searchQuery}
 				setSearchQuery={setSearchQuery}
-				selectedFilter={selectedFilter}
-				setSelectedFilter={setSelectedFilter}
+				transactionType={transactionType}
+				setTransactionType={setTransactionType}
+				refetch={refetch}
 			/>
 
 			<div className="mt-4 space-y-[18px] text-center">

@@ -2,6 +2,7 @@
 
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/Dialog";
 import { Separator } from "@/components/ui/Separator";
+import Spinner from "@/components/ui/Spinner";
 import { PlincDetails } from "@/interfaces/plincDetails";
 import { plincService } from "@/services/PlincService";
 import { ArrowUpRight, X } from "lucide-react";
@@ -24,14 +25,14 @@ export function PlincDetailsModal({
   status,
 }: PlincDetailsModalProps) {
   const [isTrackingModalOpen, setIsTrackingModalOpen] = React.useState(false);
-  const [plincDetails, setPlincDetails] = React.useState<PlincDetails | null>(
-    null
-  );
+  const [plincDetails, setPlincDetails] = React.useState<PlincDetails | null>(null);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   useEffect(() => {
     const fetchPlincDetails = async () => {
       if (plincId) {
         try {
+          setIsLoading(true);
           const plincDetail = await plincService.getPlincById(plincId);
           setPlincDetails(plincDetail);
         } catch (error) {
@@ -39,12 +40,16 @@ export function PlincDetailsModal({
             "Erreur lors de la récupération des détails du plinc :",
             error
           );
+        } finally {
+          setIsLoading(false);
         }
       }
     };
 
     if (isOpen) {
       fetchPlincDetails();
+    } else {
+      setPlincDetails(null);
     }
   }, [isOpen, plincId]);
 
@@ -121,6 +126,12 @@ export function PlincDetailsModal({
         <div className="">
           <DialogTitle className="sr-only">Détails du PlinC</DialogTitle>
           <div className="relative">
+            {isLoading ? (
+              <div className="flex justify-center items-center h-64 w-full">
+                <Spinner className="h-8 w-8" />
+              </div>
+            ) : (
+              <>
             <button
               onClick={onClose}
               className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none"
@@ -273,6 +284,8 @@ export function PlincDetailsModal({
                 </div>
               </div>
             </div>
+              </>
+            )}
           </div>
         </div>
       </DialogContent>

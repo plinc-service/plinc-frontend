@@ -6,7 +6,7 @@ import UserProfile from "./components/UserProfile";
 import UserServices from "./components/UserServices";
 import UserRevenue from "./components/UserRevenue";
 import UserTransactions from "./components/UserTransactions";
-import { useUser } from "@/hooks/useUser";
+import { useUser } from "@/hooks/useSingleUser";
 
 import { UserProfileSkeleton } from "./components/skeletons/UserProfileSkeleton";
 import { UserServicesSkeleton } from "./components/skeletons/UserServicesSkeleton";
