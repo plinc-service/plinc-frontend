@@ -50,11 +50,21 @@ const EmptyState = () => (
 );
 
 const UserTransactionItem: React.FC<UserTransactionItemProps> = memo(({ transaction }) => {
-  const isWithdrawal = transaction.type.toLowerCase() === "retrait";
-  const iconColorClass = isWithdrawal
-    ? "bg-danger-background border-danger-border"
-    : "bg-success-background border-success-border";
-  const amountColorClass = isWithdrawal ? "text-danger" : "text-success";
+  const transactionType = transaction.type.toLowerCase();
+  const isWithdrawal = transactionType === "retrait";
+  const isDeposit = transactionType === "depot";
+  const isPayment = transactionType === "payment";
+  
+  let iconColorClass = "bg-success-background border-success-border";
+  let amountColorClass = "text-success";
+  
+  if (isWithdrawal) {
+    iconColorClass = "bg-danger-background border-danger-border";
+    amountColorClass = "text-danger";
+  } else if (isDeposit) {
+    iconColorClass = "bg-neutral-background border-neutral-border";
+    amountColorClass = "text-neutral-high";
+  }
 
   return (
     <div
@@ -67,13 +77,15 @@ const UserTransactionItem: React.FC<UserTransactionItemProps> = memo(({ transact
           >
             {isWithdrawal ? (
               <MoveUpRight className="text-danger" size={16} />
+            ) : isDeposit ? (
+              <ArrowDownUp className="text-neutral-high" size={16} />
             ) : (
               <MoveDownRight className="text-success" size={16} />
             )}
           </span>
           <div className="text-left min-w-0 flex-1">
             <h5 className="text-base font-semibold text-neutral-high">
-              {isWithdrawal ? "Retrait" : "Paiement"}
+              {isWithdrawal ? "Retrait" : isDeposit ? "Dépôt" : "Paiement"}
             </h5>
             <p className="text-sm text-neutral-high truncate max-w-[600px]">
               {transaction.description || "Aucune description"}
@@ -81,7 +93,7 @@ const UserTransactionItem: React.FC<UserTransactionItemProps> = memo(({ transact
           </div>
         </div>
         <span className={`${amountColorClass} block text-base`}>
-          {isWithdrawal ? "-" : "+"}
+          {isWithdrawal ? "-" : isDeposit ? "" : "+"}
           {transaction.amount}€
         </span>
       </div>
@@ -111,6 +123,9 @@ const UserTransactionsModal: React.FC<UserTransactionsModalProps> = ({
     setSortOrder,
     sortField,
     setSortField,
+    currentPage,
+    setCurrentPage,
+    totalPages
   } = useUserTransactions({ userId: userId as string });
 
   const handleClose = () => {
@@ -118,7 +133,7 @@ const UserTransactionsModal: React.FC<UserTransactionsModalProps> = ({
   };
 
   const handleFilterChange = (filter: string | null) => {
-    setSelectedFilter(filter === selectedFilter ? null : filter);
+    setSelectedFilter(filter);
   };
 
   const handleSortChange = (field: "created_at" | "amount") => {
@@ -152,7 +167,7 @@ const UserTransactionsModal: React.FC<UserTransactionsModalProps> = ({
             <div className="relative flex-1 min-w-[200px]">
               <input
                 type="text"
-                placeholder="Rechercher"
+                placeholder="Rechercher par description, type ou montant"
                 className="w-full p-2 pl-10 border border-gray-200 rounded-full text-sm"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -202,8 +217,13 @@ const UserTransactionsModal: React.FC<UserTransactionsModalProps> = ({
             </DropdownMenu>
 
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-2 border border-gray-200 rounded-full px-4 py-2 text-sm text-gray-700">
-                <span>Type</span>
+              <DropdownMenuTrigger className={`flex items-center gap-2 border ${selectedFilter ? 'border-blue-300 bg-blue-50' : 'border-gray-200'} rounded-full px-4 py-2 text-sm ${selectedFilter ? 'text-blue-700' : 'text-gray-700'}`}>
+                <span>
+                  {selectedFilter === null && "Type"}
+                  {selectedFilter === "paiement" && "Paiements"}
+                  {selectedFilter === "retrait" && "Retraits"}
+                  {selectedFilter === "depot" && "Dépôts"}
+                </span>
                 <ChevronDown className="h-4 w-4" />
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-44">
@@ -236,13 +256,23 @@ const UserTransactionsModal: React.FC<UserTransactionsModalProps> = ({
                 >
                   Retraits
                 </DropdownMenuItem>
+                
+                <DropdownMenuItem
+                  onClick={() => handleFilterChange("depot")}
+                  className={`${
+                    selectedFilter === "depot"
+                      ? "bg-blue-50 text-blue-500"
+                      : ""
+                  }`}
+                >
+                  Dépôts
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
 
-          {/* Liste des transactions */}
           <div className="mt-4 space-y-[18px] text-center">
-            <ScrollArea className="h-[600px]">
+            <ScrollArea className="h-[500px]">
               {isLoading ? (
                 <LoadingState />
               ) : error ? (
@@ -259,6 +289,55 @@ const UserTransactionsModal: React.FC<UserTransactionsModalProps> = ({
               )}
               <ScrollBar orientation="vertical" />
             </ScrollArea>
+            
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-2 pt-4">
+                <button
+                  className={`p-2 rounded ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-blue-500 hover:bg-blue-50'}`}
+                  onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  &lt; Précédent
+                </button>
+                
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                    let pageNum;
+                    if (totalPages <= 5) {
+                      pageNum = i + 1;
+                    } else if (currentPage <= 3) {
+                      pageNum = i + 1;
+                    } else if (currentPage >= totalPages - 2) {
+                      pageNum = totalPages - 4 + i;
+                    } else {
+                      pageNum = currentPage - 2 + i;
+                    }
+                    
+                    return (
+                      <button
+                        key={i}
+                        className={`w-8 h-8 flex items-center justify-center rounded-full ${
+                          currentPage === pageNum
+                            ? 'bg-blue-500 text-white'
+                            : 'hover:bg-blue-50'
+                        }`}
+                        onClick={() => setCurrentPage(pageNum)}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+                </div>
+                
+                <button
+                  className={`p-2 rounded ${currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-blue-500 hover:bg-blue-50'}`}
+                  onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                >
+                  Suivant &gt;
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </DialogContent>

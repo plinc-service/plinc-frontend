@@ -1,78 +1,74 @@
-import { Transaction } from "@/interfaces/transactionInterface";
 import { fetchUserTransactionsHistory } from "@/services/UserService";
 import { useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 interface UseUserTransactionsParams {
   userId: string;
 }
 
 export const useUserTransactions = ({ userId }: UseUserTransactionsParams) => {
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [sortField, setSortField] = useState<"created_at" | "amount">("created_at");
+  const [totalPages, setTotalPages] = useState(1);
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["userTransactions", userId],
-    queryFn: () => fetchUserTransactionsHistory(userId),
+    queryKey: ["userTransactions", userId, currentPage, sortField, sortOrder, searchQuery, selectedFilter],
+    queryFn: async () => {
+      const response = await fetchUserTransactionsHistory(
+        userId,
+        currentPage,
+        10, 
+        sortField,
+        sortOrder,
+        searchQuery,
+        selectedFilter
+      );
+      
+      setTotalPages(response.total_pages);
+      return response.data;
+    },
     enabled: !!userId,
     refetchOnWindowFocus: false,
   });
 
-  const transactions = useMemo(() => {
-    if (!data || data.length === 0) return [];
-    
-    let result = [...data];
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
+    setCurrentPage(1); 
+  };
 
-    if (selectedFilter) {
-      if (selectedFilter === "paiement") {
-        result = result.filter(transaction => 
-          transaction.type.toLowerCase() !== "retrait"
-        );
-      } else {
-        result = result.filter(transaction => 
-          transaction.type.toLowerCase() === selectedFilter.toLowerCase()
-        );
-      }
+  const handleFilterChange = (filter: string | null) => {
+    setSelectedFilter(filter);
+    setCurrentPage(1); 
+  };
+
+  const handleSortChange = (field: "created_at" | "amount") => {
+    if (sortField === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortOrder("desc");
     }
-
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      result = result.filter(transaction => 
-        transaction.description?.toLowerCase().includes(query) ||
-        transaction.type.toLowerCase().includes(query) ||
-        transaction.amount.toString().includes(query)
-      );
-    }
-
-    result.sort((a, b) => {
-      if (sortField === "created_at") {
-        return sortOrder === "asc" 
-          ? new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-          : new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-      } else {
-        return sortOrder === "asc" 
-          ? a.amount - b.amount
-          : b.amount - a.amount;
-      }
-    });
-
-    return result;
-  }, [data, searchQuery, selectedFilter, sortOrder, sortField]);
+    setCurrentPage(1); 
+  };
 
   return {
-    transactions,
+    transactions: data || [],
     isLoading,
     error: error ? "Erreur lors de la récupération des transactions." : null,
+    currentPage,
+    setCurrentPage,
+    totalPages,
     searchQuery,
-    setSearchQuery,
+    setSearchQuery: handleSearchChange,
     selectedFilter,
-    setSelectedFilter,
+    setSelectedFilter: handleFilterChange,
     sortOrder,
     setSortOrder,
     sortField,
-    setSortField,
+    setSortField: (field: "created_at" | "amount") => handleSortChange(field),
     refetch
   };
 };
