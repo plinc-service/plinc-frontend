@@ -23,7 +23,7 @@ interface PlincTableProps<TData, TValue> {
   data: TData[];
   loading?: boolean;
   error?: string;
-  onRowClick?: (id: string) => void;
+
 }
 
 export function PlincTable<TData extends object, TValue>({
@@ -31,7 +31,6 @@ export function PlincTable<TData extends object, TValue>({
   data,
   loading = false,
   error,
-  onRowClick,
 }: PlincTableProps<TData, TValue>) {
   const table = useReactTable({
     data,

@@ -66,10 +66,8 @@ class PlincService {
         ...(isClient !== undefined && { is_client: isClient ? 1 : 0 }),
       };
       
-      console.log("[PlincService] Calling API with params:", params);
       
       const response = await Axios.get("/plincs", { params }); 
-      console.log("[PlincService] API response:", response.data);
       
       return response.data as PlincResponse;
     } catch (error) {

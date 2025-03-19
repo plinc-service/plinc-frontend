@@ -53,7 +53,6 @@ const UserTransactionItem: React.FC<UserTransactionItemProps> = memo(({ transact
   const transactionType = transaction.type.toLowerCase();
   const isWithdrawal = transactionType === "retrait";
   const isDeposit = transactionType === "depot";
-  const isPayment = transactionType === "payment";
   
   let iconColorClass = "bg-success-background border-success-border";
   let amountColorClass = "text-success";
@@ -88,7 +87,7 @@ const UserTransactionItem: React.FC<UserTransactionItemProps> = memo(({ transact
               {isWithdrawal ? "Retrait" : isDeposit ? "Dépôt" : "Paiement"}
             </h5>
             <p className="text-sm text-neutral-high truncate max-w-[600px]">
-              {transaction.description || "Aucune description"}
+              {transaction.user.services?.[0]?.description || "Aucune description"}
             </p>
           </div>
         </div>

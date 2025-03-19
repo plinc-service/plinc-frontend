@@ -51,17 +51,6 @@ export const usePlincsRequests = (initialPageSize = 10) => {
   const [nextPage, setNextPage] = useState<string | null>(null);
   const [previousPage, setPreviousPage] = useState<string | null>(null);
 
-  // Log l'état actuel
-  useEffect(() => {
-    console.log("[usePlincsRequests] Current state:", {
-      page,
-      pageSize,
-      searchQuery,
-      selectedStatus,
-      sortField,
-      sortOrder
-    });
-  }, [page, pageSize, searchQuery, selectedStatus, sortField, sortOrder]);
 
   const { data, error, isLoading, refetch } = useQuery({
     queryKey: ["plincs", page, pageSize, searchQuery, selectedStatus, sortField, sortOrder],
@@ -71,14 +60,6 @@ export const usePlincsRequests = (initialPageSize = 10) => {
       // Convertir le nom de champ frontend en nom de champ backend
       const backendSortField = sortField ? sortFieldMapping[sortField as SortField] : undefined;
       
-      console.log("[usePlincsRequests] Calling API with:", {
-        page,
-        pageSize,
-        sortField: backendSortField,
-        sortOrder,
-        searchQuery,
-        status: statusNumber
-      });
       
       return plincService.getAllPlincs(
         page,
@@ -94,7 +75,6 @@ export const usePlincsRequests = (initialPageSize = 10) => {
   // Mettre à jour les informations de pagination à partir de la réponse
   useEffect(() => {
     if (data) {
-      console.log("[usePlincsRequests] Received data:", data);
       setTotalPages(data.total_pages);
       setNextPage(data.next);
       setPreviousPage(data.previous);
@@ -103,73 +83,43 @@ export const usePlincsRequests = (initialPageSize = 10) => {
 
   const goToNextPage = () => {
     if (nextPage && page < totalPages) {
-      console.log("[usePlincsRequests] Going to next page:", page + 1);
       setPage(page + 1);
     }
   };
 
   const goToPreviousPage = () => {
     if (previousPage && page > 1) {
-      console.log("[usePlincsRequests] Going to previous page:", page - 1);
       setPage(page - 1);
     }
   };
 
   const goToPage = (pageNumber: number) => {
     if (pageNumber >= 1 && pageNumber <= totalPages) {
-      console.log("[usePlincsRequests] Going to page:", pageNumber);
       setPage(pageNumber);
     }
   };
 
   const handleSort = (field: SortField) => {
-    console.log("[usePlincsRequests] Sort changed:", {
-      currentField: sortField,
-      newField: field,
-      currentOrder: sortOrder
-    });
     
     if (sortField === field) {
       const newOrder = sortOrder === "asc" ? "desc" : "asc";
-      console.log("[usePlincsRequests] Changing sort order to:", newOrder);
       setSortOrder(newOrder);
     } else {
-      console.log("[usePlincsRequests] Changing sort field to:", field);
       setSortField(field);
       setSortOrder("asc");
     }
-    
-    // Forcer un refetch après le changement de tri
-    setTimeout(() => {
-      console.log("[usePlincsRequests] Triggering refetch after sort change");
-      refetch();
-    }, 10);
+    setPage(1); 
   };
 
-  // Handler pour la recherche qui rafraichit les données
+  // Handler pour la recherche
   const handleSearchChange = (query: string) => {
-    console.log("[usePlincsRequests] Search query changed to:", query);
     setSearchQuery(query);
-    setPage(1); // Retourner à la première page lors d'une nouvelle recherche
-    
-    // Forcer un refetch après le changement de recherche
-    setTimeout(() => {
-      console.log("[usePlincsRequests] Triggering refetch after search change");
-      refetch();
-    }, 10);
+    setPage(1); 
   };
 
-  // Handler pour le changement de statut qui rafraichit les données
   const handleStatusChange = (status: PlincFilterStatus) => {
-    console.log("[usePlincsRequests] Status changed to:", status);
     setSelectedStatus(status);
-    setPage(1); // Retourner à la première page lors d'un changement de filtre
-    
-    // Forcer un refetch après le changement de statut
-    setTimeout(() => {
-      console.log("[usePlincsRequests] Triggering refetch after status change");
-      refetch();
-    }, 10);
+    setPage(1); 
   };
 
   return {

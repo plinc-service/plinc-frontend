@@ -26,6 +26,8 @@ const ServicesTableWrapper = () => {
 		goToPage,
 		page,
 		totalPages,
+		sortField,
+		handleSort,
 	} = useServicesRequests();
 
 	const handleServiceClick = (service: Service) => {
@@ -40,15 +42,15 @@ const ServicesTableWrapper = () => {
 
 	return (
 		<>
-			{/* Filter */}
 			<StatutDataTableFilter
 				selectedStatus={selectedStatus}
 				setSelectedStatus={setSelectedStatus}
 				searchQuery={searchQuery}
 				setSearchQuery={setSearchQuery}
+				sortField={sortField}
+				handleSort={handleSort}
 				refetch={refetch} />
 
-			{/* Services Data Table */}
 			<ServicesDataTable
 				columns={ServicesColumns}
 				data={services}
@@ -61,7 +63,6 @@ const ServicesTableWrapper = () => {
 				onPreviousPage={goToPreviousPage}
 				onPageChange={goToPage} />
 
-			{/* Services Popup */}
 			<ServicesDetailsPopup
 				open={isPopupOpen}
 				onClose={handleClosePopup}

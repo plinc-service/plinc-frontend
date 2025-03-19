@@ -3,7 +3,6 @@ import { useUsersRequests } from "@/hooks/useUsersRequests";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { AlignCenter, ChevronDown, Search } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import UserSkeleton from "./UserSkeleton";
@@ -28,8 +27,6 @@ const UsersTableWrapper: React.FC = () => {
     handleSort,
     page,
     totalPages,
-    goToNextPage,
-    goToPreviousPage,
     goToPage,
   } = useUsersRequests();
 
@@ -75,7 +72,7 @@ const UsersTableWrapper: React.FC = () => {
                   key={option.value}
                   className="w-full px-4 py-2 text-left text-sm hover:bg-neutral-50 flex items-center justify-between"
                   onClick={() => {
-                    handleSort(option.value as any);
+                    handleSort(option.value as "username" | "email" | "date_joined");
                     setShowSortMenu(false);
                   }}
                 >

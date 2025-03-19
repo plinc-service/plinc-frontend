@@ -5,9 +5,8 @@ import { Input } from "@/components/ui/Input";
 import { usePlincsRequests, PlincFilterStatus } from "@/hooks/usePlincsRequests";
 import { cn } from "@/lib/utils";
 import { AlignCenter, ChevronDown, Search } from "lucide-react";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { columns, enhanceColumnsWithRowClick } from "../columns";
-import PlinCSkeleton from "./PlinCSkeleton";
 import { PlincDetailsModal } from "./PlincDetailsModal";
 import { PlincTable } from "./plinc-table";
 import PlincTablePagination from "./PlincTablePagination";
@@ -39,7 +38,6 @@ const PlincsTableWrapper = () => {
     data: plincs,
     loading,
     error,
-    refetch,
     searchQuery,
     setSearchQuery: handleSearchChange,
     selectedStatus,
@@ -54,16 +52,7 @@ const PlincsTableWrapper = () => {
     goToPage,
   } = usePlincsRequests();
 
-  useEffect(() => {
-    if (plincs) {
-      console.log("[PlincsTableWrapper] Received plincs data:", { 
-        count: plincs.length,
-        first: plincs.length > 0 ? plincs[0] : null,
-        page,
-        totalPages
-      });
-    }
-  }, [plincs, page, totalPages]);
+
 
   const handleRowClick = (id: number) => {
     const plinc = plincs.find(item => item.id === id);
@@ -132,7 +121,7 @@ const PlincsTableWrapper = () => {
                     key={option.value}
                     className="w-full px-4 py-2 text-left text-sm hover:bg-neutral-50 flex items-center justify-between"
                     onClick={() => {
-                      handleSort(option.value as any);
+                      handleSort(option.value as "date" | "serviceName" | "status");
                       setShowSortMenu(false);
                     }}
                   >

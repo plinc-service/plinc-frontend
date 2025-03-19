@@ -7,7 +7,7 @@ interface UsersTablePaginationProps {
   onNextPage: () => void;
   onPreviousPage: () => void;
   onPageChange: (page: number) => void;
-  data: any[];
+  data: unknown[];
 }
 
 const UsersTablePagination = ({

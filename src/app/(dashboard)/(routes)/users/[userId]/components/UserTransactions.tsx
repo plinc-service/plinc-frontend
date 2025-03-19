@@ -34,7 +34,6 @@ const UserTransactionItem: React.FC<UserTransactionItemProps> = memo(({ transact
   const transactionType = transaction.type.toLowerCase();
   const isWithdrawal = transactionType === "retrait";
   const isDeposit = transactionType === "depot";
-  const isPayment = transactionType === "payment";
   
  
   let iconColorClass = "bg-success-background border-success-border";

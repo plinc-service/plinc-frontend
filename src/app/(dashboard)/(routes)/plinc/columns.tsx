@@ -32,14 +32,14 @@ export const getStatusLabel = (plinc: number): string => {
 };
 
 export const columns = (): ColumnDef<Plinc>[] => {
-  console.log("[columns] Initializing columns");
+
   return [
     {
       accessorKey: "id",
       header: "ID",
       cell: ({ row }) => {
         const id = row.getValue("id");
-        console.log("[columns] Rendering ID cell:", id);
+
         return (
           <div className="min-w-[80px]">
             <span className="text-neutral-high">#{String(id)}</span>
@@ -52,7 +52,7 @@ export const columns = (): ColumnDef<Plinc>[] => {
       header: "Prestataire",
       cell: ({ row }) => {
         const service = row.original.service;
-        console.log("[columns] Rendering Provider cell for service:", service);
+
         return (
           <div className="flex items-center gap-3 min-w-[150px]">
             <div className="h-8 w-8 rounded-full bg-neutral-100 flex items-center justify-center overflow-hidden">
@@ -88,7 +88,7 @@ export const columns = (): ColumnDef<Plinc>[] => {
       header: "Date",
       cell: ({ row }) => {
         const dateValue = row.getValue("date");
-        console.log("[columns] Rendering Date cell with value:", dateValue);
+
         try {
           const date = new Date(dateValue as string);
           return (
@@ -117,7 +117,7 @@ export const columns = (): ColumnDef<Plinc>[] => {
       header: "Statut",
       cell: ({ row }) => {
         const plinc = row.original;
-        console.log("[columns] Rendering Status cell with status:", plinc.status);
+
         const status = getStatusLabel(plinc.status);
         const getStatusStyle = (
           status: string
@@ -218,7 +218,7 @@ export const enhanceColumnsWithRowClick = (
   columns: ColumnDef<Plinc>[],
   onRowClick: (id: number) => void
 ): ColumnDef<Plinc>[] => {
-  console.log("[columns] Enhancing columns with row click handler");
+
   return columns.map((column) => ({
     ...column,
     cell: (props) => {
@@ -234,7 +234,7 @@ export const enhanceColumnsWithRowClick = (
             e.preventDefault();
             e.stopPropagation();
             const id = props.row.getValue("id") as number;
-            console.log("[columns] Row clicked with ID:", id);
+
             onRowClick(id);
           }}
         >

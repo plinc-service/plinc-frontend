@@ -20,7 +20,7 @@ export const fetchUsers = async ({
   sortOrder = "desc",
 }: FetchUsersParams = {}): Promise<UserResponse> => {
   try {
-    const params: Record<string, any> = {
+    const params: Record<string, string | number> = {
       page,
       page_size: pageSize,
     };
@@ -102,7 +102,7 @@ export const fetchUserTransactionsHistory = async (
   transactionType: string | null = null
 ): Promise<TransactionsResponse> => {
   try {
-    const params: Record<string, any> = {
+    const params: Record<string, string | number> = {
       user: id,
       page,
       page_size: pageSize,

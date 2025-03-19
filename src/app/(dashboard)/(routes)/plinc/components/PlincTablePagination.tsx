@@ -18,11 +18,6 @@ const PlincTablePagination = <TData,>({
   onPageChange,
   data,
 }: PlincTablePaginationProps<TData>) => {
-  console.log("[PlincTablePagination] Rendering with:", {
-    page,
-    totalPages,
-    dataLength: data?.length || 0
-  });
 
   const getPaginationItems = () => {
     const items = [];
@@ -55,24 +50,20 @@ const PlincTablePagination = <TData,>({
       }
     }
 
-    console.log("[PlincTablePagination] Generated pagination items:", items);
     return items;
   };
 
   const paginationItems = getPaginationItems();
   
   const handlePreviousPage = () => {
-    console.log("[PlincTablePagination] Going to previous page from:", page);
     onPreviousPage();
   };
   
   const handleNextPage = () => {
-    console.log("[PlincTablePagination] Going to next page from:", page);
     onNextPage();
   };
   
   const handlePageChange = (pageNum: number) => {
-    console.log("[PlincTablePagination] Jumping to page:", pageNum);
     onPageChange(pageNum);
   };
 

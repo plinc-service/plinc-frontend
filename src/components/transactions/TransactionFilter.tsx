@@ -8,39 +8,38 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/DropdownMenu";
 import { Input } from "@/components/ui/Input";
-import { AlignCenter, ChevronDown, Search } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Check, ChevronDown, Search } from "lucide-react";
 
 export interface TransactionFilterProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+  transactionType: string | null;
+  setTransactionType: (type: string | null) => void;
   refetch?: () => void;
-  selectedFilter: string | null;
-  setSelectedFilter: (filter: string | null) => void;
 }
 
 export function TransactionFilter({
   searchQuery,
   setSearchQuery,
-  refetch,
-  selectedFilter,
-  setSelectedFilter
+  transactionType,
+  setTransactionType,
+  refetch
 }: TransactionFilterProps) {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
 
-  const handleFilterChange = (filter: string | null) => {
-    if (selectedFilter === filter) {
-      setSelectedFilter(null);
-      setSearchQuery("");
+  const handleTypeChange = (type: string | null) => {
+    if (transactionType === type) {
+      setTransactionType(null);
     } else {
-      setSelectedFilter(filter);
-      setSearchQuery(filter || "");
+      setTransactionType(type);
     }
-
+    
     if (refetch) {
-      setTimeout(refetch, 100);
+      refetch();
     }
   };
 
@@ -57,25 +56,37 @@ export function TransactionFilter({
           />
         </div>
         <div className="flex items-center gap-2">
-
+          {/* Menu de filtre par type */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full">
-                <AlignCenter className="h-4 w-4" />
-                <span>Trier par type</span>
+                <span>Type de transaction</span>
                 <ChevronDown className="h-4 w-4 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-44">
-              <DropdownMenuItem
-                onClick={() => handleFilterChange("retrait")}
+            <DropdownMenuContent align="end" className="w-44">
+              <DropdownMenuItem 
+                onClick={() => handleTypeChange("payment")} 
+                className={cn(transactionType === "payment" ? "bg-accent" : "")}
               >
-                Retrait
+                <span>Payment</span>
+                {transactionType === "payment" && <Check className="h-4 w-4 ml-auto" />}
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleFilterChange("payment")}
+              
+              <DropdownMenuItem 
+                onClick={() => handleTypeChange("retrait")} 
+                className={cn(transactionType === "retrait" ? "bg-accent" : "")}
               >
-                Payment
+                <span>Retrait</span>
+                {transactionType === "retrait" && <Check className="h-4 w-4 ml-auto" />}
+              </DropdownMenuItem>
+              
+              <DropdownMenuItem 
+                onClick={() => handleTypeChange("depot")} 
+                className={cn(transactionType === "depot" ? "bg-accent" : "")}
+              >
+                <span>Dépôt</span>
+                {transactionType === "depot" && <Check className="h-4 w-4 ml-auto" />}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
