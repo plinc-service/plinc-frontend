@@ -71,3 +71,55 @@ export interface FormattedDonutChartData {
   items: DonutChartItem[];
   total: number;
 }
+
+// Dashboard Graph Interface
+
+export interface GraphData {
+  plinc: PointData;
+  commission: PointData;
+}
+
+export interface PointData {
+  first_point: number;
+  second_point: number;
+  third_point: number;
+  fourth_point: number;
+  month_legend: string;
+  year_legend: string;
+  "3_month_legend": string;
+}
+
+export interface GraphApiResponse {
+  success: boolean;
+  data: GraphData;
+  previous: null | string;
+  next: null | string;
+  total_pages: number;
+}
+
+export interface DataPoint {
+  name: string;
+  value: number;
+  date?: string;
+  [key: string]: unknown;
+}
+
+export interface FilterOption {
+  label: string;
+  value: string;
+}
+
+export interface AnalyticsChartProps {
+  title: string;
+  value: number;
+  currency?: string;
+  subtitle?: string;
+  data: DataPoint[];
+  currentPeriod?: string;
+  filterOptions?: FilterOption[];
+  filterLabel?: string;
+  defaultFilter?: string;
+  valuePrefix?: string;
+  valueSuffix?: string;
+  color?: string;
+}

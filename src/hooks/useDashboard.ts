@@ -1,8 +1,9 @@
-import { ChartData } from "@/interfaces/dashboardStatsInterface";
+import { ChartData, PointData } from "@/interfaces/dashboardStatsInterface";
 import { DashboardService } from "@/services/DashboardService";
 import formatDonutChartData from "@/utils/formatGraphData";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+
 export const usePlincStats = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["plinc-stats"],
@@ -78,4 +79,37 @@ export const useChartData = () => {
     error,
     rawData: data,
   };
+};
+
+export const useGraphStats = () => {
+  return useQuery({
+    queryKey: ["graphStats"],
+    queryFn: async () => {
+      const response = await DashboardService.getGraphData();
+
+      const processData = (data: PointData) => {
+        return {
+          points: [
+            data.first_point,
+            data.second_point,
+            data.third_point,
+            data.fourth_point,
+          ],
+          legends: {
+            month: data.month_legend
+              .replace(/[\[\]]/g, "")
+              .split(", ")
+              .map((item) => item.replace(",", "-")),
+            year: data.year_legend.split(", "),
+            three_months: data["3_month_legend"].split(", "),
+          },
+        };
+      };
+
+      return {
+        plinc: processData(response.data.plinc),
+        commission: processData(response.data.commission),
+      };
+    },
+  });
 };
