@@ -7,8 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/components/ui/DropdownMenu";
-import { Input } from "@/components/ui/Input";
-import { AlignCenter, ChevronDown, Search } from "lucide-react";
+import { AlignCenter, ChevronDown } from "lucide-react";
 
 export interface TransactionFilterProps {
   searchQuery: string;
@@ -19,16 +18,16 @@ export interface TransactionFilterProps {
 }
 
 export function TransactionFilter({
-  searchQuery,
+  // searchQuery,
   setSearchQuery,
   refetch,
   selectedFilter,
   setSelectedFilter
 }: TransactionFilterProps) {
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-  };
+  // const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setSearchQuery(e.target.value);
+  // };
 
   const handleFilterChange = (filter: string | null) => {
     if (selectedFilter === filter) {
@@ -46,8 +45,8 @@ export function TransactionFilter({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between gap-4">
-        <div className="relative flex-1 max-w-[610px]">
+      <div className="flex items-center justify-end gap-4">
+        {/* <div className="relative flex-1 max-w-[610px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-input-placeholder" />
           <Input
             placeholder="Rechercher"
@@ -55,7 +54,7 @@ export function TransactionFilter({
             value={searchQuery}
             onChange={handleSearchChange}
           />
-        </div>
+        </div> */}
         <div className="flex items-center gap-2">
 
           <DropdownMenu>
@@ -69,11 +68,13 @@ export function TransactionFilter({
             <DropdownMenuContent className="w-44">
               <DropdownMenuItem
                 onClick={() => handleFilterChange("retrait")}
+                className={`${selectedFilter === "retrait" ? "bg-primary/20" : ""}`}
               >
                 Retrait
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleFilterChange("payment")}
+                className={`${selectedFilter === "payment" ? "bg-primary/20" : ""}`}
               >
                 Payment
               </DropdownMenuItem>
