@@ -14,7 +14,7 @@ const TopBar = ({ pageName }: { pageName: string }) => {
 
   return (
     <>
-      <div className="flex items-center justify-between p-2 sticky w-full bg-white z-20 top-0">
+      <div className="flex items-center justify-between px-2 py-4 sticky w-full bg-white z-20 top-0">
         <h1 className="text-2xl font-semibold text-neutral-high">{pageName}</h1>
         <div className="flex items-center gap-4">
           <div className={`flex items-center gap-3 ${loading ? "cursor-not-allowed" : "cursor-pointer"}`} onClick={handleClick}>

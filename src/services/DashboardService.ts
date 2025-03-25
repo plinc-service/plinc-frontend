@@ -2,6 +2,7 @@ import {
   ChartApiResponse,
   ChartData,
   GlobalStatsResponse,
+  GraphApiResponse,
   PlincStatsResponse,
 } from "@/interfaces/dashboardStatsInterface";
 import Axios from "@/utils/config-axios";
@@ -34,5 +35,9 @@ export const DashboardService = {
     const response = await Axios.get("/stats/chart");
     const data = response.data as ChartApiResponse;
     return data.data;
+  },
+  getGraphData: async (): Promise<GraphApiResponse> => {
+    const response = await Axios.get("/stats/graph");
+    return response.data;
   },
 };
