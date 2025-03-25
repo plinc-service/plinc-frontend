@@ -48,7 +48,7 @@ const WithdrawalRequests = () => {
 				/>
 			</div>
 
-			<ScrollArea className="h-[600px] xxl:h-[767px] 2xl:h-[1040px]">
+			<ScrollArea className="h-[600px] xxl:h-[767px] 2xl:h-[940px]">
 				{withdrawalsLoading ? (
 					<div className="flex justify-center items-center h-[600px] xxl:h-[767px] 2xl:h-[1040px]">
 						<Spinner />

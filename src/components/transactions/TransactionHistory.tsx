@@ -96,7 +96,7 @@ const TransactionHistory: React.FC = () => {
 			/>
 
 			<div className="mt-4 space-y-[18px] text-center">
-				<ScrollArea className="h-[390px] xxl:h-[570px] 2xl:h-[842px]">
+				<ScrollArea className="h-[390px] xxl:h-[570px] 2xl:h-[742px]">
 					{loading ? (
 						<LoadingState />
 					) : error ? (
