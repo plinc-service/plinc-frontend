@@ -25,7 +25,7 @@ class PlincService {
       const response = await Axios.get("/plincs", {
         params: {
           user_id: userId,
-          is_client: isClient ? "1" : "0", // Changed to '1' or '0' string
+          is_client: isClient ? "1" : "0", 
           page,
           page_size: pageSize,
           ...(sortField && { sort_field: sortField }),
@@ -60,16 +60,18 @@ class PlincService {
         ...(sortField && { sort_field: sortField }),
         ...(sortOrder && { sort_order: sortOrder }),
         ...(query && { query }),
-        ...(status && { status }),
+        ...(status !== undefined && { status: String(status) }), 
         ...(userId && { user_id: userId }),
         ...(serviceId && { service_id: serviceId }),
         ...(isClient !== undefined && { is_client: isClient ? 1 : 0 }),
       };
-
-      const response = await Axios.get("/plincs", { params });
+      
+      
+      const response = await Axios.get("/plincs", { params }); 
+      
       return response.data as PlincResponse;
     } catch (error) {
-      console.error("Error fetching all plincs:", error);
+      console.error("[PlincService] Error fetching all plincs:", error);
       throw error;
     }
   }

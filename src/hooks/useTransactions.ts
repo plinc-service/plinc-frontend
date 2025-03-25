@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export type Statut = 0 | 1;
+export type SortOrder = "asc" | "desc";
 
 export const useTransactionWallet = () => {
   const { data, isLoading, error, refetch } = useQuery({
@@ -65,15 +65,17 @@ export const useWithdrawalRequests = () => {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["fetchWithdrawalRequests", searchQuery],
+    queryKey: ["fetchWithdrawalRequests", searchQuery, sortOrder],
     queryFn: () =>
       TransactionsServices.fetchTransactions({
         query: searchQuery || "retrait",
         status: "0",
         page: page,
         page_size: pageSize,
+        sort_order: sortOrder,
       }),
     enabled: true,
     refetchOnWindowFocus: false,
@@ -90,6 +92,7 @@ export const useWithdrawalRequests = () => {
     setPage,
     searchQuery,
     setSearchQuery,
+    setSortOrder,
   };
 };
 

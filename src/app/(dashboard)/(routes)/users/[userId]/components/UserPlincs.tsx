@@ -1,18 +1,18 @@
 "use client";
 
-import React from "react";
-import { useParams } from "next/navigation";
-import { DataTable } from "@/components/users/data-table";
-import { columns } from "./columns";
-import { Search, AlignCenter, ChevronDown } from "lucide-react";
-import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { plincService } from "@/services/PlincService";
+import { Input } from "@/components/ui/Input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { DataTable } from "@/components/users/data-table";
 import type { Plinc } from "@/interfaces/plincInterface";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
+import { plincService } from "@/services/PlincService";
+import { AlignCenter, ChevronDown, Search } from "lucide-react";
+import { useParams } from "next/navigation";
+import React from "react";
+import { columns } from "./columns";
 
 type SortConfig = {
-  key: "service.name" | "customer.username" | "created_at" | "";
+  key: "created_at" | "service.hour_price" | "";
   direction: "asc" | "desc";
 };
 
@@ -20,7 +20,7 @@ const UserPlincs = () => {
   const params = useParams();
   const userId = params.userId as string;
 
-  // États
+
   const [searchQuery, setSearchQuery] = React.useState("");
   const [allPlincs, setAllPlincs] = React.useState<Plinc[]>([]);
   const [loading, setLoading] = React.useState(true);
@@ -34,22 +34,21 @@ const UserPlincs = () => {
   const [showSortMenu, setShowSortMenu] = React.useState(false);
 
   const sortOptions = [
-    { label: "Nom du service", value: "service.name" },
-    { label: "Nom d'utilisateur", value: "customer.username" },
-    { label: "Date de création", value: "created_at" },
+    { label: "Date", value: "created_at" },
+    { label: "Montant", value: "service.hour_price" },
   ];
 
-  // Fonction pour charger les données
+
   const fetchPlincs = React.useCallback(async () => {
     try {
       setLoading(true);
       const response = await plincService.getUserPlincs(
         userId,
         currentPage,
-        10, // Augmenter la limite pour avoir plus de données à filtrer localement
-        undefined,
-        undefined,
-        "", // Pas de filtre de recherche côté serveur
+        10,
+        sortConfig.key,
+        sortConfig.direction,
+        searchQuery.trim(),
         undefined,
         activeTab === "achetes"
       );
@@ -60,65 +59,15 @@ const UserPlincs = () => {
     } finally {
       setLoading(false);
     }
-  }, [userId, currentPage, activeTab]);
+  }, [userId, currentPage, activeTab, sortConfig.key, sortConfig.direction, searchQuery]);
 
-  // Charger les données initiales
   React.useEffect(() => {
     fetchPlincs();
   }, [fetchPlincs]);
-
-  // Filtrage et tri des données
   const filteredAndSortedPlincs = React.useMemo(() => {
     if (!allPlincs) return [];
-
-    let result = [...allPlincs];
-
-    // Filtrage par recherche
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase().trim();
-      result = result.filter(
-        (plinc) =>
-          String(plinc.id).toLowerCase().includes(query) ||
-          plinc.service.owner.username.toLowerCase().includes(query) ||
-          plinc.service.name.toLowerCase().includes(query)
-      );
-    }
-
-    // Tri
-    if (sortConfig.key) {
-      result.sort((a, b) => {
-        let aValue: string | number;
-        let bValue: string | number;
-
-        switch (sortConfig.key) {
-          case "service.name":
-            aValue = a.service.name;
-            bValue = b.service.name;
-            break;
-          case "customer.username":
-            aValue = a.customer.username;
-            bValue = b.customer.username;
-            break;
-          case "created_at":
-            aValue = new Date(a.created_at).getTime();
-            bValue = new Date(b.created_at).getTime();
-            return sortConfig.direction === "asc"
-              ? aValue - bValue
-              : bValue - aValue;
-          default:
-            return 0;
-        }
-
-        const aString = String(aValue).toLowerCase();
-        const bString = String(bValue).toLowerCase();
-        return sortConfig.direction === "asc"
-          ? aString.localeCompare(bString)
-          : bString.localeCompare(aString);
-      });
-    }
-
-    return result;
-  }, [allPlincs, searchQuery, sortConfig]);
+    return allPlincs;
+  }, [allPlincs]);
 
   return (
     <div className="rounded-2xl p-2">
@@ -133,8 +82,8 @@ const UserPlincs = () => {
       >
         <div className="flex items-center justify-between mb-6">
           <TabsList>
-            <TabsTrigger value="achetes">Achetés</TabsTrigger>
-            <TabsTrigger value="vendus">Vendus</TabsTrigger>
+            <TabsTrigger value="achetes" className="cursor-pointer">Achetés</TabsTrigger>
+            <TabsTrigger value="vendus" className="cursor-pointer">Vendus</TabsTrigger>
           </TabsList>
           <div className="flex items-center gap-2">
             <div className="relative w-[280px]">
@@ -143,7 +92,10 @@ const UserPlincs = () => {
                 placeholder="Rechercher"
                 className="pl-9 h-10"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
               />
             </div>
             <div className="relative">
@@ -173,6 +125,7 @@ const UserPlincs = () => {
                                 : "asc"
                               : "asc",
                         }));
+                        setCurrentPage(1);
                         setShowSortMenu(false);
                       }}
                     >

@@ -1,125 +1,153 @@
 "use client";
 
+import Spinner from "@/components/ui/Spinner";
+import { useUserTransactions } from "@/hooks/useUserTransactions";
 import { Transaction } from "@/interfaces/transactionInterface";
-import { fetchUserTransactionsHistory } from "@/services/UserService";
-import { MoveDiagonal, MoveDownRight, MoveUpRight } from "lucide-react";
+import { FormattedDate } from "@/utils/formatDate";
+import { ArrowDownUp, MoveDiagonal, MoveDownRight, MoveUpRight } from "lucide-react";
 import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { memo } from "react";
+import UserTransactionsModal from "./UserTransactionsModal";
+
+interface UserTransactionItemProps {
+  transaction: Transaction;
+}
+
+const LoadingState = () => (
+  <div className="flex-1 flex justify-center items-center">
+    <Spinner />
+  </div>
+);
+
+const ErrorState = ({ error }: { error: string }) => (
+  <p className="text-sm text-danger">{error}</p>
+);
+
+const EmptyState = () => (
+  <div className="flex-1 flex justify-center items-center">
+    <p className="text-sm text-neutral-medium">Aucune donnée pour le moment.</p>
+  </div>
+);
+
+const UserTransactionItem: React.FC<UserTransactionItemProps> = memo(({ transaction }) => {
+
+  const transactionType = transaction.type.toLowerCase();
+  const isWithdrawal = transactionType === "retrait";
+  const isDeposit = transactionType === "depot";
 
 
-const UserTransactions: React.FC = () => {
+  let iconColorClass = "bg-success-background border-success-border";
+  let amountColorClass = "text-success";
 
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const { userId } = useParams();
-  const [mounted, setMounted] = React.useState(false);
-
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const formatDate = (dateString: string) => {
-    const options: Intl.DateTimeFormatOptions = {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    };
-    const date = new Date(dateString);
-    return date.toLocaleDateString("fr-FR", options);
-  };
-
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        if (!userId) return;
-        const data = await fetchUserTransactionsHistory(userId.toString());
-        setTransactions(data);
-      } catch (error) {
-        console.error(
-          "Erreur lors de la récupération des transactions :",
-          error
-        );
-      }
-    };
-
-    fetchTransactions();
-  }, [userId]);
-
-  if (!mounted) {
-    return null;
+  if (isWithdrawal) {
+    iconColorClass = "bg-danger-background border-danger-border";
+    amountColorClass = "text-danger";
+  } else if (isDeposit) {
+    iconColorClass = "bg-neutral-background border-neutral-border";
+    amountColorClass = "text-neutral-high";
   }
 
   return (
-    <div className="p-5 rounded-3xl border border-brand-lower">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg text-neutral-high font-semibold">
-          Historique des transactions
-        </h2>
-        <button className="text-neutral-high hover:text-blue transition-colors">
-          <MoveDiagonal className="h-5 w-5" />
-        </button>
-      </div>
-      <div className="divide-y divide-brand-lower">
-        {transactions.length === 0 ? (
-          <div className="py-4 text-center text-neutral-high text-base">
-            Aucune donnée pour le moment
+    <div
+      className="flex flex-col items-start justify-between gap-2.5 h-[85px] border-b border-neutral-low pb-[18px] mb-[18px]"
+    >
+      <div className="flex items-center w-full justify-between">
+        <div className="flex items-center gap-2">
+          <span
+            className={`${iconColorClass} border rounded-full w-7 h-7 flex items-center justify-center`}
+          >
+            {isWithdrawal ? (
+              <MoveUpRight className="text-danger" size={16} />
+            ) : isDeposit ? (
+              <ArrowDownUp className="text-neutral-high" size={16} />
+            ) : (
+              <MoveDownRight className="text-success" size={16} />
+            )}
+          </span>
+          <div className="text-left min-w-0 flex-1">
+            <h5 className="text-base font-semibold text-neutral-high">
+              {isWithdrawal ? "Retrait" : isDeposit ? "Dépôt" : "Paiement"}
+            </h5>
+            {/* <p className="text-sm text-neutral-high truncate max-w-[600px]">
+            {transaction.user.services?.[0]?.description || "Aucune description"}
+            </p> */}
           </div>
-        ) : (
-          transactions.map((transaction) => (
-            <div key={transaction.id} className="py-4 first:pt-0 last:pb-0">
-              <div className="flex items-start gap-3">
-                <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center ${transaction.type === "retrait" ? "bg-red-50" : "bg-green-50"
-                    }`}
-                >
-                  <span
-                    className={`${transaction.type === "retrait"
-                        ? "text-red-500"
-                        : "text-green-500"
-                      }`}
-                  >
-                    {transaction.type === "retrait" ? (
-                      <MoveUpRight className="h-4 w-4" />
-                    ) : (
-                      <MoveDownRight className="h-4 w-4" />
-                    )}
-                  </span>
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="font-medium text-neutral-high">
-                        {transaction.type === "retrait"
-                          ? "Retrait"
-                          : `Payement`}
-                      </h3>
-                      <p className="text-sm text-neutral-medium mt-1">
-                        {transaction.description || 'Aucune description disponible'}
-                      </p>
-                      <p className="text-xs text-neutral-high mt-1">
-                        {
-                          formatDate(transaction.created_at)
-                        }
-                      </p>
-                    </div>
-                    <span
-                      className={`font-medium ${transaction.type === "retrait"
-                          ? "text-red-500"
-                          : "text-green-500"
-                        }`}
-                    >
-                      {transaction.type === "retrait" ? "-" : "+"}
-                      {transaction.amount}€
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))
-        )}
+        </div>
+        <span className={`${amountColorClass} block text-base`}>
+          {isWithdrawal ? "-" : isDeposit ? "" : "+"}
+          {transaction.amount}€
+        </span>
       </div>
+      <span className="text-neutral-high text-sm">
+        <FormattedDate dateString={transaction.created_at} />
+      </span>
     </div>
+  );
+});
+
+UserTransactionItem.displayName = "UserTransactionItem";
+
+const UserTransactions: React.FC = () => {
+  const { userId } = useParams();
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const MAX_DISPLAYED_TRANSACTIONS = 5;
+
+  const {
+    transactions,
+    isLoading,
+    error
+  } = useUserTransactions({ userId: userId as string });
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const displayedTransactions = transactions.slice(0, MAX_DISPLAYED_TRANSACTIONS);
+
+  return (
+    <>
+      <div className="p-5 rounded-3xl border border-brand-lower">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg text-neutral-high font-semibold">
+            Historique des transactions
+          </h2>
+          <button
+            className="text-neutral-high hover:text-blue transition-colors"
+            onClick={handleOpenModal}
+            aria-label="Afficher les détails des transactions"
+          >
+            <MoveDiagonal className="h-5 w-5 cursor-pointer" />
+          </button>
+        </div>
+
+        <div className="mt-4 space-y-[18px] text-center">
+          {isLoading ? (
+            <LoadingState />
+          ) : error ? (
+            <ErrorState error={error} />
+          ) : displayedTransactions.length === 0 ? (
+            <EmptyState />
+          ) : (
+            displayedTransactions.map((transaction) => (
+              <UserTransactionItem
+                key={transaction.id}
+                transaction={transaction}
+              />
+            ))
+          )}
+        </div>
+      </div>
+
+      {/* Modal de détails des transactions */}
+      <UserTransactionsModal
+        open={isModalOpen}
+        onClose={handleCloseModal}
+      />
+    </>
   );
 };
 
