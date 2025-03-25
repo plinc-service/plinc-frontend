@@ -1,9 +1,11 @@
 "use client";
 import TopBar from "@/components/layout/TopBar";
 import { Button } from "@/components/ui/Button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/DropdownMenu";
 import { Input } from "@/components/ui/Input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
-import { AlignCenter, ChevronDown, ChevronsUpDown, Search } from "lucide-react";
+import { SortOrder } from "@/hooks/useUsersRequests";
+import { ChevronsUpDown, Search } from "lucide-react";
 import { useState } from "react";
 import ServicesRequestTableWrapper from "./components/servicesRequest/ServicesRequestTableWrapper";
 import WithdrawRequestTableWrapper from "./components/withdrawRequest/WithdrawRequestTableWrapper";
@@ -16,6 +18,8 @@ const ValidationPage = () => {
 
 	const [triggerWithdrawalSearch, setTriggerWithdrawalSearch] = useState(false);
 	const [triggerServiceSearch, setTriggerServiceSearch] = useState(false);
+
+	const [order, setOrder] = useState<SortOrder>("desc");
 
 	const handleTabChange = (value: string) => {
 		setActiveTab(value);
@@ -45,21 +49,39 @@ const ValidationPage = () => {
 							onKeyDown={(e) => handleKeyDown(e, 'withdrawal')}
 						/>
 					</div>
-					<Button
+					{/* <Button
 						variant="outline"
 						className="h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full"
 					>
 						<AlignCenter className="h-4 w-4" />
 						<span>Trier par</span>
 						<ChevronDown className="h-4 w-4 text-neutral-high" />
-					</Button>
-					<Button
-						variant="outline"
-						className="h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full"
-					>
-						<span>Montant</span>
-						<ChevronsUpDown className="h-4 w-4" />
-					</Button>
+					</Button> */}
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button
+								variant="outline"
+								className="h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full"
+							>
+								<span>Date</span>
+								<ChevronsUpDown className="h-4 w-4" />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="end" className="w-44">
+							<DropdownMenuItem
+								onClick={() => setOrder("asc")}
+								className={`${order === "asc" ? "bg-primary/20" : ""}`}
+							>
+								<span>ascendant</span>
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => setOrder("desc")}
+								className={`${order === "desc" ? "bg-primary/20" : ""}`}
+							>
+								<span>descendant</span>
+							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
 				</>
 			);
 		} else if (activeTab === "Services") {
@@ -75,14 +97,14 @@ const ValidationPage = () => {
 							onKeyDown={(e) => handleKeyDown(e, 'service')}
 						/>
 					</div>
-					<Button
+					{/* <Button
 						variant="outline"
 						className="h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full"
 					>
 						<AlignCenter className="h-4 w-4" />
 						<span>Trier par</span>
 						<ChevronDown className="h-4 w-4 text-neutral-high" />
-					</Button>
+					</Button> */}
 				</>
 			);
 		}
@@ -118,6 +140,7 @@ const ValidationPage = () => {
 					{activeTab === "WithdrawalRequests" && (
 						<WithdrawalRequestsContent
 							key="withdrawals"
+							setOrder={order}
 							searchQuery={withdrawalSearch}
 							triggerSearch={triggerWithdrawalSearch}
 						/>
@@ -138,14 +161,16 @@ const ValidationPage = () => {
 
 const WithdrawalRequestsContent = ({
 	searchQuery,
+	setOrder,
 	triggerSearch
 }: {
 	searchQuery: string;
+	setOrder: SortOrder;
 	triggerSearch: boolean
 }) => {
 	return (
 		<div className="mt-4">
-			<WithdrawRequestTableWrapper searchQuery={searchQuery} triggerSearch={triggerSearch} />
+			<WithdrawRequestTableWrapper searchQuery={searchQuery} triggerSearch={triggerSearch} order={setOrder} />
 		</div>
 	);
 };

@@ -1,15 +1,15 @@
 "use client";
 
-import React from "react";
-import { useParams } from "next/navigation";
-import { DataTable } from "@/components/users/data-table";
-import { columns } from "./columns";
-import { Search, AlignCenter, ChevronDown } from "lucide-react";
-import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { plincService } from "@/services/PlincService";
+import { Input } from "@/components/ui/Input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { DataTable } from "@/components/users/data-table";
 import type { Plinc } from "@/interfaces/plincInterface";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
+import { plincService } from "@/services/PlincService";
+import { AlignCenter, ChevronDown, Search } from "lucide-react";
+import { useParams } from "next/navigation";
+import React from "react";
+import { columns } from "./columns";
 
 type SortConfig = {
   key: "created_at" | "service.hour_price" | "";
@@ -38,7 +38,7 @@ const UserPlincs = () => {
     { label: "Montant", value: "service.hour_price" },
   ];
 
- 
+
   const fetchPlincs = React.useCallback(async () => {
     try {
       setLoading(true);
@@ -46,8 +46,8 @@ const UserPlincs = () => {
         userId,
         currentPage,
         10,
-        sortConfig.key, 
-        sortConfig.direction, 
+        sortConfig.key,
+        sortConfig.direction,
         searchQuery.trim(),
         undefined,
         activeTab === "achetes"
@@ -82,8 +82,8 @@ const UserPlincs = () => {
       >
         <div className="flex items-center justify-between mb-6">
           <TabsList>
-            <TabsTrigger value="achetes">Achetés</TabsTrigger>
-            <TabsTrigger value="vendus">Vendus</TabsTrigger>
+            <TabsTrigger value="achetes" className="cursor-pointer">Achetés</TabsTrigger>
+            <TabsTrigger value="vendus" className="cursor-pointer">Vendus</TabsTrigger>
           </TabsList>
           <div className="flex items-center gap-2">
             <div className="relative w-[280px]">

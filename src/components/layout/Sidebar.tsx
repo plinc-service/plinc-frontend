@@ -30,7 +30,7 @@ export function Sidebar() {
 
       <div className="flex-1 space-y-5 py-2 mt-3">
         {sidebarItems.map((item) => {
-          const active = pathname === item.href;
+          const active = pathname.startsWith(item.href);
           return (
             <Link
               key={item.href}

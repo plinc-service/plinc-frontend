@@ -82,8 +82,8 @@ const TransactionHistory: React.FC = () => {
 		error,
 		searchQuery,
 		setSearchQuery,
-		transactionType,
-		setTransactionType,
+		selectedFilter,
+		setSelectedFilter,
 		refetch,
 	} = useTransactionHistory();
 
@@ -92,8 +92,8 @@ const TransactionHistory: React.FC = () => {
 			<TransactionFilter
 				searchQuery={searchQuery}
 				setSearchQuery={setSearchQuery}
-				transactionType={transactionType}
-				setTransactionType={setTransactionType}
+				selectedFilter={selectedFilter}
+				setSelectedFilter={setSelectedFilter}
 				refetch={refetch}
 			/>
 

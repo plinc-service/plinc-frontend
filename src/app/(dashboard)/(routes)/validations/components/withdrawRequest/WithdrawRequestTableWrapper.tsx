@@ -1,5 +1,5 @@
 import WithdrawalRequestsPopup from "@/components/transactions/WithdrawalRequestsPopup";
-import { useWithdrawalRequests } from "@/hooks/useTransactions";
+import { SortOrder, useWithdrawalRequests } from "@/hooks/useTransactions";
 import { Transaction } from "@/interfaces/transactionInterface";
 import { useEffect, useState } from "react";
 import { columns } from "./columns";
@@ -7,11 +7,13 @@ import { WithdrawalRequestsDataTable } from "./WithdrawRequestDataTable";
 
 interface WithdrawRequestTableWrapperProps {
 	searchQuery: string;
+	order: string;
 	triggerSearch: boolean;
 }
 
 const WithdrawRequestTableWrapper = ({
 	searchQuery,
+	order,
 	triggerSearch
 }: WithdrawRequestTableWrapperProps) => {
 	const [selectedWithdrawal, setSelectedWithdrawal] = useState<Transaction | null>(null);
@@ -22,7 +24,8 @@ const WithdrawRequestTableWrapper = ({
 		refetch,
 		error,
 		loading,
-		setSearchQuery
+		setSearchQuery,
+		setSortOrder
 	} = useWithdrawalRequests();
 
 	useEffect(() => {
@@ -34,6 +37,10 @@ const WithdrawRequestTableWrapper = ({
 			refetch();
 		}
 	}, [triggerSearch, refetch, searchQuery]);
+
+	useEffect(() => {
+		setSortOrder(order as SortOrder);
+	}, [order, setSortOrder]);
 
 	const handleWithdrawalClick = (withdrawal: Transaction) => {
 		setSelectedWithdrawal(withdrawal);

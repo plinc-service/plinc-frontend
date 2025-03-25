@@ -7,37 +7,39 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/components/ui/DropdownMenu";
-import { ChevronDown } from "lucide-react";
+import { AlignCenter, ChevronDown } from "lucide-react";
 
 export interface TransactionFilterProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
-  transactionType: string | null;
-  setTransactionType: (type: string | null) => void;
   refetch?: () => void;
+  selectedFilter: string | null;
+  setSelectedFilter: (filter: string | null) => void;
 }
 
 export function TransactionFilter({
   // searchQuery,
   setSearchQuery,
-  transactionType,
-  setTransactionType,
-  refetch
+  refetch,
+  selectedFilter,
+  setSelectedFilter
 }: TransactionFilterProps) {
 
   // const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   setSearchQuery(e.target.value);
   // };
 
-  const handleTypeChange = (type: string | null) => {
-    if (transactionType === type) {
-      setTransactionType(null);
+  const handleFilterChange = (filter: string | null) => {
+    if (selectedFilter === filter) {
+      setSelectedFilter(null);
+      setSearchQuery("");
     } else {
-      setTransactionType(type);
+      setSelectedFilter(filter);
+      setSearchQuery(filter || "");
     }
 
     if (refetch) {
-      refetch();
+      setTimeout(refetch, 100);
     }
   };
 
@@ -54,11 +56,12 @@ export function TransactionFilter({
           />
         </div> */}
         <div className="flex items-center gap-2">
-          {/* Menu de filtre par type */}
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full">
-                <span>Type de transaction</span>
+                <AlignCenter className="h-4 w-4" />
+                <span>Trier par type</span>
                 <ChevronDown className="h-4 w-4 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
@@ -67,15 +70,13 @@ export function TransactionFilter({
                 onClick={() => handleFilterChange("retrait")}
                 className={`${selectedFilter === "retrait" ? "bg-primary/20" : ""}`}
               >
-                <span>Retrait</span>
-                {transactionType === "retrait" && <Check className="h-4 w-4 ml-auto" />}
+                Retrait
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleFilterChange("payment")}
                 className={`${selectedFilter === "payment" ? "bg-primary/20" : ""}`}
               >
-                <span>Dépôt</span>
-                {transactionType === "depot" && <Check className="h-4 w-4 ml-auto" />}
+                Payment
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

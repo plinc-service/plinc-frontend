@@ -1,12 +1,12 @@
 "use client";
 
+import Spinner from "@/components/ui/Spinner";
 import { useUserTransactions } from "@/hooks/useUserTransactions";
 import { Transaction } from "@/interfaces/transactionInterface";
 import { FormattedDate } from "@/utils/formatDate";
 import { ArrowDownUp, MoveDiagonal, MoveDownRight, MoveUpRight } from "lucide-react";
 import { useParams } from "next/navigation";
 import React, { memo } from "react";
-import Spinner from "@/components/ui/Spinner";
 import UserTransactionsModal from "./UserTransactionsModal";
 
 interface UserTransactionItemProps {
@@ -30,15 +30,15 @@ const EmptyState = () => (
 );
 
 const UserTransactionItem: React.FC<UserTransactionItemProps> = memo(({ transaction }) => {
- 
+
   const transactionType = transaction.type.toLowerCase();
   const isWithdrawal = transactionType === "retrait";
   const isDeposit = transactionType === "depot";
-  
- 
+
+
   let iconColorClass = "bg-success-background border-success-border";
   let amountColorClass = "text-success";
-  
+
   if (isWithdrawal) {
     iconColorClass = "bg-danger-background border-danger-border";
     amountColorClass = "text-danger";
@@ -68,9 +68,9 @@ const UserTransactionItem: React.FC<UserTransactionItemProps> = memo(({ transact
             <h5 className="text-base font-semibold text-neutral-high">
               {isWithdrawal ? "Retrait" : isDeposit ? "Dépôt" : "Paiement"}
             </h5>
-            <p className="text-sm text-neutral-high truncate max-w-[600px]">
+            {/* <p className="text-sm text-neutral-high truncate max-w-[600px]">
             {transaction.user.services?.[0]?.description || "Aucune description"}
-            </p>
+            </p> */}
           </div>
         </div>
         <span className={`${amountColorClass} block text-base`}>
@@ -92,10 +92,10 @@ const UserTransactions: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const MAX_DISPLAYED_TRANSACTIONS = 5;
 
-  const { 
-    transactions, 
-    isLoading, 
-    error 
+  const {
+    transactions,
+    isLoading,
+    error
   } = useUserTransactions({ userId: userId as string });
 
   const handleOpenModal = () => {
@@ -115,12 +115,12 @@ const UserTransactions: React.FC = () => {
           <h2 className="text-lg text-neutral-high font-semibold">
             Historique des transactions
           </h2>
-          <button 
+          <button
             className="text-neutral-high hover:text-blue transition-colors"
             onClick={handleOpenModal}
             aria-label="Afficher les détails des transactions"
           >
-            <MoveDiagonal className="h-5 w-5" />
+            <MoveDiagonal className="h-5 w-5 cursor-pointer" />
           </button>
         </div>
 
@@ -141,11 +141,11 @@ const UserTransactions: React.FC = () => {
           )}
         </div>
       </div>
-      
+
       {/* Modal de détails des transactions */}
-      <UserTransactionsModal 
-        open={isModalOpen} 
-        onClose={handleCloseModal} 
+      <UserTransactionsModal
+        open={isModalOpen}
+        onClose={handleCloseModal}
       />
     </>
   );

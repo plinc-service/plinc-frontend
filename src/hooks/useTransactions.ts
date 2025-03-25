@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export type Statut = 0 | 1;
+export type SortOrder = "asc" | "desc";
 
 export const useTransactionWallet = () => {
   const { data, isLoading, error, refetch } = useQuery({
@@ -32,19 +32,16 @@ export const useTransactionWallet = () => {
 export const useTransactionHistory = () => {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
-  const [searchQuery, setSearchQuery] = useState(""); // Recherche par description, email, etc.
-  const [transactionType, setTransactionType] = useState<string | null>(null); // Filtre par type: payment, retrait, depot
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["transactions", page, searchQuery, transactionType],
+    queryKey: ["transactions", page, searchQuery],
     queryFn: () =>
       TransactionsServices.fetchTransactions({
         page,
         page_size: pageSize,
         query: searchQuery,
-        type: transactionType || undefined,
-        sort_field: "created_at",
-        sort_order: "desc",
       }),
   });
 
@@ -57,9 +54,9 @@ export const useTransactionHistory = () => {
     page,
     setPage,
     searchQuery,
+    selectedFilter,
+    setSelectedFilter,
     setSearchQuery,
-    transactionType,
-    setTransactionType,
     refetch,
   };
 };
@@ -68,15 +65,17 @@ export const useWithdrawalRequests = () => {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["fetchWithdrawalRequests", searchQuery],
+    queryKey: ["fetchWithdrawalRequests", searchQuery, sortOrder],
     queryFn: () =>
       TransactionsServices.fetchTransactions({
         query: searchQuery || "retrait",
         status: "0",
         page: page,
         page_size: pageSize,
+        sort_order: sortOrder,
       }),
     enabled: true,
     refetchOnWindowFocus: false,
@@ -93,6 +92,7 @@ export const useWithdrawalRequests = () => {
     setPage,
     searchQuery,
     setSearchQuery,
+    setSortOrder,
   };
 };
 

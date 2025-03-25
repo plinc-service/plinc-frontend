@@ -35,7 +35,7 @@ export const fetchUsers = async ({
     }
 
     const response = await Axios.get("/users", { params });
-    
+
     return response.data as UserResponse;
   } catch (error) {
     console.error("Erreur lors de la récupération des utilisateurs :", error);
@@ -107,31 +107,29 @@ export const fetchUserTransactionsHistory = async (
       page,
       page_size: pageSize,
       sort_field: sortField,
-      sort_order: sortOrder
+      sort_order: sortOrder,
     };
-    
+
     if (searchQuery) {
       params.query = searchQuery;
     }
-    
+
     if (transactionType) {
       if (transactionType === "paiement") {
-        params.type = "payment";
+        params.query = "payment";
       } else if (transactionType === "retrait") {
-        params.type = "retrait";
-      } else if (transactionType === "depot") {
-        params.type = "depot";
+        params.query = "retrait";
       } else {
-        params.type = transactionType;
+        params.query = transactionType;
       }
     }
-    
+
     const response = await Axios.get(`/transactions`, { params });
-    
+
     return {
       data: response.data.data as Transaction[],
       total_pages: response.data.total_pages || 1,
-      current_page: response.data.current_page || 1
+      current_page: response.data.current_page || 1,
     };
   } catch (error) {
     console.error(

@@ -1,18 +1,18 @@
 "use client";
 
-import React from "react";
-import { useParams } from "next/navigation";
 import { Switch } from "@/components/ui/Switch";
-import { MoveDiagonal } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
 import { fetchUserById } from "@/services/UserService";
+import { useQuery } from "@tanstack/react-query";
+import { MoveDiagonal } from "lucide-react";
+import { useParams } from "next/navigation";
+import React from "react";
 import UserServicesModal from "./UserServicesModal";
 
 const UserServices: React.FC = () => {
   const { userId } = useParams();
   const [mounted, setMounted] = React.useState(false);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-  
+
   const MAX_DISPLAYED_SERVICES = 5;
 
   const { data: user, isLoading } = useQuery({
@@ -67,12 +67,12 @@ const UserServices: React.FC = () => {
       <div className="p-5 rounded-3xl border border-brand-lower">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg text-neutral-high font-semibold">Services</h2>
-          <button 
+          <button
             className="text-neutral-high hover:text-blue transition-colors"
             onClick={handleOpenModal}
             aria-label="Afficher les détails des services"
           >
-            <MoveDiagonal className="h-5 w-5" />
+            <MoveDiagonal className="h-5 w-5 cursor-pointer" />
           </button>
         </div>
         <div className="space-y-6">
@@ -103,10 +103,10 @@ const UserServices: React.FC = () => {
       </div>
 
       {/* Modal de détails des services */}
-      <UserServicesModal 
-        open={isModalOpen} 
-        onClose={handleCloseModal} 
-        services={services} 
+      <UserServicesModal
+        open={isModalOpen}
+        onClose={handleCloseModal}
+        services={services}
       />
     </>
   );
