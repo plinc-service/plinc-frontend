@@ -29,9 +29,8 @@ export const useAuth = () => {
 
       return response.data.user;
     },
-    onError: (error) => {
+    onError: () => {
       toast.error("Une erreur est survenue lors de la connexion");
-      throw error;
     },
   });
 
@@ -41,14 +40,11 @@ export const useAuth = () => {
   ) => {
     return loginMutation.mutate(credentials, {
       onSuccess: (data) => {
+        toast.success("Connexion réussie");
         callbacks?.onSuccess?.(data.data.user);
       },
-      onError: (error) => {
-        if (callbacks?.onError) {
-          callbacks.onError(error);
-        } else if (process.env.NODE_ENV === "development") {
-          console.error("Erreur lors de l'authentification :", error);
-        }
+      onError: () => {
+        toast.error("Information de connexion incorrect");
       },
     });
   };
