@@ -6,6 +6,7 @@ import { ChevronDown } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Button } from "../ui/Button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/DropdownMenu";
+import { ScrollArea } from "../ui/ScrollArea";
 import { DonutGraph } from "./DonutGraph";
 
 const FILTER_OPTIONS = [
@@ -38,15 +39,14 @@ const AnalysisOfPlincGraph = () => {
 		if (selectedFilter.key === "serviceChart" && serviceChart) {
 			data = serviceChart;
 			revenue = serviceChart.total;
-			profit = Math.round(revenue * 0.15);
 		} else if (selectedFilter.key === "venteChart" && venteChart) {
 			data = venteChart;
 			revenue = venteChart.total;
-			profit = Math.round(revenue * 0.25);
+			profit = venteChart.second_data ?? 0;
 		} else if (selectedFilter.key === "commissionChart" && commissionChart) {
 			data = commissionChart;
 			revenue = commissionChart.total;
-			profit = Math.round(revenue * 0.85);
+			profit = commissionChart.second_data ?? 0;
 		}
 
 		return { activeData: data, totalRevenue: revenue, totalProfit: profit };
@@ -112,7 +112,7 @@ const AnalysisOfPlincGraph = () => {
 						</div>
 						<div className="flex flex-col gap-1">
 							<h3 className="text-sm font-medium text-neutral">En cours</h3>
-							<span className="text-[30px] font-semibold text-primary">{venteChart?.total}</span>
+							<span className="text-[30px] font-semibold text-primary">{venteChart?.second_data}</span>
 						</div>
 					</>
 				) : (
@@ -127,25 +127,29 @@ const AnalysisOfPlincGraph = () => {
 				<DonutGraph activeFilter={selectedFilter.key} />
 				<div className="min-w-[269px]">
 					<h3 className="text-base font-medium text-neutral mb-3">Légende</h3>
-					<ul className="space-y-1 w-full">
-						{activeData && activeData.items && activeData.items.map((item: DonutChartItem, index: number) => (
-							<li key={index} className="flex justify-between items-center">
-								<span className="flex items-center gap-1.5">
-									<span
-										className="w-[3.5px] h-[10px] block rounded-full"
-										style={{ backgroundColor: item.color }}
-									></span>
-									<span className="text-base text-neutral">{item.category}</span>
-								</span>
-								<span className="flex items-center text-neutral-high">
-									{item.percentage}% ({formatCurrency(item.value)}€)
-								</span>
-							</li>
-						))}
-						{(!activeData || !activeData.items || activeData.items.length === 0) && (
-							<li className="text-neutral">Aucune donnée disponible</li>
-						)}
-					</ul>
+					<ScrollArea className="h-[100px]">
+						<ul className="w-full">
+							{activeData && activeData.items && [...activeData.items]
+								.sort((a, b) => b.value - a.value)
+								.map((item: DonutChartItem, index: number) => (
+									<li key={index} className="flex justify-between items-center">
+										<span className="flex items-center gap-1.5">
+											<span
+												className="w-[4px] h-[10px] block rounded-full"
+												style={{ backgroundColor: item.color }}
+											></span>
+											<span className="text-base text-neutral">{item.category}</span>
+										</span>
+										<span className="flex items-center text-neutral-high">
+											{item.percentage}% ({formatCurrency(item.value)}€)
+										</span>
+									</li>
+								))}
+							{(!activeData || !activeData.items || activeData.items.length === 0) && (
+								<li className="text-neutral">Aucune donnée disponible</li>
+							)}
+						</ul>
+					</ScrollArea>
 				</div>
 			</div>
 		</div>

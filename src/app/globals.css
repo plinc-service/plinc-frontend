@@ -132,4 +132,9 @@
     background-color: var(--color-background);
     font-family: "inter";
   }
+  /* .texte {
+    color: rgba(59, 130, 246, .20);
+    color: rgba(20, 184, 166, .20);
+    color: rgba(20, 184, 166, .15);
+  } */
 }

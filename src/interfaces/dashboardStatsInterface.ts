@@ -41,6 +41,7 @@ export interface GlobalStatsResponse {
 
 export interface ChartCategory {
   total: number;
+  second_data?: number;
   categories: string[];
   colors: string[];
   values: number[];
@@ -70,6 +71,7 @@ export interface DonutChartItem {
 export interface FormattedDonutChartData {
   items: DonutChartItem[];
   total: number;
+  second_data?: number;
 }
 
 // Dashboard Graph Interface
@@ -119,7 +121,9 @@ export interface AnalyticsChartProps {
   filterOptions?: FilterOption[];
   filterLabel?: string;
   defaultFilter?: string;
-  valuePrefix?: string;
-  valueSuffix?: string;
+  valuePrefix?: number;
+  valueSuffix?: number;
   color?: string;
+  onPointClick?: (index: number) => void;
+  onFilterChange?: (filter: string) => void;
 }

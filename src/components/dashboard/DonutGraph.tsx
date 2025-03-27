@@ -2,14 +2,12 @@
 
 import {
 	ChartConfig,
-	ChartContainer,
-	ChartTooltip,
-	ChartTooltipContent,
+	ChartContainer
 } from "@/components/ui/Chart";
 import { useChartData } from "@/hooks/useDashboard";
 import { DonutChartItem } from "@/interfaces/dashboardStatsInterface";
 import { useMemo } from "react";
-import { Cell, Pie, PieChart } from "recharts";
+import { Cell, Pie, PieChart, Tooltip } from "recharts";
 import Spinner from "../ui/Spinner";
 
 interface ChartDataItem {
@@ -35,24 +33,11 @@ export function DonutGraph({ activeFilter = "serviceChart" }: DonutGraphProps) {
 				: commissionChart;
 
 		if (selectedData && selectedData.items && selectedData.items.length > 0) {
-			const allZero = selectedData.items.every((item: DonutChartItem) => item.value === 0);
-
-			if (allZero) {
-
-				return selectedData.items.map((item: DonutChartItem) => ({
-					legend: item.category,
-					percentage: 100 / selectedData.items.length,
-					fill: "#e0e0e0",
-					value: 1,
-					isZero: true
-				}));
-			}
-
 			return selectedData.items.map((item: DonutChartItem) => ({
 				legend: item.category,
 				percentage: item.percentage,
 				fill: item.color,
-				value: item.value || 0.001,
+				value: item.value || 0.000,
 				isZero: item.value === 0
 			}));
 		}
@@ -71,57 +56,67 @@ export function DonutGraph({ activeFilter = "serviceChart" }: DonutGraphProps) {
 		}, {}) as ChartConfig;
 	}, [chartData]);
 
+	const hasData = chartData.some((item) => !item.isZero);
+
 	if (isLoading) {
-		return <div className="w-[250px] h-[250px] flex items-center justify-center">
-			<Spinner />
-		</div>;
+		return (
+			<div className="w-[250px] h-[250px] flex items-center justify-center">
+				<Spinner />
+			</div>
+		);
 	}
 
 	if (chartData.length === 0) {
-		return <div className="w-[250px] h-[250px] flex items-center justify-center">Aucune donnée disponible</div>;
+		return (
+			<div className="w-[250px] h-[250px] flex items-center justify-center">
+				Aucune donnée disponible
+			</div>
+		);
 	}
-
-	const allZero = chartData.every((item: ChartDataItem) => item.isZero === true);
 
 	return (
 		<div className="w-[250px] pb-0 relative">
 			<ChartContainer
 				config={chartConfig}
-				className={`aspect-square p-0 m-0 ${allZero ? 'opacity-70' : ''}`}
+				className={`aspect-square p-0 m-0 ${hasData ? "opacity-70" : ""}`}
 			>
-				<PieChart>
-					<ChartTooltip
-						cursor={false}
-						content={<ChartTooltipContent formatter={(value) =>
-							allZero ? "Aucune données" : `${value} €`
-						} />}
-					/>
-					<Pie
-						data={chartData}
-						dataKey="value"
-						nameKey="legend"
-						innerRadius={60}
-						outerRadius={90}
-						paddingAngle={2}
-					>
-						{chartData.map((entry, index) => (
-							<Cell
-								key={`cell-${index}`}
-								fill={entry.isZero && !allZero ? "#f0f0f0" : entry.fill}
-								opacity={entry.isZero && !allZero ? 0.6 : 1}
-							/>
-						))}
-					</Pie>
-				</PieChart>
-			</ChartContainer>
+				{hasData ? (
+					<PieChart>
+						<Tooltip
+							content={({ active, payload }) => {
+								if (!active || !payload || !payload.length) return null;
 
-			{allZero && (
-				<div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-					<div className="text-center text-neutral-500 bg-opacity-70 p-2 rounded">
-						<p className="text-xs">Aucune donnée</p>
+								return (
+									<div className="bg-white p-2 border rounded shadow text-xs text-neutral-high">
+										<p>{payload[0].name}</p>
+										<p>{payload[0].value} €</p>
+									</div>
+								);
+							}}
+						/>
+						<Pie
+							data={chartData}
+							dataKey="value"
+							nameKey="legend"
+							innerRadius={60}
+							outerRadius={90}
+							paddingAngle={2}
+						>
+							{chartData.map((entry, index) => (
+								<Cell
+									key={`cell-${index}`}
+									fill={entry.fill}
+									opacity={1}
+								/>
+							))}
+						</Pie>
+					</PieChart>
+				) : (
+					<div className="w-[250px] h-[250px] flex items-center justify-center text-neutral text-sm">
+						Aucune donnée à afficher
 					</div>
-				</div>
-			)}
+				)}
+			</ChartContainer>
 		</div>
 	);
 }

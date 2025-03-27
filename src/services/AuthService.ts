@@ -2,6 +2,7 @@ import { AuthResponse } from "@/interfaces/authService";
 import { User } from "@/interfaces/userInterface";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { toast } from "sonner";
 
 const TOKEN_KEY = "auth-token";
 const USER_KEY = "auth-user";
@@ -21,11 +22,8 @@ export const AuthService = {
         return JSON.parse(userString);
       }
       return null;
-    } catch (error) {
-      console.error(
-        "Erreur lors de la récupération des informations utilisateur:",
-        error
-      );
+    } catch {
+      toast.error("Une erreur est survenue");
       return null;
     }
   },

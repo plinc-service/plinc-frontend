@@ -36,8 +36,12 @@ export const DashboardService = {
     const data = response.data as ChartApiResponse;
     return data.data;
   },
-  getGraphData: async (): Promise<GraphApiResponse> => {
-    const response = await Axios.get("/stats/graph");
+  getGraphData: async (period: number): Promise<GraphApiResponse> => {
+    const response = await Axios.get("/stats/graph", {
+      params: {
+        period,
+      },
+    });
     return response.data;
   },
 };

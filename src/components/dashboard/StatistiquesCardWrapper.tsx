@@ -1,4 +1,4 @@
-import { useGlobalStats } from "@/hooks/useDashboard";
+import { useGlobalStats, useGraphStats } from "@/hooks/useDashboard";
 import { Briefcase, ChevronDown, Link2, Users, Wallet } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../ui/Button";
@@ -14,6 +14,7 @@ const PERIOD_OPTIONS = [
 ];
 
 const StatistiquesCardWrapper = () => {
+	const [selectedPeriod, setSelectedPeriod] = useState(PERIOD_OPTIONS[0].value);
 	const [selectedPeriodLabel, setSelectedPeriodLabel] = useState(PERIOD_OPTIONS[0].label);
 
 	const {
@@ -25,9 +26,12 @@ const StatistiquesCardWrapper = () => {
 		setPeriod
 	} = useGlobalStats();
 
+	useGraphStats(selectedPeriod);
+
 	const handlePeriodChange = (value: number, label: string) => {
 		setPeriod(value);
 		setSelectedPeriodLabel(label);
+		setSelectedPeriod(value);
 	};
 
 	const cards = [

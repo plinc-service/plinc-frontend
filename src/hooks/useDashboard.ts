@@ -81,30 +81,28 @@ export const useChartData = () => {
   };
 };
 
-export const useGraphStats = () => {
+export const useGraphStats = (period?: number) => {
   return useQuery({
-    queryKey: ["graphStats"],
+    queryKey: ["graphStats", period ?? 1],
     queryFn: async () => {
-      const response = await DashboardService.getGraphData();
+      const response = await DashboardService.getGraphData(period ?? 1);
 
-      const processData = (data: PointData) => {
-        return {
-          points: [
-            data.first_point,
-            data.second_point,
-            data.third_point,
-            data.fourth_point,
-          ],
-          legends: {
-            month: data.month_legend
-              .replace(/[\[\]]/g, "")
-              .split(", ")
-              .map((item) => item.replace(",", "-")),
-            year: data.year_legend.split(", "),
-            three_months: data["3_month_legend"].split(", "),
-          },
-        };
-      };
+      const processData = (data: PointData) => ({
+        points: [
+          data.first_point,
+          data.second_point,
+          data.third_point,
+          data.fourth_point,
+        ],
+        legends: {
+          month: data.month_legend
+            .replace(/[\[\]]/g, "")
+            .split(", ")
+            .map((item) => item.replace(",", "-")),
+          year: data.year_legend.split(", "),
+          three_months: data["3_month_legend"].split(", "),
+        },
+      });
 
       return {
         plinc: processData(response.data.plinc),
