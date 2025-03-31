@@ -3,8 +3,8 @@ import { Transaction } from "@/interfaces/transactionInterface";
 import { FormattedDate } from "@/utils/formatDate";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import { memo } from "react";
-import { ScrollArea, ScrollBar } from "../ui/ScrollArea";
-import Spinner from "../ui/Spinner";
+import { ScrollArea, ScrollBar } from "../../ui/ScrollArea";
+import Spinner from "../../ui/Spinner";
 import { TransactionFilter } from "./TransactionFilter";
 
 interface ErrorStateProps {

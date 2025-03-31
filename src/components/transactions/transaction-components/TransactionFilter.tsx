@@ -32,7 +32,6 @@ export function TransactionFilter({
   const handleFilterChange = (filter: string | null) => {
     if (selectedFilter === filter) {
       setSelectedFilter(null);
-      setSearchQuery("");
     } else {
       setSelectedFilter(filter);
       setSearchQuery(filter || "");

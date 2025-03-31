@@ -1,9 +1,9 @@
 import { useServicesRequests } from "@/hooks/useValidations";
 import { Service } from "@/interfaces/serviceInterface";
 import { useEffect, useState } from "react";
-import ServicesRequestsPopup from "../ServicesRequestPopup";
 import { ServiceRequestColumns } from "./columns";
 import { ServicesRequestsDataTable } from "./ServicesRequestDataTable";
+import ServicesRequestsPopup from "./ServicesRequestPopup";
 
 interface ServicesRequestTableWrapperProps {
 	searchQuery: string;
@@ -22,6 +22,11 @@ const ServicesRequestTableWrapper = ({
 		refetch,
 		error,
 		loading,
+		goToNextPage,
+		goToPreviousPage,
+		goToPage,
+		page,
+		totalPages,
 		setSearchQuery
 	} = useServicesRequests();
 
@@ -51,6 +56,11 @@ const ServicesRequestTableWrapper = ({
 				data={services}
 				onClick={(item: Service) => handleServiceClick(item)}
 				error={error}
+				page={page}
+				totalPages={totalPages}
+				onNextPage={goToNextPage}
+				onPreviousPage={goToPreviousPage}
+				onPageChange={goToPage}
 				isLoading={loading}
 			/>
 			<ServicesRequestsPopup

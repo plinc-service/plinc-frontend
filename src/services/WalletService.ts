@@ -20,7 +20,6 @@ export const WalletService = {
           query,
           sort_field: sortField,
           sort_order: sortOrder,
-          amount_field: "revenue_total", 
         },
       });
       return response.data as WalletResponse;

@@ -1,9 +1,9 @@
 "use client";
 import TopBar from "@/components/layout/TopBar";
-import TransactionHistory from "@/components/transactions/TransactionHistory";
-import TransactionWalletCard from "@/components/transactions/TransactionWalletCard";
-import TransactionWalletCardSkeleton from "@/components/transactions/TransactionWalletCardSkeleton";
-import WithdrawalRequests from "@/components/transactions/WithdrawalRequests";
+import TransactionHistory from "@/components/transactions/transaction-components/TransactionHistory";
+import TransactionWalletCard from "@/components/transactions/transaction-components/TransactionWalletCard";
+import TransactionWalletCardSkeleton from "@/components/transactions/transaction-components/TransactionWalletCardSkeleton";
+import WithdrawalRequests from "@/components/transactions/withdrall-request/WithdrawalRequests";
 import { useTransactionWallet } from "@/hooks/useTransactions";
 
 const TransactionPage = () => {

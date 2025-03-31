@@ -8,26 +8,37 @@ import { toast } from "sonner";
 export type SortField = "created_at";
 export type SortOrder = "asc" | "desc";
 
-export const useServicesRequests = () => {
+export const useServicesRequests = (initialStatus: number = 0) => {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState<number | undefined>(undefined);
+
+  const [selectedStatus, setSelectedStatus] = useState<number | undefined>(
+    initialStatus
+  );
+
   const [totalPages, setTotalPages] = useState(1);
   const [nextPage, setNextPage] = useState<string | null>(null);
   const [previousPage, setPreviousPage] = useState<string | null>(null);
-  const [status, setStatus] = useState<string | undefined>(undefined);
+
   const [sortField, setSortField] = useState<SortField | null>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["fetchRequestServices", page, searchQuery, selectedStatus, sortField, sortOrder],
+    queryKey: [
+      "fetchRequestServices",
+      page,
+      searchQuery,
+      selectedStatus,
+      sortField,
+      sortOrder,
+    ],
     queryFn: async () => {
       const response = await ValidationServices.fetchRequestServices({
         page,
         page_size: pageSize,
         query: searchQuery,
-        status: status,
+        status: selectedStatus,
         sort_field: sortField || undefined,
         sort_order: sortOrder,
       });
@@ -92,22 +103,22 @@ export const useServicesRequests = () => {
     setSearchQuery,
     selectedStatus,
     setSelectedStatus,
-    status,
-    setStatus,
     sortField,
     sortOrder,
     handleSort,
   };
 };
 
-export const useServiceDetails = (service_id: string) => {
+export const useServiceDetails = (service_id?: string) => {
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["fetchServiceDetails", service_id],
     queryFn: async () => {
-      const response = await ValidationServices.fetchServiceDetails(service_id);
+      const response = await ValidationServices.fetchServiceDetails(
+        service_id!
+      );
       return response;
     },
-    enabled: !!service_id,
+    enabled: !!service_id && service_id !== "0",
   });
 
   const serviceDetails = data?.data || null;
@@ -127,7 +138,7 @@ export const useActivateService = () => {
     mutationFn: ValidationServices.activateService,
     onSuccess: (_, service_id) => {
       queryClient.invalidateQueries({
-        queryKey: ["fetchServiceDetails", service_id],
+        queryKey: ["activateServiceDetails", service_id],
       });
       toast.success("Service activé avec succès");
     },
@@ -150,7 +161,7 @@ export const useDesactivateService = () => {
       mutationFn: ValidationServices.desactivateService,
       onSuccess: (_, service_id) => {
         queryClient.invalidateQueries({
-          queryKey: ["fetchServiceDetails", service_id],
+          queryKey: ["desactiveServiceDetails", service_id],
         });
         toast.success("Service désactivé avec succès");
       },

@@ -1,4 +1,4 @@
-import WithdrawalRequestsPopup from "@/components/transactions/WithdrawalRequestsPopup";
+import WithdrawalRequestsPopup from "@/components/transactions/withdrall-request/WithdrawalRequestsPopup";
 import { SortOrder, useWithdrawalRequests } from "@/hooks/useTransactions";
 import { Transaction } from "@/interfaces/transactionInterface";
 import { useEffect, useState } from "react";
@@ -25,7 +25,12 @@ const WithdrawRequestTableWrapper = ({
 		error,
 		loading,
 		setSearchQuery,
-		setSortOrder
+		setSortOrder,
+		goToNextPage,
+		goToPage,
+		goToPreviousPage,
+		page,
+		totalPages
 	} = useWithdrawalRequests();
 
 	useEffect(() => {
@@ -59,7 +64,13 @@ const WithdrawRequestTableWrapper = ({
 				onClick={(item: Transaction) => handleWithdrawalClick(item)}
 				error={error}
 				isLoading={loading}
+				page={page}
+				totalPages={totalPages}
+				onNextPage={goToNextPage}
+				onPreviousPage={goToPreviousPage}
+				onPageChange={goToPage}
 			/>
+
 
 			<WithdrawalRequestsPopup
 				open={isPopupOpen}

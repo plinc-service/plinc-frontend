@@ -1,4 +1,4 @@
-import { Transaction } from "@/interfaces/transactionInterface";
+import { TransactionResponse } from "@/interfaces/transactionInterface";
 import Axios from "@/utils/config-axios";
 import axios from "axios";
 
@@ -24,12 +24,10 @@ export const TransactionsServices = {
   fetchTransactions: async ({
     page = 1,
     page_size = 10,
-    query = "",
     sort_field = "created_at",
     sort_order = "desc",
     user_id,
     status,
-    type,
   }: {
     page?: number;
     page_size?: number;
@@ -37,24 +35,21 @@ export const TransactionsServices = {
     sort_field?: string;
     sort_order?: string;
     user_id?: string;
-    status?: string;
-    type?: string;
-  }): Promise<Transaction[]> => {
+    status?: number;
+  }): Promise<TransactionResponse> => {
     try {
-
       const response = await Axios.get("/transactions", {
         params: {
           page,
           page_size,
-          query,
+          // query,
           sort_field,
           sort_order,
           user_id,
           status,
-          type,
         },
       });
-      return response.data.data;
+      return response.data;
     } catch (error) {
       console.error("Erreur lors de la récupération des transactions :", error);
       throw error;
@@ -62,13 +57,15 @@ export const TransactionsServices = {
   },
 
   validateOrRejectWithdrawal: async (
-    id: string,
-    status: number
+    id: number,
+    status: number,
+    rejected_reason?: string
   ): Promise<void> => {
     try {
       const baseUrl = "https://api-plinc.gini-africa.com";
-      await axios.put(`${baseUrl}/wallet/activation/${id}`, {
+      await axios.put(`${baseUrl}/wallet/transaction/activation/${id}`, {
         status,
+        rejected_reason,
       });
     } catch (error) {
       console.error(
@@ -78,7 +75,7 @@ export const TransactionsServices = {
       throw error;
     }
   },
-  validateService: async (id: string) => {
+  validateService: async (id: number) => {
     try {
       await Axios.put(`/service/activation/${id}`, {
         status: 1,
@@ -91,10 +88,11 @@ export const TransactionsServices = {
       throw error;
     }
   },
-  rejectService: async (id: string) => {
+  rejectService: async (id: number, rejected_reason: string) => {
     try {
       await Axios.put(`/service/activation/${id}`, {
         status: 2,
+        rejected_reason,
       });
     } catch (error) {
       console.error("Erreur lors de la rejet du service :", error);

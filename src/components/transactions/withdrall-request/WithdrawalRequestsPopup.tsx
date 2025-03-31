@@ -4,15 +4,16 @@ import {
 	X
 } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
 	Dialog,
 	DialogContent,
 	DialogTitle
-} from "../ui/Dialog";
-import Spinner from "../ui/Spinner";
-import BankingDetails from "./BankingDetails";
-import UserProfilePopup from "./UserProfilePopup";
+} from "../../ui/Dialog";
+import Spinner from "../../ui/Spinner";
+import BankingDetails from "../BankingDetails";
+import UserProfilePopup from "../UserProfilePopup";
+import RejectWithdrawalReasonPopup from "./RejectWithdrawalReasonPopup";
 import WithdrawalActionButtons from "./WithdrawalActionButtons";
 
 const WithdrawalRequestsPopup: React.FC<TransactionDetailsPopupProps> = ({
@@ -22,50 +23,38 @@ const WithdrawalRequestsPopup: React.FC<TransactionDetailsPopupProps> = ({
 	refetchList
 }) => {
 
-	const [localError, setLocalError] = useState<string | null>(null);
 	const [isUserProfileOpen, setIsUserProfileOpen] = useState(false);
+	const [isRejectReason, setIsRejectReason] = useState(false);
 
 	const {
 		validateOrRejectWithdrawal,
 		loading,
-		error,
-	} = useValidateOrRejectWithdrawal(() => {
-		refetchList();
-		onClose();
-	});
-
-	useEffect(() => {
-		if (error) {
-			setLocalError(error);
-		}
-	}, [error]);
-
-	useEffect(() => {
-		if (!open) {
-			setLocalError(null);
-		}
-	}, [open]);
+	} = useValidateOrRejectWithdrawal();
 
 	const handleValidate = () => {
 		if (transactionDetails?.id) {
-			validateOrRejectWithdrawal({
-				id: transactionDetails.id.toString(),
-				status: 1
-			});
+			validateOrRejectWithdrawal(
+				{
+					id: transactionDetails.id,
+					status: 1,
+				},
+				{
+					onSuccess: () => {
+						refetchList();
+						onClose();
+					}
+				}
+			);
 		}
 	};
 
 	const handleReject = () => {
 		if (transactionDetails?.id) {
-			validateOrRejectWithdrawal({
-				id: transactionDetails.id.toString(),
-				status: 2
-			});
+			setIsRejectReason(true);
 		}
 	};
 
 	const handleClose = () => {
-		setLocalError(null);
 		onClose();
 	};
 
@@ -77,15 +66,14 @@ const WithdrawalRequestsPopup: React.FC<TransactionDetailsPopupProps> = ({
 		setIsUserProfileOpen(false);
 	};
 
+	const handleCloseRejectReasonPopup = () => {
+		setIsRejectReason(false);
+	}
+
 	return (
 		<>
 			<Dialog open={open} onOpenChange={handleClose}>
 				<DialogContent className="max-w-[700px] w-full">
-					{localError && (
-						<div className="bg-red-50 text-red-600 p-3 rounded-md">
-							{error}
-						</div>
-					)}
 
 					<div className="space-y-3">
 						{/* HEADER */}
@@ -169,6 +157,16 @@ const WithdrawalRequestsPopup: React.FC<TransactionDetailsPopupProps> = ({
 					refetchList={refetchList}
 				/>
 			)}
+			<RejectWithdrawalReasonPopup
+				open={isRejectReason}
+				onClose={handleCloseRejectReasonPopup}
+				transactionDetails={transactionDetails}
+				refetchList={refetchList}
+				closeAllPopups={() => {
+					setIsRejectReason(false);
+					onClose();
+				}}
+			/>
 		</>
 	);
 };

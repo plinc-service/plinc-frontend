@@ -11,6 +11,7 @@ export interface Wallet {
   };
   image_url?: string | null;
   className?: string;
+  amount: string;
 }
 
 export interface WalletResponse {

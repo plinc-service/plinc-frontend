@@ -85,3 +85,11 @@ export interface ServicesRequestDetailsPopupProps {
   service_id?: number;
   servicesDetails?: Service;
 }
+
+export interface RejectServiceReasonPopupProps {
+  open: boolean;
+  onClose: () => void;
+  refetchList: () => void;
+  closeAllPopups: () => void;
+  servicesDetails?: Service | null;
+}

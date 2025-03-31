@@ -29,7 +29,7 @@ const ServicesDetailsPopup: React.FC<ServicesRequestDetailsPopupProps> = ({
 		data: servicesDetails,
 		isLoading: isServiceDetailsLoading,
 		refetch: refetchServiceDetails
-	} = useServiceDetails(service_id?.toString() || "");
+	} = useServiceDetails(service_id?.toString());
 
 	if (isServiceDetailsLoading) {
 		return <div className="w-full h-full flex justify-center items-center"><Spinner /></div>

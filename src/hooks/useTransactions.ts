@@ -1,6 +1,7 @@
+import { TransactionResponse } from "@/interfaces/transactionInterface";
 import { TransactionsServices } from "@/services/TransactionService";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export type SortOrder = "asc" | "desc";
@@ -41,12 +42,11 @@ export const useTransactionHistory = () => {
       TransactionsServices.fetchTransactions({
         page,
         page_size: pageSize,
-        query: searchQuery,
       }),
   });
 
   return {
-    transactions: data || [],
+    transactions: data?.data || [],
     loading: isLoading,
     error: error
       ? "Une erreur est survenue lors du chargement des transactions."
@@ -65,14 +65,18 @@ export const useWithdrawalRequests = () => {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
+  const [status, setStatus] = useState(0);
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
+  const [totalPages, setTotalPages] = useState(1);
+  const [nextPage, setNextPage] = useState<string | null>(null);
+  const [previousPage, setPreviousPage] = useState<string | null>(null);
 
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery<TransactionResponse>({
     queryKey: ["fetchWithdrawalRequests", searchQuery, sortOrder],
     queryFn: () =>
       TransactionsServices.fetchTransactions({
         query: searchQuery || "retrait",
-        status: "0",
+        status: status,
         page: page,
         page_size: pageSize,
         sort_order: sortOrder,
@@ -81,31 +85,69 @@ export const useWithdrawalRequests = () => {
     refetchOnWindowFocus: false,
   });
 
+  useEffect(() => {
+    if (data) {
+      setTotalPages(data.total_pages);
+      setNextPage(data.next);
+      setPreviousPage(data.previous);
+    }
+  }, [data]);
+
+  const goToNextPage = () => {
+    if (nextPage && page < totalPages) {
+      setPage(page + 1);
+    }
+  };
+
+  const goToPreviousPage = () => {
+    if (previousPage && page > 1) {
+      setPage(page - 1);
+    }
+  };
+
+  const goToPage = (pageNumber: number) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setPage(pageNumber);
+    }
+  };
+
   return {
-    data: data || [],
+    data: data?.data || [],
     loading: isLoading,
     error: error
       ? "Une erreur est survenue lors du chargement des retraits."
       : null,
     refetch,
     page,
+    totalPages,
     setPage,
+    goToPage,
+    goToPreviousPage,
+    goToNextPage,
     searchQuery,
+    setStatus,
     setSearchQuery,
     setSortOrder,
   };
 };
 
-export const useValidateOrRejectWithdrawal = (
-  onSuccessCallback?: () => void
-) => {
+export const useValidateOrRejectWithdrawal = () => {
   const mutation = useMutation({
-    mutationFn: ({ id, status }: { id: string; status: number }) =>
-      TransactionsServices.validateOrRejectWithdrawal(id, status),
+    mutationFn: ({
+      id,
+      status,
+      rejected_reason,
+    }: {
+      id: number;
+      status: number;
+      rejected_reason?: string;
+    }) =>
+      TransactionsServices.validateOrRejectWithdrawal(
+        id,
+        status,
+        rejected_reason
+      ),
     onSuccess: () => {
-      if (onSuccessCallback) {
-        onSuccessCallback();
-      }
       toast.success("Retrait validé avec succès");
     },
     onError: () => {
@@ -125,7 +167,7 @@ export const useValidateOrRejectWithdrawal = (
 
 export const useValidateService = (onSuccessCallback?: () => void) => {
   const mutation = useMutation({
-    mutationFn: ({ id }: { id: string }) =>
+    mutationFn: ({ id }: { id: number }) =>
       TransactionsServices.validateService(id),
     onSuccess: () => {
       if (onSuccessCallback) {
@@ -148,16 +190,20 @@ export const useValidateService = (onSuccessCallback?: () => void) => {
   };
 };
 
-export const useRejectService = (onSuccessCallback?: () => void) => {
+export const useRejectService = () => {
   const mutation = useMutation({
-    mutationFn: ({ id }: { id: string }) =>
-      TransactionsServices.rejectService(id),
+    mutationFn: ({
+      id,
+      rejected_reason,
+    }: {
+      id: number;
+      rejected_reason: string;
+    }) => TransactionsServices.rejectService(id, rejected_reason),
+
     onSuccess: () => {
-      if (onSuccessCallback) {
-        onSuccessCallback();
-      }
       toast.success("Service rejeté avec succès");
     },
+
     onError: () => {
       toast.error("Une erreur est survenue lors du traitement de la demande.");
     },

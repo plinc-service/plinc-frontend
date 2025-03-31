@@ -1,13 +1,14 @@
+import Spinner from "@/components/ui/Spinner";
 import { useWithdrawalRequests } from "@/hooks/useTransactions";
 import { Transaction } from "@/interfaces/transactionInterface";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { ScrollArea } from "../ui/ScrollArea";
-import Spinner from "../ui/Spinner";
 import { WithdrawalFilter } from "./WithdrawalFilter";
 import WithdrawalRequestsPopup from "./WithdrawalRequestsPopup";
+;
 
 const WithdrawalRequests = () => {
 	const [selectedWithdrawal, setSelectedWithdrawal] = useState<Transaction | null>(null);
