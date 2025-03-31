@@ -28,7 +28,7 @@ const ServicesTableWrapper = () => {
 		totalPages,
 		sortField,
 		handleSort,
-	} = useServicesRequests();
+	} = useServicesRequests(1);
 
 	const handleServiceClick = (service: Service) => {
 		setSelectedService(service);
@@ -49,7 +49,7 @@ const ServicesTableWrapper = () => {
 				setSearchQuery={setSearchQuery}
 				sortField={sortField}
 				handleSort={handleSort}
-				refetch={refetch} />
+			/>
 
 			<ServicesDataTable
 				columns={ServicesColumns}

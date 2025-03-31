@@ -5,20 +5,18 @@ import Spinner from "@/components/ui/Spinner";
 interface ValidateOrRejectButtonsProps {
 	onValidate: () => void;
 	onReject: () => void;
-	validateLoading: boolean;
-	rejectLoading: boolean;
+	loading: boolean;
 }
 
 const ValidateOrRejectButtons: React.FC<ValidateOrRejectButtonsProps> = ({
 	onValidate,
 	onReject,
-	validateLoading,
-	rejectLoading
+	loading,
 }) => {
 	return (
 		<div className="flex justify-items-start items-center gap-1 mt-4">
-			<Button variant={"ghost"} disabled={validateLoading} className="text-lg" onClick={onValidate}>
-				{validateLoading ? (
+			<Button variant={"ghost"} disabled={loading} className="text-lg" onClick={onValidate}>
+				{loading ? (
 					<>
 						<Spinner className="text-blue-900" />
 						<span className="ml-2">Validation en cours...</span>
@@ -27,15 +25,8 @@ const ValidateOrRejectButtons: React.FC<ValidateOrRejectButtonsProps> = ({
 					"Valider le service"
 				)}
 			</Button>
-			<Button variant={"outline"} disabled={rejectLoading} className="text-lg" onClick={onReject}>
-				{rejectLoading ? (
-					<>
-						<Spinner className="text-white" />
-						<span className="ml-2">Rejet en cours...</span>
-					</>
-				) : (
-					"Rejeter le service"
-				)}
+			<Button variant={"outline"} disabled={loading} className="text-lg" onClick={onReject}>
+				Rejeter le service
 			</Button>
 		</div>
 	)

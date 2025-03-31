@@ -12,7 +12,7 @@ export const ValidationServices = {
     sort_order = "desc",
     query = "",
     // is_active = "0",
-    status = "0",
+    status = 0,
     user_id,
   }: {
     page?: number;
@@ -20,7 +20,7 @@ export const ValidationServices = {
     query?: string;
     sort_field?: string;
     sort_order?: string;
-    status?: string;
+    status?: number;
     user_id?: string;
   }): Promise<ServicesResponse> => {
     try {

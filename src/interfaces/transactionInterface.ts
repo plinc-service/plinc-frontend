@@ -31,3 +31,11 @@ export interface TransactionDetailsPopupProps {
   refetchList: () => void;
   transactionDetails?: Transaction | null;
 }
+
+export interface RejectWithdrawalReasonPopupProps {
+  open: boolean;
+  onClose: () => void;
+  refetchList: () => void;
+  closeAllPopups: () => void;
+  transactionDetails?: Transaction | null;
+}

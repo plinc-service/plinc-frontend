@@ -20,7 +20,7 @@ const WithdrawRequestTableBody = <TData, TValue>({
 	if (isLoading) {
 		return (
 			<TableBody>
-				{Array.from({ length: 10 }).map((_, index) => (
+				{Array.from({ length: 8 }).map((_, index) => (
 					<TableRow
 						key={index}
 						className="hover:bg-brand-lowest cursor-pointer border-neutral-200 h-[65px]"

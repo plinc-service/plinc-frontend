@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/Dialog";
 import Spinner from "@/components/ui/Spinner";
-import { useRejectService, useValidateService } from "@/hooks/useTransactions";
+import { useValidateService } from "@/hooks/useTransactions";
 import { useServiceDetails } from "@/hooks/useValidations";
 import { ServicesRequestDetailsPopupProps } from "@/interfaces/serviceInterface";
 import {
@@ -8,8 +8,9 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
-import ValidateOrRejectButtons from "../../services/components/ValidateOrRejectButtons";
-import UserProfilePopup from "./UserProfilePopup";
+import ValidateOrRejectButtons from "../../../services/components/ValidateOrRejectButtons";
+import UserProfilePopup from "../UserProfilePopup";
+import RejectServiceReasonPopup from "./RejectServiceReasonPopup";
 
 const ServicesRequestsPopup: React.FC<ServicesRequestDetailsPopupProps> = ({
 	open,
@@ -19,19 +20,12 @@ const ServicesRequestsPopup: React.FC<ServicesRequestDetailsPopupProps> = ({
 }) => {
 
 	const [isUserProfileOpen, setIsUserProfileOpen] = useState(false);
+	const [isRejectReason, setIsRejectReason] = useState(false);
 
 	const {
 		validateService,
 		validateLoading,
 	} = useValidateService(() => {
-		refetchList();
-		onClose();
-	});
-
-	const {
-		rejectService,
-		rejectLoading,
-	} = useRejectService(() => {
 		refetchList();
 		onClose();
 	});
@@ -44,13 +38,13 @@ const ServicesRequestsPopup: React.FC<ServicesRequestDetailsPopupProps> = ({
 
 	const handleValidate = () => {
 		if (servicesDetails?.id) {
-			validateService({ id: servicesDetails.id.toString() });
+			validateService({ id: servicesDetails.id });
 		}
 	};
 
 	const handleReject = () => {
 		if (servicesDetails?.id) {
-			rejectService({ id: servicesDetails.id.toString() });
+			setIsRejectReason(true);
 		}
 	};
 
@@ -65,6 +59,10 @@ const ServicesRequestsPopup: React.FC<ServicesRequestDetailsPopupProps> = ({
 	const handleCloseUserProfile = () => {
 		setIsUserProfileOpen(false);
 	};
+
+	const handleCloseRejectReasonPopup = () => {
+		setIsRejectReason(false);
+	}
 
 	return (
 		<>
@@ -102,12 +100,11 @@ const ServicesRequestsPopup: React.FC<ServicesRequestDetailsPopupProps> = ({
 										<p className="text-neutral-high text-lg">{servicesDetails.description || "Pas de description"}</p>
 									</div>
 
-									{/* Buttons for validating or rejecting withdrawal requests */}
+									{/* Buttons for validating or rejecting service requests */}
 									<ValidateOrRejectButtons
 										onValidate={handleValidate}
 										onReject={handleReject}
-										validateLoading={validateLoading}
-										rejectLoading={rejectLoading}
+										loading={validateLoading}
 									/>
 
 									<div className="space-y-2.5 mt-6">
@@ -154,6 +151,16 @@ const ServicesRequestsPopup: React.FC<ServicesRequestDetailsPopupProps> = ({
 					refetchList={refetchList}
 				/>
 			)}
+			<RejectServiceReasonPopup
+				open={isRejectReason}
+				onClose={handleCloseRejectReasonPopup}
+				servicesDetails={servicesDetails}
+				refetchList={refetchList}
+				closeAllPopups={() => {
+					setIsRejectReason(false);
+					onClose();
+				}}
+			/>
 		</>
 	);
 };

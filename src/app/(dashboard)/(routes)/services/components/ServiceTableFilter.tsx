@@ -16,7 +16,6 @@ interface StatutDataTableFilterProps {
 	setSearchQuery: (query: string) => void;
 	sortField: SortField | null;
 	handleSort: (field: SortField) => void;
-	refetch: () => void;
 }
 
 export function StatutDataTableFilter({
@@ -26,7 +25,6 @@ export function StatutDataTableFilter({
 	setSearchQuery,
 	sortField,
 	handleSort,
-	refetch,
 }: StatutDataTableFilterProps) {
 	const options = [
 		{ label: "Tout", value: undefined },
@@ -37,7 +35,6 @@ export function StatutDataTableFilter({
 	const handleFilterClick = (value?: number) => {
 		const newStatus = selectedStatus === value ? undefined : value;
 		setSelectedStatus(newStatus);
-		refetch();
 	};
 
 	const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,16 +80,16 @@ export function StatutDataTableFilter({
 							className="h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full"
 						>
 							<span>
-								{sortField === "created_at" 
-									? "Trié par Date" 
+								{sortField === "created_at"
+									? "Trié par Date"
 									: "Trier par"}
 							</span>
 							<ChevronDown className="h-4 w-4" />
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" className="w-44">
-						<DropdownMenuItem 
-							onClick={() => handleSort("created_at")} 
+						<DropdownMenuItem
+							onClick={() => handleSort("created_at")}
 							className={`flex items-center ${sortField === "created_at" ? "bg-blue/10" : ""}`}
 						>
 							Trier par Date

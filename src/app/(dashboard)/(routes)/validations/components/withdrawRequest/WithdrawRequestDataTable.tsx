@@ -14,8 +14,7 @@ import {
 	TableRow
 } from "@/components/ui/Table";
 
-import { Button } from "@/components/ui/Button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import WithdrawRequestPagination from "./WithdrawRequestPagination";
 import WithdrawRequestTableBody from "./WithdrawRequestTableBody";
 
 interface WithdrawalRequestsDataTableProps<TData extends object, TValue> {
@@ -24,6 +23,11 @@ interface WithdrawalRequestsDataTableProps<TData extends object, TValue> {
 	onClick: (item: TData) => void;
 	isLoading: boolean;
 	error: string | null;
+	page: number;
+	totalPages: number;
+	onNextPage: () => void;
+	onPreviousPage: () => void;
+	onPageChange: (page: number) => void;
 }
 
 export function WithdrawalRequestsDataTable<TData extends object, TValue>({
@@ -32,6 +36,11 @@ export function WithdrawalRequestsDataTable<TData extends object, TValue>({
 	onClick,
 	isLoading,
 	error,
+	page,
+	totalPages,
+	onNextPage,
+	onPreviousPage,
+	onPageChange,
 }: WithdrawalRequestsDataTableProps<TData, TValue>) {
 	const table = useReactTable({
 		data,
@@ -75,48 +84,14 @@ export function WithdrawalRequestsDataTable<TData extends object, TValue>({
 					</Table>
 				</div>
 
-				<div className="flex items-center justify-between py-4">
-					<Button
-						variant="ghost"
-						size="sm"
-						onClick={() => table.previousPage()}
-						disabled={!table.getCanPreviousPage()}
-						className="h-8 text-sm text-neutral-high"
-					>
-						<ChevronLeft className="ml-1 h-4 w-4 text-neutral-high" />
-						Précédent
-					</Button>
-					<div className="flex items-center gap-1">
-						{Array.from({ length: table.getPageCount() }, (_, i) => (
-							<Button
-								key={i}
-								variant={
-									table.getState().pagination.pageIndex === i
-										? "default"
-										: "ghost"
-								}
-								size="icon"
-								onClick={() => table.setPageIndex(i)}
-								className={`h-8 w-8 text-sm ${table.getState().pagination.pageIndex === i
-									? "bg-primary/10 hover:bg-primary/20 text-primary"
-									: "text-muted-foreground hover:text-foreground"
-									}`}
-							>
-								{String(i + 1).padStart(2, "0")}
-							</Button>
-						))}
-					</div>
-					<Button
-						variant="ghost"
-						size="sm"
-						onClick={() => table.nextPage()}
-						disabled={!table.getCanNextPage()}
-						className="h-8 text-sm text-neutral-high"
-					>
-						Suivant
-						<ChevronRight className="ml-1 h-4 w-4 text-neutral-high" />
-					</Button>
-				</div>
+				<WithdrawRequestPagination
+					page={page}
+					totalPages={totalPages}
+					onNextPage={onNextPage}
+					onPreviousPage={onPreviousPage}
+					onPageChange={onPageChange}
+					data={data}
+				/>
 			</div>
 		</div>
 	);
