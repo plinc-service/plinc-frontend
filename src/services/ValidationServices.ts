@@ -12,7 +12,7 @@ export const ValidationServices = {
     sort_order = "desc",
     query = "",
     // is_active = "0",
-    status = 0,
+    blocked,
     user_id,
   }: {
     page?: number;
@@ -20,7 +20,7 @@ export const ValidationServices = {
     query?: string;
     sort_field?: string;
     sort_order?: string;
-    status?: number;
+    blocked?: number;
     user_id?: string;
   }): Promise<ServicesResponse> => {
     try {
@@ -31,7 +31,7 @@ export const ValidationServices = {
           query,
           sort_field,
           sort_order,
-          status,
+          ...(blocked !== undefined && { blocked }),
           user_id,
         },
       });
@@ -52,7 +52,7 @@ export const ValidationServices = {
   activateService: async (service_id: string) => {
     try {
       const response = await Axios.put(`/service/activation/${service_id}`, {
-        status: true,
+        blocked: true,
       });
       return response.data;
     } catch (error) {
@@ -62,7 +62,7 @@ export const ValidationServices = {
   desactivateService: async (service_id: string) => {
     try {
       const response = await Axios.put(`/service/activation/${service_id}`, {
-        is_active: false,
+        blocked: false,
       });
       return response.data;
     } catch (error) {

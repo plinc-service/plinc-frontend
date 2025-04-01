@@ -50,7 +50,8 @@ export interface Service {
   hour_price: number;
   description: string;
   reject_reason: string;
-  statut: number;
+  status: number;
+  blocked: boolean;
   home_service: boolean;
   is_active: boolean;
   created_at: string;

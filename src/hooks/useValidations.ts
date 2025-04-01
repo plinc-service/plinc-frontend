@@ -38,7 +38,7 @@ export const useServicesRequests = (initialStatus: number = 0) => {
         page,
         page_size: pageSize,
         query: searchQuery,
-        status: selectedStatus,
+        blocked: selectedStatus,
         sort_field: sortField || undefined,
         sort_order: sortOrder,
       });
@@ -134,18 +134,20 @@ export const useServiceDetails = (service_id?: string) => {
 export const useActivateService = () => {
   const queryClient = useQueryClient();
 
-  const { mutate: activateService, isPending: isActivating } = useMutation({
-    mutationFn: ValidationServices.activateService,
-    onSuccess: (_, service_id) => {
-      queryClient.invalidateQueries({
-        queryKey: ["activateServiceDetails", service_id],
-      });
-      toast.success("Service activé avec succès");
-    },
-    onError: () => {
-      toast.error("Une erreur est survenue lors de l'activation du service");
-    },
-  });
+  const { mutateAsync: activateService, isPending: isActivating } = useMutation(
+    {
+      mutationFn: ValidationServices.activateService,
+      onSuccess: (_, service_id) => {
+        queryClient.invalidateQueries({
+          queryKey: ["activateServiceDetails", service_id],
+        });
+        toast.success("Service activé avec succès");
+      },
+      onError: () => {
+        toast.error("Une erreur est survenue lors de l'activation du service");
+      },
+    }
+  );
 
   return {
     activateService,
@@ -156,7 +158,7 @@ export const useActivateService = () => {
 export const useDesactivateService = () => {
   const queryClient = useQueryClient();
 
-  const { mutate: desactivateService, isPending: isDesactivating } =
+  const { mutateAsync: desactivateService, isPending: isDesactivating } =
     useMutation({
       mutationFn: ValidationServices.desactivateService,
       onSuccess: (_, service_id) => {
