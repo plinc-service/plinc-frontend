@@ -1,7 +1,6 @@
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/Dialog";
 import { Separator } from "@/components/ui/Separator";
 import Spinner from "@/components/ui/Spinner";
-import { Switch } from "@/components/ui/Switch";
 import {
 	useActivateService,
 	useDesactivateService,
