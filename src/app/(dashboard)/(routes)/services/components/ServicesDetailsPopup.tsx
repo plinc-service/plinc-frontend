@@ -2,8 +2,8 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/Dialog";
 import { Separator } from "@/components/ui/Separator";
 import Spinner from "@/components/ui/Spinner";
 import {
-	useActivateService,
-	useDesactivateService,
+	// useActivateService,
+	// useDesactivateService,
 	useServiceDetails
 } from "@/hooks/useValidations";
 import { ServicesRequestDetailsPopupProps } from "@/interfaces/serviceInterface";
@@ -24,30 +24,30 @@ const ServicesDetailsPopup: React.FC<ServicesRequestDetailsPopupProps> = ({
 		onClose();
 	};
 
-	const { activateService, isActivating } = useActivateService();
-	const { desactivateService, isDesactivating } = useDesactivateService();
+	// const { activateService, isActivating } = useActivateService();
+	// const { desactivateService, isDesactivating } = useDesactivateService();
 
 	const {
 		data: servicesDetails,
 		isLoading: isServiceDetailsLoading,
-		refetch: refetchServiceDetails
+		// refetch: refetchServiceDetails
 	} = useServiceDetails(service_id?.toString());
 
-	const handleToggleStatus = async () => {
-		const serviceIdString = service_id?.toString() || "";
-		try {
-			if (servicesDetails?.blocked) {
-				await desactivateService(serviceIdString);
-			} else {
-				await activateService(serviceIdString);
-			}
-			refetchServiceDetails();
-			refetchList();
-			// onClose();
-		} catch (err) {
-			console.error("Erreur lors du changement de statut du service", err);
-		}
-	};
+	// const handleToggleStatus = async () => {
+	// 	const serviceIdString = service_id?.toString() || "";
+	// 	try {
+	// 		if (servicesDetails?.blocked) {
+	// 			await desactivateService(serviceIdString);
+	// 		} else {
+	// 			await activateService(serviceIdString);
+	// 		}
+	// 		refetchServiceDetails();
+	// 		refetchList();
+	// 		// onClose();
+	// 	} catch (err) {
+	// 		console.error("Erreur lors du changement de statut du service", err);
+	// 	}
+	// };
 
 
 	if (isServiceDetailsLoading) {
