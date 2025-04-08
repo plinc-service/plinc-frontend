@@ -82,11 +82,11 @@ const ServicesDetailsPopup: React.FC<ServicesRequestDetailsPopupProps> = ({
 									<span className="font-semibold block text-primary text-xl">
 										{servicesDetails.name}
 									</span>
-									<Switch
+									{/* <Switch
 										checked={servicesDetails.blocked}
 										onCheckedChange={handleToggleStatus}
 										disabled={isActivating || isDesactivating || isServiceDetailsLoading}
-									/>
+									/> */}
 								</div>
 
 								<div className="space-y-1 mt-2">
