@@ -4,7 +4,6 @@ import {
   GetCategoriesResponse,
 } from "@/interfaces/categoryInterface";
 import Axios from "@/utils/config-axios";
-import axios from "axios";
 import Cookies from "js-cookie";
 
 export const CategoryService = {
@@ -33,8 +32,8 @@ export const CategoryService = {
   createCategory: async (data: CategoryFormType) => {
     try {
       const token = Cookies.get("auth-token");
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/prestataire/categories`;
-      const response = await axios.post(url, data, {
+      const url = `/prestataire/categories`;
+      const response = await Axios.post(url, data, {
         headers: {
           Authorization: `Token ${token}`,
         },
@@ -47,8 +46,8 @@ export const CategoryService = {
   deleteCategory: async (id: string) => {
     try {
       const token = Cookies.get("auth-token");
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/prestataire/categories/${id}`;
-      const response = await axios.delete(url, {
+      const url = `/prestataire/categories/${id}`;
+      const response = await Axios.delete(url, {
         headers: {
           Authorization: `Token ${token}`,
         },
@@ -61,8 +60,8 @@ export const CategoryService = {
   updateCategory: async (id: string, data: CategoryFormType) => {
     try {
       const token = Cookies.get("auth-token");
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/prestataire/categories/${id}`;
-      const response = await axios.put(url, data, {
+      const url = `/prestataire/categories/${id}`;
+      const response = await Axios.put(url, data, {
         headers: {
           Authorization: `Token ${token}`,
         },
