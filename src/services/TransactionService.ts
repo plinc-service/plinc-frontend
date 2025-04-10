@@ -28,6 +28,7 @@ export const TransactionsServices = {
     sort_order = "desc",
     user_id,
     status,
+    type,
   }: {
     page?: number;
     page_size?: number;
@@ -36,6 +37,7 @@ export const TransactionsServices = {
     sort_order?: string;
     user_id?: string;
     status?: number;
+    type?: string;
   }): Promise<TransactionResponse> => {
     try {
       const response = await Axios.get("/transactions", {
@@ -47,6 +49,7 @@ export const TransactionsServices = {
           sort_order,
           user_id,
           status,
+          type,
         },
       });
       return response.data;

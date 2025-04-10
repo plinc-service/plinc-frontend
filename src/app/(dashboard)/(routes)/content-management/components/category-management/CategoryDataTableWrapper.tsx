@@ -24,6 +24,7 @@ const CategoryTableWrapper = ({
 		loading,
 		setSearchQuery,
 		page,
+		setPage,
 		totalPages,
 		goToNextPage,
 		goToPreviousPage,
@@ -68,6 +69,9 @@ const CategoryTableWrapper = ({
 				onClose={handleClosePopup}
 				refetchList={refetch}
 				categoryDetails={selectedCategory}
+				page={page}
+				setPage={setPage}
+				currentLength={categories.length}
 			/>
 		</>
 	);

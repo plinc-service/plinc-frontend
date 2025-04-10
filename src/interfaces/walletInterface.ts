@@ -17,8 +17,9 @@ export interface Wallet {
 export interface WalletResponse {
   success: boolean;
   data: Wallet[];
-  previous?: string | null;
-  next?: string | null;
+  previous: number | null;
+  next: number | null;
+  total_pages: number;
 }
 
 export interface WalletDetails {

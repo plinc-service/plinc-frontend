@@ -9,33 +9,60 @@ import { useWallets } from "@/hooks/useWallets";
 import { WalletDetails } from "@/interfaces/walletInterface";
 import { WalletService } from "@/services/WalletService";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { WalletFilter } from "./components/WalletFilter";
 
 export default function WalletPage() {
   const {
-    wallets,
+    data: wallets,
     loading,
     error,
-    pagination,
     page,
-    setPage,
     searchQuery,
     setSearchQuery,
+    goToNextPage,
+    goToPreviousPage,
+    goToPage,
     sortField,
     setSortField,
     sortOrder,
     setSortOrder,
+    totalPages,
     refetch
   } = useWallets();
 
   const [selectedWallet, setSelectedWallet] = useState<WalletDetails | null>(null);
   const [isPopupOpen, setPopupOpen] = useState(false);
 
-  // Mise à jour de la page lors de changement de pagination
-  useEffect(() => {
-    setPage(page);
-  }, [page, setPage]);
+  const getPaginationItems = () => {
+    const items = [];
+    const maxVisiblePages = 5;
+
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        items.push(i);
+      }
+    } else {
+      const startPage = Math.max(1, page - Math.floor(maxVisiblePages / 2));
+      const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+      if (startPage > 1) {
+        items.push('...');
+      }
+
+      for (let i = startPage; i <= endPage; i++) {
+        items.push(i);
+      }
+
+      if (endPage < totalPages) {
+        items.push('...');
+      }
+    }
+
+    return items;
+  };
+
+  const paginationItems = getPaginationItems();
 
   const handleWalletClick = async (walletId: string) => {
     try {
@@ -76,28 +103,12 @@ export default function WalletPage() {
     );
   }
 
-  const handlePrevious = () => {
-    if (pagination.previous) {
-      const prevPage = Number(
-        new URL(pagination.previous).searchParams.get("page")
-      );
-      setPage(prevPage);
-    }
-  };
-
-  const handleNext = () => {
-    if (pagination.next) {
-      const nextPage = Number(new URL(pagination.next).searchParams.get("page"));
-      setPage(nextPage);
-    }
-  };
-
   return (
     <div className="px-5 pt-5 pb-[30px] flex flex-col h-full w-full">
       <TopBar pageName="Portefeuille" />
-      
+
       {/* Filtre */}
-      <WalletFilter 
+      <WalletFilter
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         sortField={sortField}
@@ -106,7 +117,7 @@ export default function WalletPage() {
         setSortOrder={setSortOrder}
         refetch={refetch}
       />
-      
+
       <div className="flex flex-col justify-between mt-5 flex-1">
         <ul className="grid grid-cols-4 gap-4">
           {loading
@@ -122,23 +133,43 @@ export default function WalletPage() {
             ))}
         </ul>
         {/* Pagination */}
-        <div className="w-full flex item-center justify-between mt-5">
+        <div className="flex items-center justify-between py-4">
           <Button
             variant="ghost"
             size="sm"
-            onClick={handlePrevious}
-            disabled={!pagination.previous}
             className="h-8 text-sm text-neutral-high"
+            onClick={goToPreviousPage}
+            disabled={page === 1 || !wallets.length}
           >
-            <ChevronLeft className="ml-1 h-4 w-4 text-neutral-high" />
+            <ChevronLeft className="mr-1 h-4 w-4 text-neutral-high" />
             Précédent
           </Button>
+          <div className="flex items-center gap-1">
+            {paginationItems.map((item, index) => (
+              typeof item === 'number' ? (
+                <Button
+                  key={`page-${item}`}
+                  variant={page === item ? "default" : "ghost"}
+                  size="icon"
+                  className={`h-8 w-8 text-sm ${page === item
+                    ? "bg-primary/10 hover:bg-primary/20 text-primary"
+                    : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  onClick={() => goToPage(item)}
+                >
+                  {item}
+                </Button>
+              ) : (
+                <span key={`ellipsis-${index}`} className="px-2">...</span>
+              )
+            ))}
+          </div>
           <Button
             variant="ghost"
             size="sm"
-            onClick={handleNext}
-            disabled={!pagination.next}
             className="h-8 text-sm text-neutral-high"
+            onClick={goToNextPage}
+            disabled={page === totalPages || !wallets.length}
           >
             Suivant
             <ChevronRight className="ml-1 h-4 w-4 text-neutral-high" />

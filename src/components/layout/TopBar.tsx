@@ -1,8 +1,8 @@
 "use client";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { ChevronDown } from "lucide-react";
-import Image from "next/image";
 import { useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/Avatar";
 import { Skeleton } from "../ui/Skeleton";
 import ProfileInformation from "./ProfileInformation";
 
@@ -31,13 +31,25 @@ const TopBar = ({ pageName }: { pageName: string }) => {
             ) : (
               <>
                 <div className="rounded-full bg-neutral-100 flex items-center justify-center">
-                  <Image
+                  {/* <Image
                     src={user?.image_url || "/avatar.svg"}
                     alt={user?.username || "Admin"}
                     width={40}
                     height={40}
                     className="rounded-full"
-                  />
+                  /> */}
+                  <Avatar className="w-10 h-10">
+                    <AvatarImage src={user?.image_url} alt={user?.username || "Admin"} />
+                    <AvatarFallback>{user?.username
+                      ? user.username
+                        .trim()
+                        .split(" ")
+                        .map((part) => part[0])
+                        .join("")
+                        .slice(0, 2)
+                        .toUpperCase()
+                      : "AD"}</AvatarFallback>
+                  </Avatar>
                 </div>
                 <div className="flex flex-col items-start text-neutral-high">
                   <span className="font-medium max-w-[137px] truncate w-full">{user?.username || "Admin"}</span>
@@ -52,7 +64,7 @@ const TopBar = ({ pageName }: { pageName: string }) => {
       <ProfileInformation
         className={`fixed right-0 top-0 h-full bg-white transition-transform duration-300 ease-in-out z-30 ${isOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
-        userImageUrl={user?.image_url || "/avatar.svg"}
+        userImageUrl={user?.image_url || null}
         userName={user?.username || "Admin"}
         userEmail={user?.email || " "}
         onClick={handleClick}

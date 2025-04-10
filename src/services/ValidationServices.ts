@@ -8,10 +8,10 @@ export const ValidationServices = {
   fetchRequestServices: async ({
     page = 1,
     page_size = 10,
-    sort_field = "created_at",
+    sort_field,
     sort_order = "desc",
-    query = "",
-    // is_active = "0",
+    query,
+    status,
     blocked,
     user_id,
   }: {
@@ -21,6 +21,7 @@ export const ValidationServices = {
     sort_field?: string;
     sort_order?: string;
     blocked?: number;
+    status?: number;
     user_id?: string;
   }): Promise<ServicesResponse> => {
     try {
@@ -32,6 +33,7 @@ export const ValidationServices = {
           sort_field,
           sort_order,
           ...(blocked !== undefined && { blocked }),
+          ...(status !== undefined && { status }),
           user_id,
         },
       });

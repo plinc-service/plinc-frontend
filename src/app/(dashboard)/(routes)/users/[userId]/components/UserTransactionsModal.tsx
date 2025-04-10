@@ -206,7 +206,7 @@ const UserTransactionsModal: React.FC<UserTransactionsModalProps> = ({
             </DropdownMenu> */}
 
             <DropdownMenu>
-              <DropdownMenuTrigger className={`flex items-center gap-2 border ${selectedFilter ? 'border-blue-300 bg-blue-50' : 'border-gray-200'} rounded-full px-4 py-2 text-sm ${selectedFilter ? 'text-blue-700' : 'text-gray-700'}`}>
+              <DropdownMenuTrigger className={`flex items-center gap-2 border cursor-pointer ${selectedFilter ? 'border-blue-300 bg-blue-50' : 'border-gray-200'} rounded-full px-4 py-2 text-sm ${selectedFilter ? 'text-blue-700' : 'text-gray-700'}`}>
                 <span>
                   {selectedFilter === null && "Type de transaction"}
                   {selectedFilter === "paiement" && "Paiements"}

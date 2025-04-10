@@ -17,6 +17,9 @@ const CategoryDetailsPopup: React.FC<CategoryDetailsPopupProps> = ({
 	open,
 	onClose,
 	categoryDetails,
+	page,
+	setPage,
+	currentLength
 }) => {
 
 	const [localError, setLocalError] = useState<string | null>(null);
@@ -44,7 +47,12 @@ const CategoryDetailsPopup: React.FC<CategoryDetailsPopupProps> = ({
 				onSuccess: () => {
 					toast.success("Catégorie supprimée avec succès");
 					handleClose();
-					refetchCategories();
+
+					if (currentLength === 1 && page > 1) {
+						setPage(page - 1);
+					} else {
+						refetchCategories();
+					}
 				},
 				onError: () => {
 					toast.error("Une erreur est survenue lors de la suppression de la catégorie");
@@ -52,6 +60,7 @@ const CategoryDetailsPopup: React.FC<CategoryDetailsPopupProps> = ({
 			});
 		}
 	};
+
 
 	const handleOpenUpdateCategoryPopup = () => {
 		setIsUpdateCategoryPopupOpen(true);

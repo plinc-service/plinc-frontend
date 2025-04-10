@@ -20,7 +20,6 @@ export interface TransactionFilterProps {
 export function TransactionFilter({
   // searchQuery,
   setSearchQuery,
-  refetch,
   selectedFilter,
   setSelectedFilter
 }: TransactionFilterProps) {
@@ -35,10 +34,6 @@ export function TransactionFilter({
     } else {
       setSelectedFilter(filter);
       setSearchQuery(filter || "");
-    }
-
-    if (refetch) {
-      setTimeout(refetch, 100);
     }
   };
 

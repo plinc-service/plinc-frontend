@@ -28,7 +28,7 @@ const ServicesRequestTableWrapper = ({
 		page,
 		totalPages,
 		setSearchQuery
-	} = useServicesRequests();
+	} = useServicesRequests(undefined, 0);
 
 	useEffect(() => {
 		setSearchQuery(searchQuery);

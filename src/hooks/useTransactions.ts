@@ -37,11 +37,12 @@ export const useTransactionHistory = () => {
   const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["transactions", page, searchQuery],
+    queryKey: ["transactions", page, searchQuery, selectedFilter],
     queryFn: () =>
       TransactionsServices.fetchTransactions({
         page,
         page_size: pageSize,
+        type: selectedFilter ?? undefined,
       }),
   });
 
