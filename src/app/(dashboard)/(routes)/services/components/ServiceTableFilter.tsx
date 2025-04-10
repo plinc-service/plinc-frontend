@@ -3,11 +3,12 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
-	DropdownMenuTrigger
+	DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 import { Input } from "@/components/ui/Input";
 import { SortField } from "@/hooks/useValidations";
-import { ChevronDown, Search } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { ChevronDown, ChevronUp, Search } from "lucide-react";
 
 interface StatutDataTableFilterProps {
 	selectedStatus: number | undefined;
@@ -15,6 +16,7 @@ interface StatutDataTableFilterProps {
 	searchQuery: string;
 	setSearchQuery: (query: string) => void;
 	sortField: SortField | null;
+	sortOrder: "asc" | "desc";
 	handleSort: (field: SortField) => void;
 }
 
@@ -24,6 +26,7 @@ export function StatutDataTableFilter({
 	searchQuery,
 	setSearchQuery,
 	sortField,
+	sortOrder,
 	handleSort,
 }: StatutDataTableFilterProps) {
 	const options = [
@@ -37,10 +40,12 @@ export function StatutDataTableFilter({
 		setSelectedStatus(newStatus);
 	};
 
-	const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setSearchQuery(e.target.value);
+	const getSortIcon = (field: SortField) => {
+		if (sortField !== field) return null;
+		return sortOrder === "asc"
+			? <ChevronUp className="ml-2 w-4 h-4" />
+			: <ChevronDown className="ml-2 w-4 h-4" />;
 	};
-
 
 	return (
 		<div className="flex justify-between items-center w-full mb-5">
@@ -68,31 +73,27 @@ export function StatutDataTableFilter({
 						placeholder="Rechercher"
 						className="pl-9 h-10 w-fit"
 						value={searchQuery}
-						onChange={handleSearchChange}
+						onChange={(e) => setSearchQuery(e.target.value)}
 					/>
 				</div>
 
-				{/* Menu déroulant pour le tri */}
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<Button
 							variant="outline"
 							className="h-10 px-4 flex items-center gap-2 border border-neutral-low rounded-full"
 						>
-							<span>
-								{sortField === "created_at"
-									? "Trié par Date"
-									: "Trier par"}
-							</span>
+							<span>Trier par</span>
 							<ChevronDown className="h-4 w-4" />
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" className="w-44">
 						<DropdownMenuItem
-							onClick={() => handleSort("created_at")}
-							className={`flex items-center ${sortField === "created_at" ? "bg-blue/10" : ""}`}
-						>
-							Trier par Date
+							className={cn("justify-between",
+								sortField === "created_at" ? "bg-primary/20 font-medium text-primary" : ""
+							)}
+							onClick={() => handleSort("created_at")}>
+							Date {getSortIcon("created_at")}
 						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>

@@ -4,7 +4,7 @@ import Spinner from "@/components/ui/Spinner";
 import { useUserTransactions } from "@/hooks/useUserTransactions";
 import { Transaction } from "@/interfaces/transactionInterface";
 import { FormattedDate } from "@/utils/formatDate";
-import { ArrowDownUp, MoveDiagonal, MoveDownRight, MoveUpRight } from "lucide-react";
+import { MoveDiagonal, MoveDownRight, MoveUpRight } from "lucide-react";
 import { useParams } from "next/navigation";
 import React, { memo } from "react";
 import UserTransactionsModal from "./UserTransactionsModal";
@@ -33,7 +33,7 @@ const UserTransactionItem: React.FC<UserTransactionItemProps> = memo(({ transact
 
   const transactionType = transaction.type.toLowerCase();
   const isWithdrawal = transactionType === "retrait";
-  const isDeposit = transactionType === "depot";
+  // const isDeposit = transactionType === "depot";
 
 
   let iconColorClass = "bg-success-background border-success-border";
@@ -42,10 +42,11 @@ const UserTransactionItem: React.FC<UserTransactionItemProps> = memo(({ transact
   if (isWithdrawal) {
     iconColorClass = "bg-danger-background border-danger-border";
     amountColorClass = "text-danger";
-  } else if (isDeposit) {
-    iconColorClass = "bg-neutral-background border-neutral-border";
-    amountColorClass = "text-neutral-high";
   }
+  // } else if (isDeposit) {
+  //   iconColorClass = "bg-neutral-background border-neutral-border";
+  //   amountColorClass = "text-neutral-high";
+  // }
 
   return (
     <div
@@ -58,15 +59,13 @@ const UserTransactionItem: React.FC<UserTransactionItemProps> = memo(({ transact
           >
             {isWithdrawal ? (
               <MoveUpRight className="text-danger" size={16} />
-            ) : isDeposit ? (
-              <ArrowDownUp className="text-neutral-high" size={16} />
             ) : (
               <MoveDownRight className="text-success" size={16} />
             )}
           </span>
           <div className="text-left min-w-0 flex-1">
             <h5 className="text-base font-semibold text-neutral-high">
-              {isWithdrawal ? "Retrait" : isDeposit ? "Dépôt" : "Paiement"}
+              {isWithdrawal ? "Retrait" : "Paiement"}
             </h5>
             {/* <p className="text-sm text-neutral-high truncate max-w-[600px]">
             {transaction.user.services?.[0]?.description || "Aucune description"}
@@ -74,7 +73,7 @@ const UserTransactionItem: React.FC<UserTransactionItemProps> = memo(({ transact
           </div>
         </div>
         <span className={`${amountColorClass} block text-base`}>
-          {isWithdrawal ? "-" : isDeposit ? "" : "+"}
+          {isWithdrawal ? "-" : "+"}
           {transaction.amount}€
         </span>
       </div>

@@ -25,4 +25,7 @@ export interface CategoryDetailsPopupProps {
   onClose: () => void;
   categoryDetails: Category | null;
   refetchList: () => void;
+  page: number;
+  setPage: (page: number) => void;
+  currentLength: number;
 }

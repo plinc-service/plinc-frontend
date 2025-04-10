@@ -8,13 +8,20 @@ import { toast } from "sonner";
 export type SortField = "created_at";
 export type SortOrder = "asc" | "desc";
 
-export const useServicesRequests = (initialStatus: number = 0) => {
+export const useServicesRequests = (
+  initialStatus?: number,
+  serviceStatut?: number
+) => {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
 
   const [selectedStatus, setSelectedStatus] = useState<number | undefined>(
     initialStatus
+  );
+
+  const [serviceStatus, setServiceStatus] = useState<number | undefined>(
+    serviceStatut
   );
 
   const [totalPages, setTotalPages] = useState(1);
@@ -30,6 +37,7 @@ export const useServicesRequests = (initialStatus: number = 0) => {
       page,
       searchQuery,
       selectedStatus,
+      serviceStatus,
       sortField,
       sortOrder,
     ],
@@ -39,6 +47,7 @@ export const useServicesRequests = (initialStatus: number = 0) => {
         page_size: pageSize,
         query: searchQuery,
         blocked: selectedStatus,
+        status: serviceStatus,
         sort_field: sortField || undefined,
         sort_order: sortOrder,
       });
@@ -76,7 +85,7 @@ export const useServicesRequests = (initialStatus: number = 0) => {
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
-      setSortField(null);
+      setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
     } else {
       setSortField(field);
       setSortOrder("asc");
@@ -103,6 +112,7 @@ export const useServicesRequests = (initialStatus: number = 0) => {
     setSearchQuery,
     selectedStatus,
     setSelectedStatus,
+    setServiceStatus,
     sortField,
     sortOrder,
     handleSort,

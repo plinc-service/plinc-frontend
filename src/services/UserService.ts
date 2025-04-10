@@ -116,11 +116,11 @@ export const fetchUserTransactionsHistory = async (
 
     if (transactionType) {
       if (transactionType === "paiement") {
-        params.query = "payment";
+        params.type = "payment";
       } else if (transactionType === "retrait") {
-        params.query = "retrait";
+        params.type = "retrait";
       } else {
-        params.query = transactionType;
+        params.type = transactionType;
       }
     }
 
