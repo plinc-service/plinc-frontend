@@ -25,6 +25,7 @@ export interface User {
   profession: string;
   siret_num: string;
   iban_num: string;
+  bic: string;
   image_url: string;
   code_verification: string;
   is_verified: boolean;

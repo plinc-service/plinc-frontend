@@ -1,6 +1,6 @@
 "use client";
 
-import { Switch } from "@/components/ui/Switch";
+// import { Switch } from "@/components/ui/Switch";
 import { fetchUserById } from "@/services/UserService";
 import { useQuery } from "@tanstack/react-query";
 import { MoveDiagonal } from "lucide-react";
@@ -85,16 +85,16 @@ const UserServices: React.FC = () => {
           ) : (
             displayedServices.map((service) => (
               <div key={service.id} className="space-y-2">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-start">
                   <div className="flex flex-col">
                     <h3 className="text-blue text-sm font-medium">
                       {service.name}
                     </h3>
                     <span className="text-neutral-medium text-xs">{service.description}</span>
                   </div>
-                  <Switch
+                  {/* <Switch
                     checked={service.is_active}
-                  />
+                  /> */}
                 </div>
               </div>
             ))

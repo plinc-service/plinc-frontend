@@ -123,10 +123,17 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
               </p>
             </div>
 
-            <div className="space-y-1 my-5">
+            <div className="space-y-1 my-3">
               <h3 className="text-xs font-medium text-neutral-high">IBAN</h3>
               <p className="text-sm font-medium text-blue">
                 {user.iban_num || "Non renseigné"}
+              </p>
+            </div>
+
+            <div className="space-y-1 my-3">
+              <h3 className="text-xs font-medium text-neutral-high">BIC</h3>
+              <p className="text-sm font-medium text-blue">
+                {user.bic || "Non renseigné"}
               </p>
             </div>
           </div>

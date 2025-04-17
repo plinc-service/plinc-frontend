@@ -1,7 +1,7 @@
 "use client";
 
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/Dialog";
-import { Switch } from "@/components/ui/Switch";
+// import { Switch } from "@/components/ui/Switch";
 import { Service } from "@/types/services";
 import { X } from "lucide-react";
 
@@ -45,7 +45,7 @@ const UserServicesModal: React.FC<UserServicesModalProps> = ({
             ) : (
               services.map((service) => (
                 <div key={service.id} className="py-4 border-b border-b-gray-100 last:border-b-0">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-start">
                     <div className="flex flex-col">
                       <h3 className="text-blue text-sm font-medium">
                         {service.name}
@@ -54,9 +54,9 @@ const UserServicesModal: React.FC<UserServicesModalProps> = ({
                         {service.description || "Pas de description"}
                       </span>
                     </div>
-                    <Switch
+                    {/* <Switch
                       checked={service.is_active}
-                    />
+                    /> */}
                   </div>
                 </div>
               ))
