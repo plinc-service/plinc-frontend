@@ -2,6 +2,7 @@ import { Wallet } from "@/interfaces/walletInterface";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import React from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/Avatar";
 
 interface WalletCardProps {
   wallet: Wallet;
@@ -20,13 +21,20 @@ export const WalletCard = React.forwardRef<HTMLDivElement, WalletCardProps>(
       onClick={() => onClick(String(wallet.id))}
     >
       <div className="space-y-1">
-        <Image
-          src={wallet.image_url || "https://placehold.co/50x50/png"}
-          alt={wallet.user.username}
-          width={48}
-          height={48}
-          className="rounded-full"
-        />
+        <Avatar className="w-9 h-9">
+          <AvatarImage src={wallet.user.image_url || undefined} alt={wallet.user.username} />
+          <AvatarFallback>
+            {wallet.user.username
+              ? wallet.user.username
+                .trim()
+                .split(" ")
+                .map((part) => part[0])
+                .join("")
+                .slice(0, 2)
+                .toUpperCase()
+              : "AD"}
+          </AvatarFallback>
+        </Avatar>
         <div className="flex flex-col justify-start">
           <h3 className="text-sm font-semibold text-blue-600">
             {wallet.user.username}

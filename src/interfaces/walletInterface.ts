@@ -8,8 +8,8 @@ export interface Wallet {
     email: string;
     revenue_total: number;
     revenue_waiting?: number | null;
+    image_url?: string | null;
   };
-  image_url?: string | null;
   className?: string;
   amount: string;
 }
