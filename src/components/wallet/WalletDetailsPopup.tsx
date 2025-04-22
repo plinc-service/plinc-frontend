@@ -9,6 +9,7 @@ import {
   X,
 } from "lucide-react";
 import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/Avatar";
 import { Button } from "../ui/Button";
 import {
   Dialog,
@@ -43,16 +44,20 @@ const WalletDetailsPopup: React.FC<WalletDetailsPopupProps> = ({
               {/* INFORMATIONS UTILISATEUR */}
               <div className="flex justify-between items-center border border-neutral-low rounded-3xl p-4">
                 <div className="flex items-center gap-3">
-                  <Image
-                    src={
-                      walletDetails.user?.image_url ||
-                      "https://placehold.co/50x50/png"
-                    }
-                    alt={walletDetails.user?.username || "User"}
-                    width={60}
-                    height={60}
-                    className="rounded-full w-[60px] h-[60px] object-cover"
-                  />
+                  <Avatar className="w-[60px] h-[60px]">
+                    <AvatarImage src={walletDetails.user.image_url || undefined} alt={walletDetails.user.username} />
+                    <AvatarFallback>
+                      {walletDetails.user.username
+                        ? walletDetails.user.username
+                          .trim()
+                          .split(" ")
+                          .map((part) => part[0])
+                          .join("")
+                          .slice(0, 2)
+                          .toUpperCase()
+                        : "AD"}
+                    </AvatarFallback>
+                  </Avatar>
                   <div>
                     <DialogDescription className="text-sm font-semibold text-blue-600">
                       {walletDetails.user?.username || "Inconnu"}

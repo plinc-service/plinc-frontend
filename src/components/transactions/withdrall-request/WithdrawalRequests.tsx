@@ -1,9 +1,9 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { ScrollArea, ScrollBar } from "@/components/ui/ScrollArea";
 import Spinner from "@/components/ui/Spinner";
 import { useWithdrawalRequests } from "@/hooks/useTransactions";
 import { Transaction } from "@/interfaces/transactionInterface";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { ChevronRight } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { WithdrawalFilter } from "./WithdrawalFilter";
@@ -63,13 +63,20 @@ const WithdrawalRequests = () => {
 								<li key={withdrawal.id} className="border-b border-neutral-low px-1 pt-1 pb-2.5 mb-2.5 space-y-3 hover:bg-brand-lowest transition-colors cursor-pointer" onClick={() => handleWithdrawalClick(withdrawal)}>
 									<div className="flex justify-between items-start">
 										<div className="flex gap-3">
-											<Image
-												src={"https://placehold.co/50x50/png"}
-												alt={withdrawal.user.username}
-												width={48}
-												height={48}
-												className="rounded-full"
-											/>
+											<Avatar className="w-12 h-12">
+												<AvatarImage src={withdrawal.user.image_url || undefined} alt={withdrawal.user.username} />
+												<AvatarFallback>
+													{withdrawal.user.username
+														? withdrawal.user.username
+															.trim()
+															.split(" ")
+															.map((part) => part[0])
+															.join("")
+															.slice(0, 2)
+															.toUpperCase()
+														: "AD"}
+												</AvatarFallback>
+											</Avatar>
 											<div className="flex flex-col justify-start">
 												<h3 className="text-sm font-semibold text-blue-600">
 													{withdrawal.user.username}
@@ -110,6 +117,7 @@ const WithdrawalRequests = () => {
 						)}
 					</ul>
 				)}
+				<ScrollBar orientation="vertical" />
 			</ScrollArea>
 
 			<WithdrawalRequestsPopup

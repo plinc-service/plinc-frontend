@@ -1,9 +1,9 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { useValidateOrRejectWithdrawal } from "@/hooks/useTransactions";
 import { TransactionDetailsPopupProps } from "@/interfaces/transactionInterface";
 import {
 	X
 } from "lucide-react";
-import Image from "next/image";
 import { useState } from "react";
 import {
 	Dialog,
@@ -120,13 +120,20 @@ const WithdrawalRequestsPopup: React.FC<TransactionDetailsPopupProps> = ({
 										onClick={handleOpenUserProfile}
 										aria-label={`Voir le profil de ${transactionDetails.user.username}`}
 									>
-										<Image
-											src={"https://placehold.co/60x60/png"}
-											alt={transactionDetails.user.username}
-											width={60}
-											height={60}
-											className="rounded-full"
-										/>
+										<Avatar className="w-[60px] h-[60px]">
+											<AvatarImage src={transactionDetails.user.image_url || undefined} alt={transactionDetails.user.username} />
+											<AvatarFallback>
+												{transactionDetails.user.username
+													? transactionDetails.user.username
+														.trim()
+														.split(" ")
+														.map((part) => part[0])
+														.join("")
+														.slice(0, 2)
+														.toUpperCase()
+													: "AD"}
+											</AvatarFallback>
+										</Avatar>
 										<div className="flex flex-col justify-start">
 											<h3 className="text-lg font-semibold text-blue-600">
 												{transactionDetails.user.username}

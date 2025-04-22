@@ -149,7 +149,7 @@ export const useValidateOrRejectWithdrawal = () => {
         rejected_reason
       ),
     onSuccess: () => {
-      toast.success("Retrait validé avec succès");
+      toast.success("Succès");
     },
     onError: () => {
       toast.error("Une erreur est survenue lors du traitement de la demande.");

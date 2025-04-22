@@ -1,16 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/Skeleton";
+import type { User } from "@/interfaces/userInterface";
+import { fetchUserById } from "@/services/UserService";
+import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ChevronRight } from "lucide-react";
-import UserPlincs from "../components/UserPlincs";
+import { useEffect, useState } from "react";
 import UserHeader from "../components/UserHeader";
+import UserPlincs from "../components/UserPlincs";
 import UserHeaderSkeleton from "../components/skeletons/UserHeaderSkeleton";
 import UserPlincsSkeleton from "../components/skeletons/UserPlincsSkeleton";
-import { fetchUserById } from "@/services/UserService";
-import type { User } from "@/interfaces/userInterface";
-import { Skeleton } from "@/components/ui/Skeleton";
 
 function Page() {
   const params = useParams();
@@ -66,6 +66,7 @@ function Page() {
       acheter: user.number_plinc_buyer,
       vendeurs: user.number_plinc_seller,
     },
+    image_url: user.image_url,
   };
 
   return (

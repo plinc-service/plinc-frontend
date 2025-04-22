@@ -18,7 +18,7 @@ const WithdrawalActionButtons: React.FC<WithdrawalActionButtonsProps> = ({
         {loading && <Spinner />} Confirmer le payement
       </Button>
       <Button variant={"outline"} disabled={loading} className="text-lg" onClick={onReject}>
-        Rejeter la demande
+        Rejeter le payment
       </Button>
     </div>
   );

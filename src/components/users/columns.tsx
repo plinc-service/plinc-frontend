@@ -1,8 +1,8 @@
 "use client";
-import Image from "next/image";
+import { User } from "@/interfaces/userInterface";
 import { ColumnDef } from "@tanstack/react-table";
 import { ChevronRight } from "lucide-react";
-import { User } from "@/interfaces/userInterface";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/Avatar";
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -22,13 +22,20 @@ export const columns: ColumnDef<User>[] = [
       return (
         <div className="flex items-center gap-3 min-w-[200px]">
           <div className="rounded-full bg-neutral-100 flex items-center justify-center overflow-hidden">
-            <Image
-              width={36}
-              height={36}
-              src={user.image_url || "/avatar.svg"}
-              alt={user.username}
-              className="rounded-full"
-            />
+            <Avatar className="w-9 h-9">
+              <AvatarImage src={user.image_url || undefined} alt={user.username} />
+              <AvatarFallback>
+                {user.username
+                  ? user.username
+                    .trim()
+                    .split(" ")
+                    .map((part) => part[0])
+                    .join("")
+                    .slice(0, 2)
+                    .toUpperCase()
+                  : "AD"}
+              </AvatarFallback>
+            </Avatar>
           </div>
           <div className="flex flex-col">
             <span className="text-sm text-neutral-high">
