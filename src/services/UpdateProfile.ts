@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseUrl = "https://api-v1-plinc.fred-host.com/";
+const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}`;
 
 export const UserService = {
   requestPresignedUrl: async (filename: string, folder: string) => {
