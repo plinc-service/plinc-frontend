@@ -6,6 +6,7 @@ import { toast } from "sonner";
 
 const TOKEN_KEY = "auth-token";
 const USER_KEY = "auth-user";
+const BaseUrl = `${process.env.NEXT_PUBLIC_API_URL}`
 
 export const AuthService = {
   getToken: () => {
@@ -51,7 +52,7 @@ export const AuthService = {
   },
 
   login: async (email: string, password: string): Promise<AuthResponse> => {
-    const url = "https://api-plinc.gini-africa.com/auth/login";
+    const url = `${BaseUrl}/auth/login`;
     try {
       const response = await axios.post<AuthResponse>(url, {
         email,
@@ -84,7 +85,7 @@ export const AuthService = {
   },
 
   resetPassword: async (email: string): Promise<void> => {
-    const url = "https://api-plinc.gini-africa.com/auth/reset-password/confirm";
+    const url = `${BaseUrl}/auth/reset-password/confirm`;
     try {
       await axios.post(url, { email });
     } catch (error) {
@@ -93,7 +94,7 @@ export const AuthService = {
   },
 
   verifyOTP: async (email: string, otp: string): Promise<void> => {
-    const url = "https://api-plinc.gini-africa.com/auth/confirm-reset";
+    const url = `${BaseUrl}/auth/confirm-reset`;
     try {
       await axios.post(url, { email, otp });
     } catch (error) {
@@ -106,7 +107,7 @@ export const AuthService = {
     confirm_password: string,
     email: string
   ): Promise<void> => {
-    const url = "https://api-plinc.gini-africa.com/auth/reset-password";
+    const url = `${BaseUrl}/auth/reset-password`;
     try {
       await axios.post(url, { password, confirm_password, email });
     } catch (error) {
