@@ -2,7 +2,7 @@ import axios from "axios";
 import { AuthService } from "../services/AuthService";
 
 const Axios = axios.create({
-  baseURL: "https://api-plinc.gini-africa.com/administrator",
+  baseURL: "https://api-v1-plinc.fred-host.com/administrator",
   headers: {
     "Content-Type": "application/json",
   },
