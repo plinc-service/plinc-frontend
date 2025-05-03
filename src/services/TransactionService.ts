@@ -65,7 +65,7 @@ export const TransactionsServices = {
     rejected_reason?: string
   ): Promise<void> => {
     try {
-      const baseUrl = "https://api-plinc.gini-africa.com";
+      const baseUrl = "https://api-v1-plinc.fred-host.com";
       await axios.put(`${baseUrl}/wallet/transaction/activation/${id}`, {
         status,
         rejected_reason,
