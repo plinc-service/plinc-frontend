@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseUrl = "https://api-plinc.gini-africa.com/";
+const baseUrl = "https://api-v1-plinc.fred-host.com/";
 
 export const UserService = {
   requestPresignedUrl: async (filename: string, folder: string) => {
