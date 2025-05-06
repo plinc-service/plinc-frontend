@@ -1,4 +1,4 @@
-import ProfileImage from "@/components/ui/ProfileImage";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Service } from "@/interfaces/serviceInterface";
 import { ColumnDef } from "@tanstack/react-table";
 import { ChevronRight } from "lucide-react";
@@ -69,7 +69,20 @@ export const ServicesColumns: ColumnDef<Service>[] = [
 			return (
 				<div className="flex items-center gap-3 min-w-[150px]">
 					<div className="h-8 w-8 rounded-full bg-neutral-100 flex items-center justify-center overflow-hidden">
-						<ProfileImage src={provider.image_url ?? "/avatar.svg"} alt={provider.username ?? "user profile"} />
+						<Avatar className="w-8 h-8">
+							<AvatarImage src={provider.image_url || undefined} alt={provider.username} />
+							<AvatarFallback>
+								{provider.username
+									? provider.username
+										.trim()
+										.split(" ")
+										.map((part) => part[0])
+										.join("")
+										.slice(0, 2)
+										.toUpperCase()
+									: "AD"}
+							</AvatarFallback>
+						</Avatar>
 					</div>
 					<span className="font-medium text-sm text-neutral-high">{provider.owner.username}</span>
 				</div>

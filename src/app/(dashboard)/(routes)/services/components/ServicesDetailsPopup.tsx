@@ -130,7 +130,7 @@ const ServicesDetailsPopup: React.FC<ServicesRequestDetailsPopupProps> = ({
 										aria-label={`Voir le profil de ${servicesDetails.owner.username}`}
 									>
 										<Image
-											src={"https://placehold.co/60x60/png"}
+											src={servicesDetails.owner.image_url}
 											alt={servicesDetails.owner.username}
 											width={60}
 											height={60}
