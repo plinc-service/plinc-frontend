@@ -43,7 +43,7 @@ export const columns: ColumnDef<Plinc>[] = [
                     .join("")
                     .slice(0, 2)
                     .toUpperCase()
-                  : "AD"}
+                  : " "}
               </AvatarFallback>
             </Avatar>
           </div>

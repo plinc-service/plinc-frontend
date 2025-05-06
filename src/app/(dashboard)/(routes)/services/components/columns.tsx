@@ -70,17 +70,17 @@ export const ServicesColumns: ColumnDef<Service>[] = [
 				<div className="flex items-center gap-3 min-w-[150px]">
 					<div className="h-8 w-8 rounded-full bg-neutral-100 flex items-center justify-center overflow-hidden">
 						<Avatar className="w-8 h-8">
-							<AvatarImage src={provider.image_url || undefined} alt={provider.username} />
+							<AvatarImage src={provider.owner.image_url || undefined} alt={provider.owner.username} />
 							<AvatarFallback>
-								{provider.username
-									? provider.username
+								{provider.owner.username
+									? provider.owner.username
 										.trim()
 										.split(" ")
 										.map((part) => part[0])
 										.join("")
 										.slice(0, 2)
 										.toUpperCase()
-									: "AD"}
+									: " "}
 							</AvatarFallback>
 						</Avatar>
 					</div>
