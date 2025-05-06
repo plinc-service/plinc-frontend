@@ -1,3 +1,4 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/Dialog";
 import { Separator } from "@/components/ui/Separator";
 import Spinner from "@/components/ui/Spinner";
@@ -8,7 +9,6 @@ import {
 } from "@/hooks/useValidations";
 import { ServicesRequestDetailsPopupProps } from "@/interfaces/serviceInterface";
 import { X } from "lucide-react";
-import Image from "next/image";
 import { useState } from "react";
 import UserProfilePopup from "../../validations/components/UserProfilePopup";
 
@@ -129,13 +129,20 @@ const ServicesDetailsPopup: React.FC<ServicesRequestDetailsPopupProps> = ({
 										onClick={handleOpenUserProfile}
 										aria-label={`Voir le profil de ${servicesDetails.owner.username}`}
 									>
-										<Image
-											src={"https://placehold.co/60x60/png"}
-											alt={servicesDetails.owner.username}
-											width={60}
-											height={60}
-											className="rounded-full"
-										/>
+										<Avatar className="w-[60px] h-[60px]">
+											<AvatarImage src={servicesDetails.owner.image_url || undefined} alt={servicesDetails.owner.username} />
+											<AvatarFallback>
+												{servicesDetails.owner.username
+													? servicesDetails.owner.username
+														.trim()
+														.split(" ")
+														.map((part) => part[0])
+														.join("")
+														.slice(0, 2)
+														.toUpperCase()
+													: "AD"}
+											</AvatarFallback>
+										</Avatar>
 										<div className="flex flex-col justify-start">
 											<h3 className="text-lg font-semibold text-blue-600">
 												{servicesDetails.owner.username}

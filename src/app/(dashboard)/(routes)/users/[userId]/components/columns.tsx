@@ -1,9 +1,9 @@
 "use client";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import type { Plinc } from "@/interfaces/plincInterface";
 import { ColumnDef } from "@tanstack/react-table";
 import { ChevronRight } from "lucide-react";
-import Image from "next/image";
 
 const getStatusLabel = (plinc: Plinc): string => {
   if (plinc.cancelled || plinc.user_cancelled || plinc.pro_cancelled)
@@ -32,13 +32,20 @@ export const columns: ColumnDef<Plinc>[] = [
       return (
         <div className="flex items-center gap-3 min-w-[150px]">
           <div className="h-8 w-8 rounded-full bg-neutral-100 flex items-center justify-center overflow-hidden">
-            <Image
-              width={32}
-              height={32}
-              src={service.owner.image_url || "/avatar.svg"}
-              alt={service.owner.username}
-              className="rounded-full"
-            />
+            <Avatar className="w-8 h-8">
+              <AvatarImage src={service.owner.image_url || undefined} alt={service.owner.username} />
+              <AvatarFallback>
+                {service.owner.username
+                  ? service.owner.username
+                    .trim()
+                    .split(" ")
+                    .map((part) => part[0])
+                    .join("")
+                    .slice(0, 2)
+                    .toUpperCase()
+                  : " "}
+              </AvatarFallback>
+            </Avatar>
           </div>
           <span className="font-medium text-sm text-neutral-high">
             {service.owner.username}
