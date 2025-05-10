@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Separator } from "@/components/ui/Separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 
 import { User } from "@/interfaces/userInterface";
 
@@ -31,13 +32,20 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
       <div className="flex m-2">
         <div className="flex flex-col items-center pr-4 w-[250px] relative">
           <div className="h-16 w-16 rounded-full bg-neutral-100 flex items-center justify-center overflow-hidden">
-            <Image
-              src={user.image_url || "/avatar.svg"}
-              alt={user.username}
-              width={64}
-              height={64}
-              className="rounded-full"
-            />
+            <Avatar className="w-[64px] h-[64px]">
+            <AvatarImage src={user.image_url || undefined} alt={user.username} className="object-cover object-top" />
+            <AvatarFallback>
+              {user.username
+                ? user.username
+                  .trim()
+                  .split(" ")
+                  .map((part) => part[0])
+                  .join("")
+                  .slice(0, 2)
+                  .toUpperCase()
+                : "AD"}
+            </AvatarFallback>
+          </Avatar>
           </div>
 
           <div className="mt-3 text-center space-y-2">
