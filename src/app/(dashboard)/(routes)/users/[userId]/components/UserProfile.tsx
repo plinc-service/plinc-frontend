@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { Separator } from "@/components/ui/Separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
